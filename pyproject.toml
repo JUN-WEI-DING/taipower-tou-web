@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "taipower-tou-web"
+version = "0.1.0"
+description = "Web interface for taipower-tou"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+dependencies = [
+    "taipower-tou>=0.1.0",
+]
+
+[project.optional-dependencies]
+backend = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "python-multipart>=0.0.6",
+    "pydantic>=2.5.0",
+]
+test = [
+    "pytest",
+    "httpx>=0.24.0",
+    "pytest-asyncio>=0.21.0",
+]
+
+[tool.setuptools]
+packages = ["backend"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
