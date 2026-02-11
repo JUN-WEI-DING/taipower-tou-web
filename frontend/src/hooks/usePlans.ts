@@ -32,9 +32,11 @@ export function usePlans(options: UsePlansOptions = {}) {
         );
 
         setPlans(mvpPlans);
+        setError(null);
       } catch (error) {
         console.error("Failed to fetch plans:", error);
-        setError("無法載入電價方案");
+        setPlans([]);
+        setError("無法載入電價方案，請檢查後端連線");
       }
     };
 

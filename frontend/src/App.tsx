@@ -8,6 +8,7 @@ import { CostBreakdown } from "./components/results/CostBreakdown";
 import { useCalculation } from "./hooks/useCalculation";
 import { usePlans } from "./hooks/usePlans";
 import type { BillingInputs, PlanCategory, UsageData } from "./api/types";
+import { useCalculationStore } from "./store/calculationStore";
 
 function App() {
   // Initialize plans
@@ -25,6 +26,7 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState<PlanCategory>("lighting");
   const [calculationResult, setCalculationResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const plansError = useCalculationStore((state) => state.error);
 
   const { calculate, isLoading } = useCalculation();
 
@@ -160,9 +162,9 @@ function App() {
             </button>
 
             {/* Error Display */}
-            {error && (
+            {(error || plansError) && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-red-700">{error}</p>
+                <p className="text-red-700">{error || plansError}</p>
               </div>
             )}
           </div>

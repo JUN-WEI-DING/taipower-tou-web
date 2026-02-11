@@ -24,6 +24,7 @@ export function PlanSelector({
   // Group plans by category
   const lightingPlans = plans.filter((p) => p.category === "lighting");
   const lowVoltagePlans = plans.filter((p) => p.category === "low_voltage");
+  const hasPlans = lightingPlans.length > 0 || lowVoltagePlans.length > 0;
 
   return (
     <div className="plan-selector">
@@ -34,9 +35,12 @@ export function PlanSelector({
         id="plan-select"
         value={selectedPlanId || ""}
         onChange={(e) => onPlanChange(e.target.value)}
+        disabled={!hasPlans}
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       >
-        <option value="">-- 請選擇方案 --</option>
+        <option value="">
+          {hasPlans ? "-- 請選擇方案 --" : "-- 目前無可用方案 --"}
+        </option>
 
         {lightingPlans.length > 0 && (
           <optgroup label="住宅用电 (表燈)">
@@ -60,6 +64,12 @@ export function PlanSelector({
           </optgroup>
         )}
       </select>
+
+      {!hasPlans && (
+        <p className="mt-2 text-sm text-red-600">
+          目前未載入電價方案，請確認後端服務已啟動。
+        </p>
+      )}
 
       {selectedPlanId && (
         <p className="mt-2 text-sm text-gray-600">

@@ -60,9 +60,9 @@ class CalculationService:
         """
         if "residential" in plan_id or "lighting" in plan_id:
             return "lighting"
-        elif "low_voltage" in plan_id or "low_voltage" in plan_id:
+        elif "low_voltage" in plan_id:
             return "low_voltage"
-        elif "high_voltage" in plan_id:
+        elif "high_voltage" in plan_id and "extra_high" not in plan_id:
             return "high_voltage"
         elif "extra_high" in plan_id:
             return "extra_high_voltage"
@@ -73,6 +73,32 @@ class CalculationService:
             return "low_voltage"
         else:
             return "lighting"
+
+    @classmethod
+    def _get_rate_structure(cls, plan_id: str) -> str:
+        """Get rate structure type for a plan.
+
+        Args:
+            plan_id: Plan identifier
+
+        Returns:
+            "tou" for time-of-use plans, "tiered" for tiered rate plans
+        """
+        # Plans with explicit "non_tou" in ID are tiered
+        # Also check for specific non-time plans for lighting/business
+        if "non_tou" in plan_id or plan_id in (
+            "lighting_non_business_tiered",
+            "lighting_business_tiered",
+        ):
+            return "tiered"
+
+        # All other plans are TOU (time-of-use)
+        # This includes:
+        # - Plans ending with "_tier" (time-of-use with tiered periods)
+        # - Plans ending with "_stage" (three-stage time-of-use)
+        # - EV plans
+        # - High/extra high voltage power plans
+        return "tou"
 
     @classmethod
     def get_plan_summaries(cls) -> list[PlanSummary]:
@@ -86,6 +112,7 @@ class CalculationService:
         summaries = []
         for plan_id, name in _PLAN_NAME_MAP.items():
             category = cls._get_plan_category(plan_id)
+            rate_structure = cls._get_rate_structure(plan_id)
             requirements = get_plan_requirements(plan_id)
 
             summaries.append(
@@ -93,7 +120,7 @@ class CalculationService:
                     id=plan_id,
                     name=name,
                     category=category,
-                    rate_structure="tou" if "tier" not in plan_id else "tiered",
+                    rate_structure=rate_structure,
                     requires_contract_capacity=requirements["requires_contract_capacity"],
                     requires_meter_spec=requirements["requires_meter_spec"],
                 )
@@ -268,11 +295,12 @@ class CalculationService:
         if plan_summary is None:
             # Create minimal summary
             category = cls._get_plan_category(request.plan_id)
+            rate_structure = cls._get_rate_structure(request.plan_id)
             plan_summary = PlanSummary(
                 id=request.plan_id,
                 name=plan_name,
                 category=category,
-                rate_structure="tou" if "tier" not in request.plan_id else "tiered",
+                rate_structure=rate_structure,
                 requires_contract_capacity=False,
                 requires_meter_spec=False,
             )

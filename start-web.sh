@@ -46,7 +46,7 @@ fi
 # Start frontend dev server
 echo "Starting Vite frontend on http://localhost:5173..."
 cd "$PROJECT_ROOT/frontend"
-npm run dev &
+npm run dev -- --host 0.0.0.0 --port 5173 --strictPort &
 FRONTEND_PID=$!
 
 # Wait a bit for frontend to start
@@ -56,7 +56,7 @@ sleep 2
 if kill -0 $FRONTEND_PID 2>/dev/null; then
     echo "Frontend started successfully (PID: $FRONTEND_PID)"
 else
-    echo "Failed to start frontend"
+    echo "Failed to start frontend (port 5173 may already be in use)"
     cleanup
     exit 1
 fi
