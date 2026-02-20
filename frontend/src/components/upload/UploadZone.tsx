@@ -14,36 +14,7 @@ export const UploadZone: React.FC = () => {
   const setOcrStatus = useAppStore((state) => state.setOcrStatus);
   const setStage = useAppStore((state) => state.setStage);
 
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  }, []);
-
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  }, []);
-
-  const handleDrop = useCallback(async (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const files = Array.from(e.dataTransfer.files);
-    const imageFile = files.find((file) => file.type.startsWith('image/'));
-
-    if (imageFile) {
-      await processImage(imageFile);
-    }
-  }, []);
-
-  const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files[0]) {
-      await processImage(files[0]);
-    }
-  }, []);
-
-  const processImage = async (file: File) => {
+  const processImage = useCallback(async (file: File) => {
     setOcrStatus('processing');
 
     try {
@@ -56,7 +27,7 @@ export const UploadZone: React.FC = () => {
 
       // 執行 OCR 識別
       const ocrService = await getOCRService();
-      const ocrResult = await ocrService.recognize(file, (progress) => {
+      const ocrResult = await ocrService.recognize(file, () => {
         // Progress is handled by OCRProgress component via Zustand store
       });
 
@@ -97,7 +68,36 @@ export const UploadZone: React.FC = () => {
       setOcrStatus('error');
       setErrorMessage('圖片處理失敗，請確認圖片清晰並重試');
     }
-  };
+  }, [setUploadedImage, setBillData, setOcrStatus, setStage]);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    const imageFile = files.find((file) => file.type.startsWith('image/'));
+
+    if (imageFile) {
+      await processImage(imageFile);
+    }
+  }, [processImage]);
+
+  const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files[0]) {
+      await processImage(files[0]);
+    }
+  }, [processImage]);
 
   return (
     <div className="w-full max-w-2xl mx-auto">

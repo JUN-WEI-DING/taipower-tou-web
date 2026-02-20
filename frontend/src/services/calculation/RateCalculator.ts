@@ -7,7 +7,6 @@ import type {
   Charges,
   ResultLabel,
   Comparison,
-  SeasonInfo,
   BreakdownItem,
 } from '../../types';
 import { EstimationMode } from '../../types';
@@ -32,7 +31,7 @@ export class RateCalculator {
     const processedInput = this.ensureTOUData(input, season);
 
     // 取得可用的方案
-    const availablePlans = this.getAvailablePlans(input);
+    const availablePlans = this.getAvailablePlans();
 
     // 計算每個方案
     const results: PlanCalculationResult[] = availablePlans.map((plan) => {
@@ -42,7 +41,7 @@ export class RateCalculator {
       result.label = this.createLabel(result, input, plan);
 
       // 加入比較資訊
-      result.comparison = this.createComparison(result, input);
+      result.comparison = this.createComparison();
 
       return result;
     });
@@ -445,7 +444,7 @@ export class RateCalculator {
   /**
    * 取得可用的方案
    */
-  private getAvailablePlans(input: CalculationInput): Plan[] {
+  private getAvailablePlans(): Plan[] {
     // 簡化版本：回傳所有方案
     // 實際應根據電壓型別、契約容量等篩選
     return this.plans.filter((plan) => {
@@ -502,10 +501,7 @@ export class RateCalculator {
   /**
    * 建立比較資訊
    */
-  private createComparison(
-    result: PlanCalculationResult,
-    input: CalculationInput
-  ): Comparison {
+  private createComparison(): Comparison {
     return {
       isCurrentPlan: false,
       rank: 0,

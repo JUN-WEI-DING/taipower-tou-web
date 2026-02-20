@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useAppStore } from '../../stores/useAppStore';
 import type { BillData } from '../../types';
 
 interface BillDataEditorProps {

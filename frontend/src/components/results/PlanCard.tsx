@@ -15,12 +15,6 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
     return null;
   };
 
-  const getBadgeVariant = (accuracy: string) => {
-    if (accuracy === 'accurate') return 'success';
-    if (accuracy === 'estimated') return 'warning';
-    return 'error';
-  };
-
   const isPositive = result.comparison.difference < 0;
   const isCurrentPlan = result.comparison.isCurrentPlan;
 

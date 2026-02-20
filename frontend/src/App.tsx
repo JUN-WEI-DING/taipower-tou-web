@@ -23,16 +23,13 @@ function App() {
   const billData = useAppStore((state) => state.billData);
   const results = useAppStore((state) => state.results);
   const estimationMode = useAppStore((state) => state.estimationMode);
-  const setEstimationMode = useAppStore((state) => state.setEstimationMode);
   const setBillData = useAppStore((state) => state.setBillData);
   const setResults = useAppStore((state) => state.setResults);
+  const setStage = useAppStore((state) => state.setStage);
 
   // 處理 OCR 識別完成後，進入確認階段
   const handleConfirmFromHabit = async (estimatedData?: { peakOnPeak: number; semiPeak: number; offPeak: number }) => {
     if (!billData) return;
-
-    const setStage = useAppStore((state) => state.setStage);
-    const setBillData = useAppStore((state) => state.setBillData);
 
     try {
       // 如果有估算資料，先更新 billData

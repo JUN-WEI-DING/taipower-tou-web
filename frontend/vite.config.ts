@@ -36,7 +36,8 @@ export default defineConfig({
     include: ['tesseract.js', 'recharts'],
   },
 
-  // Vitest 設定 (使用 as any 避免 TypeScript 型別錯誤)
+  // Vitest 設定 (test property is injected by vitest)
+  // @ts-expect-error - vitest adds 'test' property to UserConfig
   test: {
     globals: true,
     environment: 'jsdom',
@@ -50,4 +51,4 @@ export default defineConfig({
       lines: 80,
     },
   },
-} as any)
+})
