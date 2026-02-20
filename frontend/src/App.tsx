@@ -92,6 +92,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Skip link for keyboard navigation */}
+      <a href="#main-content" className="skip-link">
+        跳到主要內容
+      </a>
+
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -105,7 +110,7 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {stage === 'upload' && (
           <div className="space-y-8">
             {/* Upload Stage */}
