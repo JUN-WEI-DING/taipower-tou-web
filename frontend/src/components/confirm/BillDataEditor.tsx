@@ -24,12 +24,29 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
     return date.toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
   };
 
+  const getSeasonInfo = () => {
+    const month = billData.billingPeriod.start.getMonth() + 1;
+    const isSummer = month >= 6 && month <= 9;
+    return {
+      isSummer,
+      label: isSummer ? '夏季 (6-9月)' : '非夏季 (10-5月)',
+      className: isSummer ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700'
+    };
+  };
+
+  const seasonInfo = getSeasonInfo();
+
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="font-semibold text-gray-900">
-          已識別的資訊
-        </h3>
+        <div>
+          <h3 className="font-semibold text-gray-900">
+            已識別的資訊
+          </h3>
+          <div className={`inline-block px-2 py-1 rounded text-xs font-medium mt-1 ${seasonInfo.className}`}>
+            {seasonInfo.label}
+          </div>
+        </div>
         {!isEditing ? (
           <button
             onClick={() => setIsEditing(true)}

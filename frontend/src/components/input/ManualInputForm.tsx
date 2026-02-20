@@ -98,12 +98,19 @@ export const ManualInputForm: React.FC = () => {
               onChange={(e) => setMonth(parseInt(e.target.value))}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              {Array.from({ length: 12 }, (_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {i + 1} 月
-                </option>
-              ))}
+              {Array.from({ length: 12 }, (_, i) => {
+                const m = i + 1;
+                const isSummer = m >= 6 && m <= 9;
+                return (
+                  <option key={m} value={m}>
+                    {m} 月{isSummer ? ' (夏季)' : ' (非夏季)'}
+                  </option>
+                );
+              })}
             </select>
+            <p className="text-xs text-orange-600 mt-1">
+              ⚠️ 夏季(6-9月)與非夏季(10-5月)電價不同，請選擇電費單上的月份
+            </p>
           </div>
 
           {/* 用電度數輸入 */}

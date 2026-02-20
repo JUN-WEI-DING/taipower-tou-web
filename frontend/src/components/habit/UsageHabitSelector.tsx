@@ -88,6 +88,11 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
         <p className="text-gray-600">
           你的電費單沒有時段用電資料，我們需要估算各時段的用電分配
         </p>
+        <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+          season === 'summer' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
+        }`}>
+          {season === 'summer' ? '🌞 夏季費率 (6-9月)' : '❄️ 非夏季費率 (10-5月)'}
+        </div>
       </div>
 
       {/* 用電習慣選項 */}
