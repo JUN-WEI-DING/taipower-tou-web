@@ -2,14 +2,11 @@ import React, { useCallback, useState } from 'react';
 import { useAppStore } from '../../stores/useAppStore';
 import { getOCRService } from '../../services/ocr/OCRService';
 import { BillParser } from '../../services/parser/BillParser';
-import { DataCompletenessDetector } from '../../services/data/DataCompletenessDetector';
 import { Button } from '../ui/Button';
 import type { BillData } from '../../types';
 
 export const UploadZone: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [ocrProgress, setOcrProgress] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const setUploadedImage = useAppStore((state) => state.setUploadedImage);
@@ -47,8 +44,6 @@ export const UploadZone: React.FC = () => {
   }, []);
 
   const processImage = async (file: File) => {
-    setIsProcessing(true);
-    setOcrProgress(0);
     setOcrStatus('processing');
 
     try {
@@ -62,7 +57,7 @@ export const UploadZone: React.FC = () => {
       // 執行 OCR 識別
       const ocrService = await getOCRService();
       const ocrResult = await ocrService.recognize(file, (progress) => {
-        setOcrProgress(Math.round(progress * 100));
+        // Progress is handled by OCRProgress component via Zustand store
       });
 
       // 解析電費單
@@ -101,8 +96,6 @@ export const UploadZone: React.FC = () => {
       console.error('Error processing image:', error);
       setOcrStatus('error');
       setErrorMessage('圖片處理失敗，請確認圖片清晰並重試');
-    } finally {
-      setIsProcessing(false);
     }
   };
 
@@ -113,9 +106,8 @@ export const UploadZone: React.FC = () => {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={`
-          relative border-2 border-dashed rounded-lg p-12 text-center transition-colors
+          relative border-2 border-dashed rounded-lg p-12 text-center transition-colors cursor-pointer
           ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}
-          ${isProcessing ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
         `}
       >
         <input
@@ -123,7 +115,6 @@ export const UploadZone: React.FC = () => {
           accept="image/*"
           onChange={handleFileSelect}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          disabled={isProcessing}
         />
 
         <div className="space-y-4">
@@ -141,21 +132,6 @@ export const UploadZone: React.FC = () => {
           <div className="text-sm text-gray-500">
             支援 JPG、PNG 格式，最大 10MB
           </div>
-
-          {isProcessing && (
-            <div className="pt-4">
-              <div className="flex items-center justify-center gap-2 text-blue-600">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600" />
-                <span>正在識別... {ocrProgress}%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                <div
-                  className="bg-blue-600 h-2 rounded-full transition-all"
-                  style={{ width: `${ocrProgress}%` }}
-                />
-              </div>
-            </div>
-          )}
 
           {errorMessage && (
             <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
@@ -179,14 +155,12 @@ export const UploadZone: React.FC = () => {
           capture="environment"
           onChange={handleFileSelect}
           className="hidden"
-          disabled={isProcessing}
         />
         <Button
           variant="outline"
           size="md"
           className="w-full"
           onClick={() => (document.querySelector('input[capture="environment"]') as HTMLInputElement)?.click()}
-          disabled={isProcessing}
         >
           📷 使用相機拍照
         </Button>

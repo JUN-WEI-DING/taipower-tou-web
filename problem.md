@@ -18,6 +18,7 @@
 [x] 9. 移除大部分 `as any` 使用
 [x] 14. UploadZone 改用匯入的 Button 元件
 [x] 15. OCR 錯誤處理改用友善提示
+[x] 16. OCRProgress 元件整合：移除 UploadZone 重複的進度 UI
 
 ## 待處理專案
 
@@ -54,5 +55,5 @@
 - ✅ 空狀態處理：ResultChart 和 PlanList 加入空狀態 UI
 - ✅ 型別匯入修復：ErrorBoundary 使用 type-only import
 
-### 新發現問題
-[ ] 16. OCRProgress 元件可以整合到 UploadZone 中減少重複
+### 迭代 5
+- ✅ 進度顯示重構：移除 UploadZone 重複的進度 UI，統一使用 OCRProgress 元件
