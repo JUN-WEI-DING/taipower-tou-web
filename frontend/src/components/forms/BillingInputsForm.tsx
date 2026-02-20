@@ -97,7 +97,7 @@ export function BillingInputsForm({
         <label className="block text-sm font-medium mb-1">結算週期</label>
         <select
           value={inputs.billing_cycle_type || "monthly"}
-          onChange={(e) => updateField("billing_cycle_type", e.target.value as any)}
+          onChange={(e) => updateField("billing_cycle_type", e.target.value as "monthly" | "odd_month" | "even_month")}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
         >
           <option value="monthly">每月</option>

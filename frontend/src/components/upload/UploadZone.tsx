@@ -3,12 +3,14 @@ import { useAppStore } from '../../stores/useAppStore';
 import { getOCRService } from '../../services/ocr/OCRService';
 import { BillParser } from '../../services/parser/BillParser';
 import { DataCompletenessDetector } from '../../services/data/DataCompletenessDetector';
+import { Button } from '../ui/Button';
 import type { BillData } from '../../types';
 
 export const UploadZone: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [ocrProgress, setOcrProgress] = useState(0);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const setUploadedImage = useAppStore((state) => state.setUploadedImage);
   const setBillData = useAppStore((state) => state.setBillData);
@@ -98,7 +100,7 @@ export const UploadZone: React.FC = () => {
     } catch (error) {
       console.error('Error processing image:', error);
       setOcrStatus('error');
-      alert('圖片處理失敗，請重試');
+      setErrorMessage('圖片處理失敗，請確認圖片清晰並重試');
     } finally {
       setIsProcessing(false);
     }
@@ -154,6 +156,18 @@ export const UploadZone: React.FC = () => {
               </div>
             </div>
           )}
+
+          {errorMessage && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-800">⚠️ {errorMessage}</p>
+              <button
+                onClick={() => setErrorMessage(null)}
+                className="mt-2 text-xs text-red-600 underline hover:text-red-800"
+              >
+                關閉
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -169,6 +183,7 @@ export const UploadZone: React.FC = () => {
         />
         <Button
           variant="outline"
+          size="md"
           className="w-full"
           onClick={() => (document.querySelector('input[capture="environment"]') as HTMLInputElement)?.click()}
           disabled={isProcessing}
@@ -177,22 +192,5 @@ export const UploadZone: React.FC = () => {
         </Button>
       </label>
     </div>
-  );
-};
-
-const Button: React.FC<
-  React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'outline' }
-> = ({ variant = 'outline', className = '', children, ...props }) => {
-  return (
-    <button
-      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-        variant === 'outline'
-          ? 'border border-gray-300 bg-white hover:bg-gray-50'
-          : ''
-      } ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
   );
 };

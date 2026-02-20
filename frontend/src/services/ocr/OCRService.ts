@@ -121,7 +121,16 @@ export class OCRService {
       const confidence = result.data.confidence / 100;
 
       // 建立單詞層級結果
-      const words = ((result.data as any).words || []).map((word: any) => ({
+      // Tesseract.js v7 的 words 屬性不在官方型別定義中，需要額外處理
+      const dataWithWords = result.data as typeof result.data & {
+        words?: Array<{
+          text: string;
+          confidence: number;
+          bbox: { x0: number; y0: number; x1: number; y1: number };
+        }>;
+      };
+
+      const words = (dataWithWords.words || []).map((word) => ({
         text: word.text || '',
         confidence: (word.confidence || 100) / 100,
         bbox: {
