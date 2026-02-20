@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useAppStore } from './stores/useAppStore';
 import { UploadZone } from './components/upload/UploadZone';
 import { ImagePreview } from './components/upload/ImagePreview';
@@ -13,6 +14,7 @@ import { RateCalculator } from './services/calculation/RateCalculator';
  * 主應用程式
  */
 function App() {
+  const [calculationError, setCalculationError] = useState<string | null>(null);
   const stage = useAppStore((state) => state.stage);
   const uploadedImage = useAppStore((state) => state.uploadedImage);
   const billData = useAppStore((state) => state.billData);
@@ -79,7 +81,7 @@ function App() {
       setStage('result');
     } catch (error) {
       console.error('Error calculating plans:', error);
-      alert('計算失敗，請重試');
+      setCalculationError('計算失敗，請重試');
     }
   };
 
@@ -221,6 +223,17 @@ function App() {
                   billData={billData}
                   onConfirm={handleConfirmFromHabit}
                 />
+                {calculationError && (
+                  <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-800">⚠️ {calculationError}</p>
+                    <button
+                      onClick={() => setCalculationError(null)}
+                      className="mt-2 text-xs text-red-600 underline hover:text-red-800"
+                    >
+                      關閉
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
