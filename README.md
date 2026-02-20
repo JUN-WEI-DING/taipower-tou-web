@@ -1,69 +1,119 @@
-# taipower-tou-web
+# 臺電時間電價比較網站
 
-Web interface for [taipower-tou](https://github.com/JUN-WEI-DING/taipower-tou) - Taiwan Time-of-Use Electricity Tariff Calculator.
+一個純前端的臺灣時間電價（TOU）比較工具，上傳電費單即可找出最省錢的電價方案。
 
-## Features
+## ✨ 功能特點
 
-- Upload CSV usage data and calculate electricity costs
-- Compare multiple tariff plans
-- Support for residential and low-voltage power plans
-- Interactive UI with real-time validation
+- **📸 OCR 電費單識別**：上傳電費單圖片，自動識別用電資訊
+- **💰 20+ 種費率方案比較**：涵蓋非時間電價、兩段式、三段式、完整時間電價
+- **🔒 隱私保護**：純前端應用，所有資料都在瀏覽器處理，不上傳伺服器
+- **📱 響應式設計**：支援桌面和行動裝置
+- **♿ 無障礙支援**：支援鍵盤導航和螢幕閱讀器
 
-## Quick Start
+## 🚀 快速開始
 
-### Prerequisites
+### 線上使用
 
-- Python 3.9+
+直接造訪：https://jun-wei-ding.github.io/taipower-tou-web/
+
+### 本地開發
+
+#### 前置需求
+
 - Node.js 18+
-- [taipower-tou](https://pypi.org/project/taipower-tou/) Python package
+- npm 或 yarn
 
-### Installation
+#### 安裝與執行
 
 ```bash
-# Install Python dependencies
-pip install -e ".[backend]"
-
-# Install frontend dependencies
+# 進入前端目錄
 cd frontend
+
+# 安裝依賴
 npm install
-```
 
-### Running
-
-```bash
-# Start both backend and frontend
-./start-web.sh
-```
-
-Or start separately:
-
-```bash
-# Backend (port 8000)
-export PYTHONPATH="$PWD:$PYTHONPATH"
-python -m uvicorn backend.main:app --reload
-
-# Frontend (port 5173) - in another terminal
-cd frontend
+# 啟動開發伺服器
 npm run dev
 ```
 
-Then open http://localhost:5173 in your browser.
+開發伺服器將在 http://localhost:5173 啟動。
 
-## API Documentation
+#### 建置生產版本
 
-Once the backend is running, visit http://localhost:8000/docs for interactive API documentation.
+```bash
+npm run build
+```
 
-## Project Structure
+建置結果將輸出至 `frontend/dist` 目錄。
+
+## 🏗️ 專案結構
 
 ```
 taipower-tou-web/
-├── backend/          # FastAPI backend
-├── frontend/         # React + TypeScript frontend
-├── start-web.sh      # Startup script
-├── examples/         # Sample CSV files
-└── tests/            # E2E and API tests
+├── frontend/
+│   ├── src/
+│   │   ├── components/      # React 元件
+│   │   ├── services/        # 業務邏輯
+│   │   │   ├── calculation/ # 費率計算引擎
+│   │   │   ├── ocr/         # OCR 服務
+│   │   │   ├── parser/      # 電費單解析
+│   │   │   └── data/        # 資料完整度偵測
+│   │   ├── stores/          # Zustand 狀態管理
+│   │   ├── types/           # TypeScript 型別定義
+│   │   └── styles/          # 樣式檔案
+│   ├── public/              # 靜態資源
+│   └── index.html           # HTML 樣板
+└── .github/
+    └── workflows/           # GitHub Actions CI/CD
 ```
 
-## License
+## 🧪 測試
 
-MIT License - see [LICENSE](https://github.com/JUN-WEI-DING/taipower-tou/blob/main/LICENSE) in the main repository.
+```bash
+# 執行單元測試
+npm test
+
+# 執行測試並產生覆蓋率報告
+npm test -- --coverage
+```
+
+## 📦 技術棧
+
+- **框架**：React 18 + TypeScript
+- **建置工具**：Vite
+- **狀態管理**：Zustand
+- **樣式**：Tailwind CSS
+- **OCR**：Tesseract.js (繁體中文)
+- **圖表**：Recharts
+- **測試**：Vitest
+
+## 📊 支援的費率方案
+
+| 方案型別 | 說明 |
+|---------|------|
+| 非時間電價 | 傳統累進電價 |
+| 兩段式時間電價 | 尖峰 / 離峰 |
+| 三段式時間電價 | 尖峰 / 半尖峰 / 離峰 |
+| 完整時間電價 | 按時段細分費率 |
+
+## 🔍 電費單識別
+
+目前支援識別以下資訊：
+
+- ✅ 計費期間
+- ✅ 總用電度數
+- ✅ 尖峰 / 半尖峰 / 離峰度數（如電費單有顯示）
+- ✅ 電費單編號
+- ✅ 使用者名稱稱
+
+## 🤝 貢獻
+
+歡迎提交 Issue 和 Pull Request！
+
+## 📄 授權
+
+MIT License
+
+## 🔗 相關專案
+
+- [taipower-tou](https://github.com/JUN-WEI-DING/taipower-tou) - Python 版本的時間電價計算工具
