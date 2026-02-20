@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../../stores/useAppStore';
 import { UsageEstimator } from '../../services/calculation/UsageEstimator';
+import { EstimationMode } from '../../types';
 import type { BillData } from '../../types';
 
 interface UsageHabitSelectorProps {
   billData: BillData;
-  onConfirm: () => void;
+  onConfirm: (estimatedData: { peakOnPeak: number; semiPeak: number; offPeak: number }) => void;
 }
 
 export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
   billData,
   onConfirm,
 }) => {
-  const [selectedHabit, setSelectedHabit] = useState<string>('average');
+  const [selectedHabit, setSelectedHabit] = useState<string>(EstimationMode.AVERAGE);
+  const setEstimationMode = useAppStore((state) => state.setEstimationMode);
   const season = billData.billingPeriod.start.getMonth() >= 5 &&
     billData.billingPeriod.start.getMonth() <= 8
     ? 'summer'
@@ -29,7 +31,7 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
     }
     const estimated = UsageEstimator.estimate(
       totalConsumption,
-      habit.mode,
+      habit.mode as EstimationMode,
       season
     );
 
@@ -45,6 +47,22 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
   const estimatedBreakdown = selectedHabitData
     ? getEstimatedBreakdown(selectedHabitData)
     : null;
+
+  // 當選擇改變時，更新 store
+  useEffect(() => {
+    setEstimationMode(selectedHabit as EstimationMode);
+  }, [selectedHabit, setEstimationMode]);
+
+  // 處理確認按鈕
+  const handleConfirm = () => {
+    if (estimatedBreakdown) {
+      onConfirm({
+        peakOnPeak: estimatedBreakdown.peakOnPeak,
+        semiPeak: estimatedBreakdown.semiPeak,
+        offPeak: estimatedBreakdown.offPeak,
+      });
+    }
+  };
 
   return (
     <div className="w-full max-w-3xl mx-auto space-y-6">
@@ -148,8 +166,9 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
 
       {/* 確認按鈕 */}
       <button
-        onClick={onConfirm}
-        className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+        onClick={handleConfirm}
+        disabled={!estimatedBreakdown}
+        className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
         使用此估算結果繼續
       </button>

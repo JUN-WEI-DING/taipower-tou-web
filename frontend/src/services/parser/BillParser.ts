@@ -12,56 +12,81 @@ export class BillParser {
    * 正規表示式模式
    */
   private static PATTERNS = {
-    // 電號: 8-10 位數字
-    accountNumber: /電號[:\s]*([0-9]{8,10})/,
+    // 電號: 8-10 位數字 - 多種格式
+    accountNumber: [
+      /電號[:\s]*([0-9]{8,10})/,
+      /用電號碼[:\s]*([0-9]{8,10})/,
+      /用電戶號碼[:\s]*([0-9]{8,10})/,
+      /(\d{8,10})\s*電號/,
+    ],
 
-    // 日期: 中華民國 XXX 年 XX 月 XX 日
-    date: /中華民國(\d{2,3})年(\d{1,2})月(\d{1,2})日/,
+    // 日期: 中華民國 XXX 年 XX 月 XX 日 - 多種格式
+    date: [
+      /中華民國(\d{2,3})年(\d{1,2})月(\d{1,2})日/,
+      /(\d{2,3})年(\d{1,2})月(\d{1,2})日/,
+      /(\d{4})[/-](\d{1,2})[/-](\d{1,2})/,
+    ],
 
-    // 月度: 中華民國 XXX 年 XX 月
-    month: /中華民國(\d{2,3})年(\d{1,2})月/,
+    // 月度: 中華民國 XXX 年 XX 月 - 多種格式
+    month: [
+      /中華民國(\d{2,3})年(\d{1,2})月/,
+      /(\d{2,3})年(\d{1,2})月/,
+      /(\d{4})[/-](\d{1,2})/,
+    ],
 
-    // 用電度數 - 多種格式
+    // 用電度數 - 多種格式，更強健的匹配
     consumption: [
-      /本期度數[:\s]*([\d,]+)/,
-      /用電度數[:\s]*([\d,]+)/,
-      /計費度數[:\s]*([\d,]+)/,
-      /總用電[:\s]*([\d,]+)/,
-      /流動電費.*?度數[:\s]*([\d,]+)/,
+      /本期度數[:\s〇]*([0-9,]+)/,
+      /用電度數[:\s〇]*([0-9,]+)/,
+      /計費度數[:\s〇]*([0-9,]+)/,
+      /總用電[:\s〇]*([0-9,]+)/,
+      /流動電費.*?度數[:\s〇]*([0-9,]+)/,
+      /計費流動電費.*?度數[:\s〇]*([0-9,]+)/,
+      /本月份數[:\s〇]*([0-9,]+)/,
+      // 更寬鬆的匹配
+      /度數[:\s〇]*([0-9,]+)/,
+      /\b([0-9,]{3,})\s*度/,
     ],
 
-    // 電費金額
+    // 電費金額 - 多種格式
     amount: [
-      /電費小計[:\s]*\$?([\d,]+)/,
-      /應繳總額[:\s]*\$?([\d,]+)/,
-      /本期電費[:\s]*\$?([\d,]+)/,
-      /流動電費[:\s]*\$?([\d,]+)/,
+      /電費小計[:\s$]*([0-9,]+)/,
+      /應繳總額[:\s$]*([0-9,]+)/,
+      /本期電費[:\s$]*([0-9,]+)/,
+      /流動電費[:\s$]*([0-9,]+)/,
+      /電費合計[:\s$]*([0-9,]+)/,
+      /\$([0-9,]+)\s*元/,
     ],
 
-    // 方案名稱
+    // 方案名稱 - 多種格式
     planName: [
       /電價方案[:\s]*([^\s\n]+)/,
       /計費方式[:\s]*([^\s\n]+)/,
       /用電類別[:\s]*([^\s\n]+)/,
+      /電價種類[:\s]*([^\s\n]+)/,
     ],
 
-    // 尖峰用電
+    // 尖峰用電 - 多種格式
     peakConsumption: [
-      /尖峰.*?度數[:\s]*([\d,]+)/,
-      /尖峰用電[:\s]*([\d,]+)/,
+      /尖峰.*?度數[:\s〇]*([0-9,]+)/,
+      /尖峰用電[:\s〇]*([0-9,]+)/,
+      /尖峰時段[:\s〇]*([0-9,]+)/,
+      /晚間[:\s〇]*([0-9,]+)\s*度/,
     ],
 
-    // 離峰用電
+    // 離峰用電 - 多種格式
     offPeakConsumption: [
-      /離峰.*?度數[:\s]*([\d,]+)/,
-      /離峰用電[:\s]*([\d,]+)/,
-      /非尖峰.*?度數[:\s]*([\d,]+)/,
+      /離峰.*?度數[:\s〇]*([0-9,]+)/,
+      /離峰用電[:\s〇]*([0-9,]+)/,
+      /非尖峰.*?度數[:\s〇]*([0-9,]+)/,
+      /深夜.*?度數[:\s〇]*([0-9,]+)/,
     ],
 
-    // 半尖峰用電
+    // 半尖峰用電 - 多種格式
     semiPeakConsumption: [
-      /半尖峰.*?度數[:\s]*([\d,]+)/,
-      /半尖峰用電[:\s]*([\d,]+)/,
+      /半尖峰.*?度數[:\s〇]*([0-9,]+)/,
+      /半尖峰用電[:\s〇]*([0-9,]+)/,
+      /下午.*?度數[:\s〇]*([0-9,]+)/,
     ],
   };
 
@@ -73,7 +98,7 @@ export class BillParser {
     const confidences: { [field: string]: number } = {};
 
     // 提取電號
-    const accountNumber = this.extractField(text, this.PATTERNS.accountNumber, 'accountNumber', confidences);
+    const accountNumber = this.extractFieldWithPatterns(text, this.PATTERNS.accountNumber, 'accountNumber', confidences);
 
     // 提取日期
     const billingPeriod = this.extractBillingPeriod(text, confidences);
@@ -95,7 +120,27 @@ export class BillParser {
   }
 
   /**
-   * 提取單一欄位
+   * 提取單一欄位（支援多個模式）
+   */
+  private static extractFieldWithPatterns(
+    text: string,
+    patterns: RegExp[],
+    fieldName: string,
+    confidences: { [field: string]: number }
+  ): string | undefined {
+    for (const pattern of patterns) {
+      const match = text.match(pattern);
+      if (match && match[1]) {
+        // 記錄信心度（簡化：使用預設值）
+        confidences[fieldName] = 0.8;
+        return match[1].replace(',', '');
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * 提取單一欄位（單一模式）
    */
   private static extractField(
     text: string,
@@ -120,42 +165,56 @@ export class BillParser {
     confidences: { [field: string]: number }
   ): BillingPeriod {
     // 嘗試匹配完整日期
-    const dateMatch = text.match(this.PATTERNS.date);
-    if (dateMatch) {
-      const year = 1911 + parseInt(dateMatch[1], 10); // 民國轉西元
-      const month = parseInt(dateMatch[2], 10);
-      const day = parseInt(dateMatch[3], 10);
+    for (const pattern of this.PATTERNS.date) {
+      const dateMatch = text.match(pattern);
+      if (dateMatch && dateMatch[3]) {
+        let year = parseInt(dateMatch[1], 10);
+        const month = parseInt(dateMatch[2], 10);
+        const day = parseInt(dateMatch[3], 10);
 
-      const startDate = new Date(year, month - 1, 1);
-      const endDate = new Date(year, month - 1, day);
-      const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+        // 如果年份小於 100，假設是民國年
+        if (year < 200) {
+          year = 1911 + year;
+        }
 
-      confidences.billingPeriod = 0.9;
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month - 1, day);
+        const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
-      return {
-        start: startDate,
-        end: endDate,
-        days: days || 30,
-      };
+        confidences.billingPeriod = 0.9;
+
+        return {
+          start: startDate,
+          end: endDate,
+          days: days || 30,
+        };
+      }
     }
 
     // 嘗試匹配月度
-    const monthMatch = text.match(this.PATTERNS.month);
-    if (monthMatch) {
-      const year = 1911 + parseInt(monthMatch[1], 10);
-      const month = parseInt(monthMatch[2], 10);
+    for (const pattern of this.PATTERNS.month) {
+      const monthMatch = text.match(pattern);
+      if (monthMatch && monthMatch[2]) {
+        let year = parseInt(monthMatch[1], 10);
+        const month = parseInt(monthMatch[2], 10);
 
-      const startDate = new Date(year, month - 1, 1);
-      const endDate = new Date(year, month, 0); // 月底
-      const days = endDate.getDate();
+        // 如果年份小於 100，假設是民國年
+        if (year < 200) {
+          year = 1911 + year;
+        }
 
-      confidences.billingPeriod = 0.8;
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0); // 月底
+        const days = endDate.getDate();
 
-      return {
-        start: startDate,
-        end: endDate,
-        days,
-      };
+        confidences.billingPeriod = 0.8;
+
+        return {
+          start: startDate,
+          end: endDate,
+          days,
+        };
+      }
     }
 
     // 預設：使用當前月份
@@ -188,8 +247,23 @@ export class BillParser {
     for (const pattern of this.PATTERNS.consumption) {
       const match = text.match(pattern);
       if (match && match[1]) {
-        total = parseInt(match[1].replace(',', ''), 10);
-        break;
+        total = parseInt(match[1].replace(/[,$s]/g, ''), 10);
+        if (total > 0 && total < 10000) { // 合理性檢查
+          break;
+        }
+      }
+    }
+
+    // 如果沒找到，嘗試尋找三位數以上的數字
+    if (total === 0) {
+      const numberMatches = text.match(/\b([1-9]\d{2,4})\b/g);
+      if (numberMatches) {
+        // 取最大的數字作為用電度數
+        const numbers = numberMatches.map(n => parseInt(n, 10)).filter(n => n > 50 && n < 5000);
+        if (numbers.length > 0) {
+          total = Math.max(...numbers);
+          confidences.consumption = 0.5; // 較低的信心度
+        }
       }
     }
 
@@ -198,8 +272,8 @@ export class BillParser {
     for (const pattern of this.PATTERNS.peakConsumption) {
       const match = text.match(pattern);
       if (match && match[1]) {
-        peakOnPeak = parseInt(match[1].replace(',', ''), 10);
-        break;
+        peakOnPeak = parseInt(match[1].replace(/[,$s]/g, ''), 10);
+        if (peakOnPeak > 0 && peakOnPeak < total) break;
       }
     }
 
@@ -208,8 +282,8 @@ export class BillParser {
     for (const pattern of this.PATTERNS.offPeakConsumption) {
       const match = text.match(pattern);
       if (match && match[1]) {
-        offPeak = parseInt(match[1].replace(',', ''), 10);
-        break;
+        offPeak = parseInt(match[1].replace(/[,$s]/g, ''), 10);
+        if (offPeak > 0 && offPeak < total) break;
       }
     }
 
@@ -218,12 +292,18 @@ export class BillParser {
     for (const pattern of this.PATTERNS.semiPeakConsumption) {
       const match = text.match(pattern);
       if (match && match[1]) {
-        semiPeak = parseInt(match[1].replace(',', ''), 10);
-        break;
+        semiPeak = parseInt(match[1].replace(/[,$s]/g, ''), 10);
+        if (semiPeak > 0 && semiPeak < total) break;
       }
     }
 
-    confidences.consumption = total > 0 ? 0.9 : 0.3;
+    // 如果還是沒有找到用電度數，設定一個預設值讓使用者可以修改
+    if (total === 0) {
+      total = 300; // 預設值
+      confidences.consumption = 0.1;
+    } else {
+      confidences.consumption = 0.8;
+    }
 
     return {
       previousReading: 0, // 通常需要更複雜的解析
@@ -258,8 +338,8 @@ export class BillParser {
     for (const pattern of this.PATTERNS.amount) {
       const match = text.match(pattern);
       if (match && match[1]) {
-        total = parseInt(match[1].replace(',', ''), 10);
-        break;
+        total = parseInt(match[1].replace(/[,$s]/g, ''), 10);
+        if (total > 0 && total < 100000) break; // 合理性檢查
       }
     }
 
@@ -267,7 +347,7 @@ export class BillParser {
       confidences.currentPlan = 0.7;
 
       return {
-        name: name || '未知方案',
+        name: name || '非時間電價',
         baseCharge: 0, // 通常需要更複雜的解析
         energyCharge: total,
         total,

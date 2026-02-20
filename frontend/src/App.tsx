@@ -5,10 +5,12 @@ import { ImagePreview } from './components/upload/ImagePreview';
 import { OCRProgress } from './components/ocr/OCRProgress';
 import { DataCompletenessBanner } from './components/data/DataCompletenessBanner';
 import { UsageHabitSelector } from './components/habit/UsageHabitSelector';
+import { BillDataEditor } from './components/confirm/BillDataEditor';
 import { PlanList } from './components/results/PlanList';
 import { ResultChart } from './components/results/ResultChart';
 import { PlansLoader } from './services/calculation/plans';
 import { RateCalculator } from './services/calculation/RateCalculator';
+import { DataCompletenessLevel } from './types';
 
 /**
  * 主應用程式
@@ -25,35 +27,57 @@ function App() {
   const setResults = useAppStore((state) => state.setResults);
 
   // 處理 OCR 識別完成後，進入確認階段
-  const handleConfirmFromHabit = async () => {
+  const handleConfirmFromHabit = async (estimatedData?: { peakOnPeak: number; semiPeak: number; offPeak: number }) => {
     if (!billData) return;
 
     const setStage = useAppStore((state) => state.setStage);
+    const setBillData = useAppStore((state) => state.setBillData);
 
     try {
+      // 如果有估算資料，先更新 billData
+      let updatedBillData = billData;
+      if (estimatedData) {
+        updatedBillData = {
+          ...billData,
+          consumption: {
+            ...billData.consumption,
+            peakOnPeak: estimatedData.peakOnPeak,
+            semiPeak: estimatedData.semiPeak,
+            offPeak: estimatedData.offPeak,
+          },
+          source: {
+            ...billData.source,
+            completenessLevel: DataCompletenessLevel.THREE_TIER,
+            isEstimated: true,
+          },
+        };
+        // 更新 store 中的 billData
+        setBillData(updatedBillData);
+      }
+
       // 載入費率資料
       const plans = await PlansLoader.getAll();
 
       // 建立計算引擎
       const calculator = new RateCalculator(plans);
 
-      // 建立輸入
+      // 建立輸入 - 使用更新後的 billData
       const input = {
-        consumption: billData.consumption.usage,
-        billingPeriod: billData.billingPeriod,
-        touConsumption: billData.consumption.peakOnPeak !== undefined
+        consumption: updatedBillData.consumption.usage,
+        billingPeriod: updatedBillData.billingPeriod,
+        touConsumption: updatedBillData.consumption.peakOnPeak !== undefined
           ? {
-              peakOnPeak: billData.consumption.peakOnPeak,
-              semiPeak: billData.consumption.semiPeak || 0,
-              offPeak: billData.consumption.offPeak || 0,
+              peakOnPeak: updatedBillData.consumption.peakOnPeak,
+              semiPeak: updatedBillData.consumption.semiPeak || 0,
+              offPeak: updatedBillData.consumption.offPeak || 0,
             }
           : undefined,
         voltageType: 'low_voltage' as const,
         phase: 'single' as const,
         estimationSettings: {
           mode: estimationMode,
-          season: (billData.billingPeriod.start.getMonth() >= 5 &&
-                 billData.billingPeriod.start.getMonth() <= 8
+          season: (updatedBillData.billingPeriod.start.getMonth() >= 5 &&
+                 updatedBillData.billingPeriod.start.getMonth() <= 8
             ? 'summer'
             : 'non_summer') as 'summer' | 'non_summer',
         },
@@ -66,9 +90,9 @@ function App() {
       calculatedResults.forEach((result, index) => {
         result.comparison.rank = index + 1;
         result.comparison.difference = result.charges.total -
-          (billData.currentPlan?.total || 0);
+          (updatedBillData.currentPlan?.total || 0);
         result.comparison.savingPercentage = (result.comparison.difference /
-          (billData.currentPlan?.total || 1)) * 100;
+          (updatedBillData.currentPlan?.total || 1)) * 100;
 
         // 標記當前方案
         // （這裡簡化處理，假設非時間電價是當前方案）
@@ -146,73 +170,20 @@ function App() {
 
             <DataCompletenessBanner billData={billData} />
 
-            {/* 顯示已提取的資訊 */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">
-                已識別的資訊
-              </h3>
+            {/* 顯示已提取的資訊 - 使用可編輯的元件 */}
+            <BillDataEditor
+              billData={billData}
+              onSave={(updatedData) => setBillData(updatedData)}
+            />
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-gray-600">計費期間</label>
-                  <p className="text-lg font-medium">
-                    {billData.billingPeriod.start.toLocaleDateString('zh-TW')} ~{' '}
-                    {billData.billingPeriod.end.toLocaleDateString('zh-TW')}
-                  </p>
-                </div>
-
-                <div>
-                  <label className="text-sm text-gray-600">用電度數</label>
-                  <p className="text-lg font-medium">
-                    {billData.consumption.usage} 度
-                  </p>
-                </div>
-              </div>
-
-              {billData.consumption.peakOnPeak !== undefined && (
-                <div className="mt-4">
-                  <label className="text-sm text-gray-600">時段用電</label>
-                  <div className="grid grid-cols-3 gap-2 mt-2">
-                    <div>
-                      <span className="text-xs text-red-600">尖峰</span>
-                      <p className="text-lg font-medium">
-                        {billData.consumption.peakOnPeak} 度
-                      </p>
-                    </div>
-                    {billData.consumption.semiPeak !== undefined && (
-                      <div>
-                        <span className="text-xs text-yellow-600">半尖峰</span>
-                        <p className="text-lg font-medium">
-                          {billData.consumption.semiPeak} 度
-                        </p>
-                      </div>
-                    )}
-                    <div>
-                      <span className="text-xs text-green-600">離峰</span>
-                      <p className="text-lg font-medium">
-                        {billData.consumption.offPeak} 度
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {billData.ocrMetadata && (
-                <div className="mt-4 p-3 bg-gray-50 rounded">
-                  <p className="text-xs text-gray-600">
-                    識別信心度：{(billData.ocrMetadata.confidence * 100).toFixed(0)}%
-                  </p>
-                </div>
-              )}
-
-              <div className="mt-4 flex gap-2">
-                <button
-                  onClick={() => useAppStore.getState().setStage('upload')}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  重新上傳
-                </button>
-              </div>
+            {/* 重新上傳按鈕 */}
+            <div className="flex justify-center gap-2">
+              <button
+                onClick={() => useAppStore.getState().setStage('upload')}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                重新上傳
+              </button>
             </div>
 
             {/* 需要估算時顯示用電習慣選擇器 */}
