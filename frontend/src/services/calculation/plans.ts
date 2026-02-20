@@ -48,7 +48,8 @@ export class PlansLoader {
     }
 
     try {
-      const response = await fetch('/data/plans.json');
+      // Use relative path to respect Vite base path configuration
+      const response = await fetch(new URL('/data/plans.json', import.meta.env.BASE_URL || '/').href);
       if (!response.ok) {
         throw new Error(`Failed to load plans: ${response.statusText}`);
       }
