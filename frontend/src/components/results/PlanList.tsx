@@ -10,6 +10,17 @@ export const PlanList: React.FC<PlanListProps> = ({ results }) => {
   // 找出當前方案（如果有的話）
   const currentPlan = results.find((r) => r.comparison.isCurrentPlan);
 
+  // 空狀態處理
+  if (results.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-6xl mb-4">📊</div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">尚無計算結果</h3>
+        <p className="text-gray-600">請先上傳電費單並進行計算</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       {/* 標題 */}

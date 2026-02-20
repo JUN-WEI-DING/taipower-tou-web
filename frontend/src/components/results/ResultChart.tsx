@@ -19,6 +19,18 @@ interface ResultChartProps {
 const COLORS = ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f'];
 
 export const ResultChart: React.FC<ResultChartProps> = ({ results, maxCost }) => {
+  // 空狀態處理
+  if (results.length === 0) {
+    return (
+      <div className="w-full h-80 flex items-center justify-center">
+        <div className="text-center text-gray-500">
+          <p className="text-lg">尚無計算結果</p>
+          <p className="text-sm mt-1">請先上傳電費單並進行計算</p>
+        </div>
+      </div>
+    );
+  }
+
   // 取得前 5 名
   const topResults = results.slice(0, 5);
 
