@@ -8,6 +8,7 @@ import type {
   ResultLabel,
   Comparison,
   SeasonInfo,
+  BreakdownItem,
 } from '../../types';
 import { EstimationMode } from '../../types';
 
@@ -83,7 +84,7 @@ export class RateCalculator {
     const tierRates = plan.tierRates || [];
     let totalEnergyCharge = 0;
     let remainingKwh = input.consumption;
-    const tierBreakdown: any[] = [];
+    const tierBreakdown: BreakdownItem[] = [];
 
     for (const tier of tierRates) {
       if (remainingKwh <= 0) break;
@@ -403,22 +404,27 @@ export class RateCalculator {
     }
 
     // 預設估算比例（根據用電習慣）
-    const ratios: Record<string, any> = {
+    type SeasonRatios = { peakOnPeak: number; semiPeak: number; offPeak: number };
+    type ModeRatios = { summer: SeasonRatios; non_summer: SeasonRatios; nonSummer: SeasonRatios };
+    const ratios: Partial<Record<EstimationMode, ModeRatios>> = {
       [EstimationMode.AVERAGE]: {
         summer: { peakOnPeak: 0.35, semiPeak: 0.25, offPeak: 0.4 },
         nonSummer: { peakOnPeak: 0.3, semiPeak: 0.25, offPeak: 0.45 },
+        non_summer: { peakOnPeak: 0.3, semiPeak: 0.25, offPeak: 0.45 },
       },
       [EstimationMode.HOME_DURING_DAY]: {
         summer: { peakOnPeak: 0.45, semiPeak: 0.2, offPeak: 0.35 },
         nonSummer: { peakOnPeak: 0.4, semiPeak: 0.2, offPeak: 0.4 },
+        non_summer: { peakOnPeak: 0.4, semiPeak: 0.2, offPeak: 0.4 },
       },
       [EstimationMode.NIGHT_OWL]: {
         summer: { peakOnPeak: 0.25, semiPeak: 0.2, offPeak: 0.55 },
         nonSummer: { peakOnPeak: 0.25, semiPeak: 0.2, offPeak: 0.55 },
+        non_summer: { peakOnPeak: 0.25, semiPeak: 0.2, offPeak: 0.55 },
       },
     };
 
-    const selectedRatios = ratios[mode]?.[season];
+    const selectedRatios = ratios[mode]?.[season as keyof ModeRatios];
 
     if (!selectedRatios) {
       // 預設平均

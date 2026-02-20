@@ -116,6 +116,12 @@
   - 減少不必要的程式碼維護負擔
   - CSS 大小從 5.56 kB 減少到 4.72 kB (減少 15%)
 
+### 迭代 15 - 型別安全改進
+- ✅ 移除 RateCalculator 中的 `as any` 使用
+  - 將 `tierBreakdown: any[]` 改為 `tierBreakdown: BreakdownItem[]`
+  - 為 `ratios` 定義明確型別：`SeasonRatios` 和 `ModeRatios`
+  - 修復 season 屬性存取的型別相容性問題
+
 ### 新發現問題
 [x] 21. 新增手動輸入選項：讓使用者可以跳過 OCR 直接輸入數值
 [x] 22. 確認階段新增直接計算按鈕（當資料完整時）
