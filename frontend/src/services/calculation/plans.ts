@@ -48,8 +48,19 @@ export class PlansLoader {
     }
 
     try {
-      // Use relative path to respect Vite base path configuration
-      const response = await fetch(new URL('/data/plans.json', import.meta.env.BASE_URL || '/').href);
+      // Construct the plans.json URL that works in both dev and production
+      // Vite's base path is '/taipower-tou-web/' which affects how we fetch assets
+      let plansUrl = '/data/plans.json';
+
+      // In production with non-root base, we need to include the base path
+      const baseUrl = import.meta.env.BASE_URL;
+      if (baseUrl && baseUrl !== '/') {
+        // Remove trailing slash and construct URL
+        const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+        plansUrl = `${cleanBase}/data/plans.json`;
+      }
+
+      const response = await fetch(plansUrl);
       if (!response.ok) {
         throw new Error(`Failed to load plans: ${response.statusText}`);
       }
