@@ -85,6 +85,8 @@ export class RateCalculator {
     let remainingKwh = input.consumption;
     const tierBreakdown: BreakdownItem[] = [];
 
+    const isSummer = season.name === 'summer';
+
     for (const tier of tierRates) {
       if (remainingKwh <= 0) break;
 
@@ -92,7 +94,8 @@ export class RateCalculator {
       const tierMinKwh = tier.minKwh;
       const tierRange = tierMaxKwh - tierMinKwh;
       const kwhInTier = Math.min(remainingKwh, tierRange);
-      const charge = kwhInTier * tier.rate;
+      const rate = isSummer ? tier.summerRate : tier.nonSummerRate;
+      const charge = kwhInTier * rate;
 
       totalEnergyCharge += charge;
       remainingKwh -= kwhInTier;
@@ -100,7 +103,7 @@ export class RateCalculator {
       tierBreakdown.push({
         tier: tier.tier,
         kwh: kwhInTier,
-        rate: tier.rate,
+        rate: rate,
         charge: charge,
       });
     }

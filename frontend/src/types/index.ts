@@ -148,7 +148,8 @@ export interface TierRate {
   tier: number;
   minKwh: number;
   maxKwh: number | null;
-  rate: number; // 元/kWh
+  summerRate: number; // 夏季費率 (元/kWh)
+  nonSummerRate: number; // 非夏季費率 (元/kWh)
 }
 
 /**

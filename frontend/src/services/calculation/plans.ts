@@ -111,13 +111,14 @@ export class PlansLoader {
     const tierRates: TierRate[] = [];
 
     if (raw.tiers) {
-      // 累進費率
+      // 累進費率 - 包含夏/非夏季費率
       raw.tiers.forEach((tier, index) => {
         tierRates.push({
           tier: index + 1,
           minKwh: tier.min,
           maxKwh: tier.max,
-          rate: tier.summer, // 使用夏季費率
+          summerRate: tier.summer,
+          nonSummerRate: tier.non_summer,
         });
       });
     }
