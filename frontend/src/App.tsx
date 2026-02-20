@@ -218,6 +218,16 @@ function App() {
               >
                 重新上傳
               </button>
+
+              {/* 資料完整時可以直接計算 */}
+              {billData.source.completenessLevel !== 'total_only' && (
+                <button
+                  onClick={() => handleConfirmFromHabit()}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  開始計算
+                </button>
+              )}
             </div>
 
             {/* 需要估算時顯示用電習慣選擇器 */}
