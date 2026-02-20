@@ -6,6 +6,7 @@ import { OCRProgress } from './components/ocr/OCRProgress';
 import { DataCompletenessBanner } from './components/data/DataCompletenessBanner';
 import { UsageHabitSelector } from './components/habit/UsageHabitSelector';
 import { BillDataEditor } from './components/confirm/BillDataEditor';
+import { ManualInputForm } from './components/input/ManualInputForm';
 import { PlanList } from './components/results/PlanList';
 import { ResultChart } from './components/results/ResultChart';
 import { PlansLoader } from './services/calculation/plans';
@@ -114,6 +115,9 @@ function App() {
     useAppStore.getState().reset();
   };
 
+  // 輸入模式狀態
+  const [inputMode, setInputMode] = useState<'ocr' | 'manual'>('ocr');
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Skip link for keyboard navigation */}
@@ -136,29 +140,59 @@ function App() {
       {/* Main Content */}
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {stage === 'upload' && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Upload Stage */}
             <div className="text-center">
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
                 上傳你的電費單
               </h2>
               <p className="text-gray-600">
-                我們會從電費單中提取用電資訊，並比較各種電價方案
+                選擇一種方式輸入您的用電資訊
               </p>
             </div>
 
-            <UploadZone />
+            {/* 輸入方式選擇 */}
+            <div className="flex justify-center gap-4 mb-6">
+              <button
+                onClick={() => setInputMode('ocr')}
+                className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+                  inputMode === 'ocr'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                📸 拍照上傳
+              </button>
+              <button
+                onClick={() => setInputMode('manual')}
+                className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+                  inputMode === 'manual'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                ⌨️ 手動輸入
+              </button>
+            </div>
 
-            {uploadedImage && (
-              <div className="max-w-2xl mx-auto">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  已上傳的圖片
-                </h3>
-                <ImagePreview />
-              </div>
+            {/* OCR 上傳區域 */}
+            {inputMode === 'ocr' && (
+              <>
+                <UploadZone />
+                {uploadedImage && (
+                  <div className="max-w-2xl mx-auto">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                      已上傳的圖片
+                    </h3>
+                    <ImagePreview />
+                  </div>
+                )}
+                <OCRProgress />
+              </>
             )}
 
-            <OCRProgress />
+            {/* 手動輸入區域 */}
+            {inputMode === 'manual' && <ManualInputForm />}
           </div>
         )}
 
