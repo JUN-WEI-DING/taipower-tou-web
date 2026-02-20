@@ -1,4 +1,36 @@
-import type { Plan, PlansData } from '../../types';
+import type { Plan, PlansData, TierRate, EnergyChargeRate, BasicChargeRate } from '../../types';
+
+/**
+ * Raw plan data from JSON
+ */
+interface RawPlan {
+  id: string;
+  name: string;
+  type: 'TIERED' | 'TOU' | 'FULL_TOU';
+  category: 'lighting' | 'residential' | 'commercial';
+  season_strategy: string;
+  basic_fee?: number;
+  tiers?: Array<{ min: number; max: number | null; summer: number; non_summer: number }>;
+  rates?: Array<{ season: string; period: string; cost: number }>;
+  schedules?: Array<{
+    season: string;
+    day_type: string;
+    start: string;
+    end: string;
+    period: string;
+  }>;
+  billing_rules?: {
+    min_monthly_fee?: number;
+    minimum_usage_rules_ref?: string;
+    billing_cycle_months?: number;
+    over_2000_kwh_surcharge?: { threshold_kwh: number; cost_per_kwh: number };
+  };
+}
+
+interface RawPlansData {
+  version: string;
+  plans: RawPlan[];
+}
 
 /**
  * 費率資料載入器
@@ -21,14 +53,106 @@ export class PlansLoader {
         throw new Error(`Failed to load plans: ${response.statusText}`);
       }
 
-      this.data = await response.json();
-      this.plans = this.data!.plans;
+      const rawData: RawPlansData = await response.json();
+      this.plans = rawData.plans.map(this.transformPlan);
+      this.data = {
+        version: rawData.version,
+        plans: this.plans,
+      };
 
       return this.data!;
     } catch (error) {
       console.error('Error loading plans:', error);
       throw error;
     }
+  }
+
+  /**
+   * 轉換原始 JSON 資料為 Plan 介面格式
+   */
+  private static transformPlan(raw: RawPlan): Plan {
+    // 決定 touType
+    let touType: 'none' | 'simple_2_tier' | 'simple_3_tier' | 'full_tou';
+    if (raw.type === 'TIERED') {
+      touType = 'none';
+    } else if (raw.id.includes('simple_2_tier') || raw.id.includes('二段式')) {
+      touType = 'simple_2_tier';
+    } else if (raw.id.includes('simple_3_tier') || raw.id.includes('三段式')) {
+      touType = 'simple_3_tier';
+    } else {
+      touType = 'full_tou';
+    }
+
+    // 決定 type (從 category 對映)
+    let type: 'residential' | 'lighting' | 'commercial';
+    if (raw.category === 'lighting') {
+      type = 'lighting';
+    } else if (raw.category === 'residential') {
+      type = 'residential';
+    } else {
+      type = 'commercial';
+    }
+
+    // 轉換基本電費
+    const basicCharges: BasicChargeRate[] = [{
+      voltageType: 'low_voltage',
+      phase: 'single',
+      capacityRange: { min: 0, max: null },
+      summerRate: raw.basic_fee || raw.billing_rules?.min_monthly_fee || 75,
+      nonSummerRate: raw.basic_fee || raw.billing_rules?.min_monthly_fee || 75,
+    }];
+
+    // 轉換流動電費 (TOU) 或累進費率 (TIERED)
+    const energyCharges = {
+      summer: [] as EnergyChargeRate[],
+      nonSummer: [] as EnergyChargeRate[],
+    };
+
+    const tierRates: TierRate[] = [];
+
+    if (raw.tiers) {
+      // 累進費率
+      raw.tiers.forEach((tier, index) => {
+        tierRates.push({
+          tier: index + 1,
+          minKwh: tier.min,
+          maxKwh: tier.max,
+          rate: tier.summer, // 使用夏季費率
+        });
+      });
+    }
+
+    if (raw.rates) {
+      // 時間電價
+      raw.rates.forEach(rate => {
+        const period = rate.period === 'peak' ? 'peak' :
+                       rate.period === 'off_peak' ? 'off_peak' :
+                       rate.period === 'semi_peak' ? 'semi_peak' : 'flat';
+        energyCharges[rate.season === 'summer' ? 'summer' : 'nonSummer'].push({
+          period,
+          rate: rate.cost,
+        });
+      });
+    }
+
+    return {
+      id: raw.id,
+      name: raw.name,
+      nameEn: raw.id, // 使用 ID 作為英文名稱
+      type,
+      touType,
+      voltage: 'low_voltage',
+      phase: 'single',
+      requiresMeter: touType !== 'none',
+      minimumConsumption: null,
+      basicCharges,
+      energyCharges,
+      tierRates: tierRates.length > 0 ? tierRates : undefined,
+      seasons: {
+        summer: { name: 'summer', start: '06-01', end: '09-30' },
+        nonSummer: { name: 'non_summer', start: '10-01', end: '05-31' },
+      },
+    };
   }
 
   /**
