@@ -8,6 +8,7 @@ export const ManualInputForm: React.FC = () => {
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const setBillData = useAppStore((state) => state.setBillData);
   const setStage = useAppStore((state) => state.setStage);
@@ -15,9 +16,10 @@ export const ManualInputForm: React.FC = () => {
   const handleSubmit = () => {
     const usage = parseInt(consumption);
     if (!usage || usage <= 0) {
-      alert('請輸入有效的用電度數');
+      setErrorMessage('請輸入有效的用電度數');
       return;
     }
+    setErrorMessage(null);
 
     setIsSubmitting(true);
 
@@ -114,7 +116,10 @@ export const ManualInputForm: React.FC = () => {
               min="1"
               max="10000"
               value={consumption}
-              onChange={(e) => setConsumption(e.target.value)}
+              onChange={(e) => {
+                setConsumption(e.target.value);
+                setErrorMessage(null); // 清除錯誤訊息
+              }}
               placeholder="例如：350"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
@@ -122,6 +127,13 @@ export const ManualInputForm: React.FC = () => {
               請輸入您電費單上的總用電度數
             </p>
           </div>
+
+          {/* 錯誤訊息 */}
+          {errorMessage && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+              <p className="text-sm text-red-800">⚠️ {errorMessage}</p>
+            </div>
+          )}
 
           {/* 提交按鈕 */}
           <button

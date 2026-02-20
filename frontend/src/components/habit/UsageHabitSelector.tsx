@@ -14,6 +14,11 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
   onConfirm,
 }) => {
   const [selectedHabit, setSelectedHabit] = useState<string>(EstimationMode.AVERAGE);
+  const [customPercents, setCustomPercents] = useState<{
+    peakOnPeak: number;
+    semiPeak: number;
+    offPeak: number;
+  }>({ peakOnPeak: 33, semiPeak: 33, offPeak: 34 });
   const setEstimationMode = useAppStore((state) => state.setEstimationMode);
   const season = billData.billingPeriod.start.getMonth() >= 5 &&
     billData.billingPeriod.start.getMonth() <= 8
@@ -27,7 +32,16 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
   // 計算選中的習慣
   const getEstimatedBreakdown = (habit: typeof habits[0]) => {
     if (habit.mode === 'custom') {
-      return null;
+      // 自訂模式：使用 customPercents 計算
+      if (customPercents.peakOnPeak + customPercents.semiPeak + customPercents.offPeak !== 100) {
+        return null; // 百分比總和不是 100，不啟用按鈕
+      }
+      return {
+        peakOnPeak: Math.round((totalConsumption * customPercents.peakOnPeak) / 100),
+        semiPeak: Math.round((totalConsumption * customPercents.semiPeak) / 100),
+        offPeak: Math.round((totalConsumption * customPercents.offPeak) / 100),
+        total: totalConsumption,
+      };
     }
     const estimated = UsageEstimator.estimate(
       totalConsumption,
@@ -113,52 +127,130 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
             </div>
 
             {/* 預估分配 */}
-            {selectedHabit === habit.mode && estimatedBreakdown && (
-              <div className="text-sm">
-                <div className="font-medium mb-2">預估分配：</div>
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="text-center p-2 bg-red-50 rounded">
-                    <div className="text-red-600 font-bold">
-                      {estimatedBreakdown.peakOnPeak} 度
+            {selectedHabit === habit.mode && (
+              <>
+                {habit.mode === 'custom' ? (
+                  /* 自訂比例輸入 */
+                  <div className="text-sm space-y-3">
+                    <div className="font-medium">設定你的用電比例：</div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="text-center p-2 bg-red-50 rounded">
+                        <label className="text-red-600 text-xs block mb-1">傍晚晚間</label>
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={customPercents.peakOnPeak}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value) || 0;
+                            setCustomPercents({ ...customPercents, peakOnPeak: val });
+                          }}
+                          className="w-full px-2 py-1 border border-red-200 rounded text-center font-bold"
+                        />
+                        <div className="text-gray-600 text-xs mt-1">%</div>
+                      </div>
+                      <div className="text-center p-2 bg-yellow-50 rounded">
+                        <label className="text-yellow-600 text-xs block mb-1">部分時段</label>
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={customPercents.semiPeak}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value) || 0;
+                            setCustomPercents({ ...customPercents, semiPeak: val });
+                          }}
+                          className="w-full px-2 py-1 border border-yellow-200 rounded text-center font-bold"
+                        />
+                        <div className="text-gray-600 text-xs mt-1">%</div>
+                      </div>
+                      <div className="text-center p-2 bg-green-50 rounded">
+                        <label className="text-green-600 text-xs block mb-1">深夜凌晨</label>
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={customPercents.offPeak}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value) || 0;
+                            setCustomPercents({ ...customPercents, offPeak: val });
+                          }}
+                          className="w-full px-2 py-1 border border-green-200 rounded text-center font-bold"
+                        />
+                        <div className="text-gray-600 text-xs mt-1">%</div>
+                      </div>
                     </div>
-                    <div className="text-gray-600 text-xs">傍晚晚間</div>
+                    {customPercents.peakOnPeak + customPercents.semiPeak + customPercents.offPeak !== 100 && (
+                      <div className="text-orange-600 text-xs font-medium">
+                        ⚠️ 比例總和必須是 100%（目前：{customPercents.peakOnPeak + customPercents.semiPeak + customPercents.offPeak}%）
+                      </div>
+                    )}
+                    {estimatedBreakdown && customPercents.peakOnPeak + customPercents.semiPeak + customPercents.offPeak === 100 && (
+                      <div className="text-sm mt-2">
+                        <div className="font-medium mb-2">預估度數：</div>
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="text-center p-2 bg-red-100 rounded">
+                            <div className="text-red-600 font-bold">{estimatedBreakdown.peakOnPeak} 度</div>
+                          </div>
+                          <div className="text-center p-2 bg-yellow-100 rounded">
+                            <div className="text-yellow-600 font-bold">{estimatedBreakdown.semiPeak} 度</div>
+                          </div>
+                          <div className="text-center p-2 bg-green-100 rounded">
+                            <div className="text-green-600 font-bold">{estimatedBreakdown.offPeak} 度</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div className="text-center p-2 bg-yellow-50 rounded">
-                    <div className="text-yellow-600 font-bold">
-                      {estimatedBreakdown.semiPeak} 度
+                ) : estimatedBreakdown ? (
+                  /* 預設模式的預估分配顯示 */
+                  <div className="text-sm">
+                    <div className="font-medium mb-2">預估分配：</div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="text-center p-2 bg-red-50 rounded">
+                        <div className="text-red-600 font-bold">
+                          {estimatedBreakdown.peakOnPeak} 度
+                        </div>
+                        <div className="text-gray-600 text-xs">傍晚晚間</div>
+                      </div>
+                      <div className="text-center p-2 bg-yellow-50 rounded">
+                        <div className="text-yellow-600 font-bold">
+                          {estimatedBreakdown.semiPeak} 度
+                        </div>
+                        <div className="text-gray-600 text-xs">部分時段</div>
+                      </div>
+                      <div className="text-center p-2 bg-green-50 rounded">
+                        <div className="text-green-600 font-bold">
+                          {estimatedBreakdown.offPeak} 度
+                        </div>
+                        <div className="text-gray-600 text-xs">深夜凌晨</div>
+                      </div>
                     </div>
-                    <div className="text-gray-600 text-xs">部分時段</div>
-                  </div>
-                  <div className="text-center p-2 bg-green-50 rounded">
-                    <div className="text-green-600 font-bold">
-                      {estimatedBreakdown.offPeak} 度
-                    </div>
-                    <div className="text-gray-600 text-xs">深夜凌晨</div>
-                  </div>
-                </div>
 
-                {/* 視覺化長條圖 */}
-                <div className="h-4 rounded-full overflow-hidden flex mt-2">
-                  <div
-                    className="bg-red-500"
-                    style={{
-                      width: `${(estimatedBreakdown.peakOnPeak / totalConsumption) * 100}%`,
-                    }}
-                  />
-                  <div
-                    className="bg-yellow-500"
-                    style={{
-                      width: `${(estimatedBreakdown.semiPeak / totalConsumption) * 100}%`,
-                    }}
-                  />
-                  <div
-                    className="bg-green-500"
-                    style={{
-                      width: `${(estimatedBreakdown.offPeak / totalConsumption) * 100}%`,
-                    }}
-                  />
-                </div>
-              </div>
+                    {/* 視覺化長條圖 */}
+                    <div className="h-4 rounded-full overflow-hidden flex mt-2">
+                      <div
+                        className="bg-red-500"
+                        style={{
+                          width: `${(estimatedBreakdown.peakOnPeak / totalConsumption) * 100}%`,
+                        }}
+                      />
+                      <div
+                        className="bg-yellow-500"
+                        style={{
+                          width: `${(estimatedBreakdown.semiPeak / totalConsumption) * 100}%`,
+                        }}
+                      />
+                      <div
+                        className="bg-green-500"
+                        style={{
+                          width: `${(estimatedBreakdown.offPeak / totalConsumption) * 100}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : null}
+              </>
             )}
           </div>
         ))}
