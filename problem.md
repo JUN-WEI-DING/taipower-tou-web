@@ -67,3 +67,10 @@
 - ✅ 鍵盤導航改善：新增 skip-link 讓鍵盤使用者可跳過導航
 - ✅ 無障礙樣式：新增 focus-visible 樣式改善鍵盤焦點可見性
 - ✅ 語意化 HTML：main 元素加入 id 屬性配合 skip-link
+
+### 迭代 8
+- ✅ 移除未使用檔案：刪除舊版 API 相關檔案和未使用的元件
+  - 刪除 src/api/ 資料夾
+  - 刪除未使用的 hooks (useFileUpload, usePlans, useCalculation)
+  - 刪除未使用的元件 (PlanSelector, CostBreakdown, CSVUploader, BillingInputsForm)
+  - 刪除未使用的 store (calculationStore)
