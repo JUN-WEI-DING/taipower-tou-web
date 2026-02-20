@@ -28,7 +28,7 @@
 
 ### 測試覆蓋率
 [x] 10. 錯誤邊界處理是否完善
-[ ] 11. 提升測試覆蓋率至 80% 目標
+[ ] 11. 提升測試覆蓋率至 80% 目標 (持續改進中)
 [ ] 12. 新增 E2E 測試
 
 ### UI/UX 改進
@@ -74,3 +74,10 @@
   - 刪除未使用的 hooks (useFileUpload, usePlans, useCalculation)
   - 刪除未使用的元件 (PlanSelector, CostBreakdown, CSVUploader, BillingInputsForm)
   - 刪除未使用的 store (calculationStore)
+
+### 迭代 9
+- ✅ 測試覆蓋率提升：新增 DataCompletenessDetector 單元測試
+  - 新增 6 個測試案例涵蓋三種資料完整度等級
+  - 測試 detect() 方法的各種情況
+  - 測試 getLevelLabel() 和 getLevelDescription() 方法
+  - 總測試數從 20 增加到 26 (增加 30%)
