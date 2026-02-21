@@ -302,11 +302,15 @@ export class RateCalculator {
 
     const seasonKey = season.name === 'summer' ? 'summer' : 'nonSummer';
     const energyCharges = plan.energyCharges[seasonKey];
+    const otherSeasonKey = season.name === 'summer' ? 'nonSummer' : 'summer';
+    const otherEnergyCharges = plan.energyCharges[otherSeasonKey];
 
     // 找出尖峰和離峰費率
-    const peakRate = energyCharges.find((r) => r.period === 'peak')?.rate || 0;
-    const offPeakRate =
-      energyCharges.find((r) => r.period === 'off_peak')?.rate || 0;
+    // 如果當前季節沒有某個時段的費率，嘗試從另一個季節獲取（後備邏輯）
+    const peakRate = energyCharges.find((r) => r.period === 'peak')?.rate ||
+                     otherEnergyCharges.find((r) => r.period === 'peak')?.rate || 0;
+    const offPeakRate = energyCharges.find((r) => r.period === 'off_peak')?.rate ||
+                        otherEnergyCharges.find((r) => r.period === 'off_peak')?.rate || 0;
 
     // 計算流動電費
     const peakCharge = adjustedPeakOnPeak * peakRate;
@@ -473,11 +477,17 @@ export class RateCalculator {
 
     const seasonKey = season.name === 'summer' ? 'summer' : 'nonSummer';
     const energyCharges = plan.energyCharges[seasonKey];
+    const otherSeasonKey = season.name === 'summer' ? 'nonSummer' : 'summer';
+    const otherEnergyCharges = plan.energyCharges[otherSeasonKey];
 
     // 找出各時段費率
-    const peakRate = energyCharges.find((r) => r.period === 'peak')?.rate || 0;
-    const semiPeakRate = energyCharges.find((r) => r.period === 'semi_peak')?.rate || 0;
-    const offPeakRate = energyCharges.find((r) => r.period === 'off_peak')?.rate || 0;
+    // 如果當前季節沒有某個時段的費率，嘗試從另一個季節獲取（後備邏輯）
+    const peakRate = energyCharges.find((r) => r.period === 'peak')?.rate ||
+                     otherEnergyCharges.find((r) => r.period === 'peak')?.rate || 0;
+    const semiPeakRate = energyCharges.find((r) => r.period === 'semi_peak')?.rate ||
+                         otherEnergyCharges.find((r) => r.period === 'semi_peak')?.rate || 0;
+    const offPeakRate = energyCharges.find((r) => r.period === 'off_peak')?.rate ||
+                        otherEnergyCharges.find((r) => r.period === 'off_peak')?.rate || 0;
 
     // 計算流動電費
     const peakCharge = adjustedPeakOnPeak * peakRate;
