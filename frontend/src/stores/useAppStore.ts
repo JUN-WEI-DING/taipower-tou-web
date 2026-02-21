@@ -30,7 +30,7 @@ interface AppStore {
 
   // 電費單型別
   billType: BillType | null;
-  setBillType: (type: BillType) => void;
+  setBillType: (type: BillType | null) => void;
 
   // 電費單資料
   billData: BillData | null;

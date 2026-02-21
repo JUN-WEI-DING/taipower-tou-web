@@ -193,21 +193,23 @@ export class RateCalculator {
         label: '固定費率',
       });
     } else if (tierRates.length > 0) {
-      // 使用累進費率計算
+      // 使用累進費率計算 - 修正：使用累積的上限來計算每個級距的度數
       let remainingKwh = billableConsumption;
+      let lastLimitKwh = 0; // 追蹤前一個級距的上限
 
       for (const tier of tierRates) {
         if (remainingKwh <= 0) break;
 
-        const tierMaxKwh = tier.maxKwh ?? Infinity;
-        const tierMinKwh = tier.minKwh;
-        const tierRange = tierMaxKwh - tierMinKwh;
-        const kwhInTier = Math.min(remainingKwh, tierRange);
+        const tierEnd = tier.maxKwh ?? Infinity;
+        // 計算本級距的實際度數範圍（本級距上限 - 前一級距上限）
+        const tierLimitKwh = tierEnd - lastLimitKwh;
+        const kwhInTier = Math.min(remainingKwh, tierLimitKwh);
         const rate = isSummer ? tier.summerRate : tier.nonSummerRate;
         const charge = kwhInTier * rate;
 
         totalEnergyCharge += charge;
         remainingKwh -= kwhInTier;
+        lastLimitKwh = tierEnd; // 更新累積上限
 
         tierBreakdown.push({
           tier: tier.tier,
@@ -350,7 +352,6 @@ export class RateCalculator {
     if (offPeakRate !== undefined && finalOffPeakKwh > 0) {
       touBreakdown.push({ period: 'off_peak' as const, kwh: finalOffPeakKwh, rate: offPeakRate, charge: offPeakCharge });
     }
-    ];
 
     // 如果有半尖峰度數，加入分配說明
     if (adjustedSemiPeak > 0) {
