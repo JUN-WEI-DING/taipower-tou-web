@@ -17,7 +17,7 @@ interface ResultChartProps {
 }
 
 // Ocean Depths Theme Colors - aligned with ocean-theme.css
-const OCEAN_OCEAN_COLORS = [
+const OCEAN_COLORS = [
   '#2d8b8b', // teal (primary) - rank 1
   '#4cc9f0', // aqua - rank 2
   '#a8dadc', // seafoam - rank 3

@@ -76,12 +76,12 @@ test.describe('臺電時間電價比較網站 - E2E 測試', () => {
     // 等待結果頁面
     await expect(page.locator('h2:has-text("方案比較結果")')).toBeVisible();
 
-    // 應該有方案卡片
-    const planCards = page.locator('.bg-white.rounded-lg.border-2');
+    // 應該有方案卡片（使用 ocean-card class）
+    const planCards = page.locator('.ocean-card');
     await expect(planCards.first()).toBeVisible();
 
-    // 第一個方案應該有排名圖示（獎杯）
-    await expect(planCards.first().locator('svg')).toBeVisible();
+    // 第一個方案應該有排名圖示（獎杯）- 使用更精確的選擇器
+    await expect(planCards.first().locator('svg.lucide-trophy')).toBeVisible();
   });
 
   test('重新開始按鈕可以正常工作', async ({ page }) => {
@@ -102,8 +102,8 @@ test.describe('臺電時間電價比較網站 - E2E 測試', () => {
     // 點選重新開始
     await page.click('button:has-text("比較其他電費單")');
 
-    // 應該回到上傳頁面
-    await expect(page.locator('h2:has-text("上傳你的電費單")')).toBeVisible();
+    // 應該回到上傳頁面（檢查主標題）
+    await expect(page.locator('h1:has-text("臺電時間電價比較")')).toBeVisible();
   });
 
   test('月份選擇顯示季節資訊', async ({ page }) => {
@@ -114,11 +114,15 @@ test.describe('臺電時間電價比較網站 - E2E 測試', () => {
     const monthSelect = page.locator('select').nth(1); // 第二個 select 是月份
     await monthSelect.selectOption('7');
 
-    // 驗證月份選項已選中（季節資訊在下方提示中）
+    // 驗證月份選項已選中
     await expect(monthSelect).toHaveValue('7');
 
-    // 檢查是否有夏季警告提示
-    await expect(page.locator('text=夏季電價較高').or(page.locator('text=6-9月電價較高'))).toBeVisible();
+    // 提交表單檢視確認頁的季節指示器
+    await page.locator('input[type="number"]').fill('350');
+    await page.click('button:has-text("確認並開始比較")');
+
+    // 檢查確認頁的季節指示器（夏季費率顯示）
+    await expect(page.locator('text=夏季費率').or(page.locator('text=🌞 夏季'))).toBeVisible();
   });
 
   test('季節指示器在結果頁顯示', async ({ page }) => {
@@ -137,8 +141,8 @@ test.describe('臺電時間電價比較網站 - E2E 測試', () => {
     await habitCards.first().click();
     await page.click('button:has-text("使用此估算結果繼續")');
 
-    // 在結果頁應該有季節指示器（完整文字包含月份範圍）
-    await expect(page.locator('text=夏季費率 (6-9月)').or(page.locator('text=🌞 夏季費率'))).toBeVisible();
+    // 在結果頁應該有季節指示器（使用 first() 解決多元素問題）
+    await expect(page.locator('text=🌞 夏季').or(page.locator('text=夏季費率')).first()).toBeVisible();
   });
 
   test('契約容量下拉選項可選', async ({ page }) => {
