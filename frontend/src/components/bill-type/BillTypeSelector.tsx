@@ -82,20 +82,20 @@ export const BillTypeSelector: React.FC<BillTypeSelectorProps> = ({ onSelect }) 
           <button
             key={option.id}
             onClick={() => onSelect(option.id)}
-            className="bg-white border-2 border-gray-200 rounded-xl p-6 text-left transition-all hover:border-blue-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="ocean-card bg-white border-2 border-[#d1eae8] rounded-xl p-6 text-left transition-all hover:border-[#2d8b8b] focus:outline-none focus:ring-2 focus:ring-[#2d8b8b] focus:border-transparent"
           >
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 text-blue-600">
+              <div className="flex-shrink-0 text-[#2d8b8b]">
                 {option.icon}
               </div>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-[#1a2332]">
                     {option.title}
                   </h3>
                   {option.badge && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#2d8b8b]/20 text-[#2d8b8b]">
                       {option.badge}
                     </span>
                   )}
@@ -103,8 +103,8 @@ export const BillTypeSelector: React.FC<BillTypeSelectorProps> = ({ onSelect }) 
 
                 <ul className="space-y-1">
                   {option.description.map((line, index) => (
-                    <li key={index} className="text-sm text-gray-600 flex items-start gap-2">
-                      <span className="text-blue-500 mt-0.5">•</span>
+                    <li key={index} className="text-sm text-[#4a5568] flex items-start gap-2">
+                      <span className="text-[#2d8b8b] mt-0.5">•</span>
                       <span>{line}</span>
                     </li>
                   ))}
@@ -115,8 +115,8 @@ export const BillTypeSelector: React.FC<BillTypeSelectorProps> = ({ onSelect }) 
         ))}
       </div>
 
-      <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <p className="text-sm text-blue-900">
+      <div className="mt-8 p-4 bg-[#f1faee] border border-[#d1eae8] rounded-lg">
+        <p className="text-sm text-[#1a2332]">
           <strong>💡 提示：</strong>
           不確定您的電費單型別？可以檢視電費單上是否有「尖峰用電」「半尖峰用電」等分段資訊。
           如果有這些分段，就是時間電價；如果只有總用電度數，就是非時間電價。

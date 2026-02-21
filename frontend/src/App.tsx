@@ -193,26 +193,35 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ocean-bg">
       {/* Skip link for keyboard navigation */}
       <a href="#main-content" className="skip-link">
         跳到主要內容
       </a>
 
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-[#d1eae8] sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">
-            臺電時間電價比較
-          </h1>
-          <p className="text-sm text-gray-600 mt-1">
-            上傳電費單，找出最省錢的電價方案
-          </p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#2d8b8b] to-[#1a2332] flex items-center justify-center shadow-md">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-[#1a2332]">
+                臺電時間電價比較
+              </h1>
+              <p className="text-sm text-[#4a5568] mt-0.5">
+                上傳電費單，找出最省錢的電價方案
+              </p>
+            </div>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
         {stage === 'upload' && (
           <div className="space-y-6">
             {!billType ? (
@@ -231,13 +240,13 @@ function App() {
                 <div className="flex justify-center gap-4 mb-8">
                   <button
                     onClick={() => setBillType('auto_detect')}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                    className="ocean-btn-primary px-6 py-3 rounded-lg font-medium"
                   >
                     📸 拍照上傳電費單
                   </button>
                   <button
                     onClick={() => setBillType('non_tou')}
-                    className="px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                    className="px-6 py-3 bg-white text-[#1a2332] border-2 border-[#2d8b8b] rounded-lg font-medium hover:bg-[#f1faee] transition-colors"
                   >
                     ⌨️ 手動輸入
                   </button>
@@ -306,7 +315,7 @@ function App() {
             <div className="flex justify-center gap-2">
               <button
                 onClick={() => useAppStore.getState().setStage('upload')}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-[#d1eae8] rounded-lg hover:bg-[#f1faee] text-[#1a2332]"
               >
                 重新上傳
               </button>
@@ -315,7 +324,7 @@ function App() {
               {billData.source.completenessLevel !== 'total_only' && (
                 <button
                   onClick={() => handleConfirmFromHabit()}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="ocean-btn-primary px-6 py-2 rounded-lg"
                 >
                   開始計算
                 </button>
@@ -361,8 +370,8 @@ function App() {
               {billData && (
                 <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
                   determineSeason(billData.billingPeriod) === 'summer'
-                    ? 'bg-red-100 text-red-800'
-                    : 'bg-blue-100 text-blue-800'
+                    ? 'bg-[#ff6b6b]/20 text-[#e05555] border border-[#ff6b6b]/30'
+                    : 'bg-[#4cc9f0]/20 text-[#2d8b8b] border border-[#4cc9f0]/30'
                 }`}>
                   {determineSeason(billData.billingPeriod) === 'summer' ? '🌞 夏季費率 (6-9月)' : '❄️ 非夏季費率 (10-5月)'}
                 </div>
@@ -381,7 +390,7 @@ function App() {
             <div className="text-center">
               <button
                 onClick={handleReset}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
+                className="ocean-btn-primary px-6 py-3 rounded-lg font-medium"
               >
                 🔄 比較其他電費單
               </button>
@@ -391,9 +400,9 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t mt-12">
+      <footer className="bg-[#1a2332] text-[#f1faee] mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm opacity-80">
             臺電時間電價比較網站 | 純前端應用，資料不上傳伺服器
           </p>
         </div>

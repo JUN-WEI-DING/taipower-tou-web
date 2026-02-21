@@ -314,10 +314,11 @@ const NonTouInputForm: React.FC<NonTouInputFormProps> = ({
       onPhaseTypeChange={onPhaseTypeChange}
     />
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label htmlFor="total-consumption" className="block text-sm font-medium text-gray-700 mb-1">
         總用電度數
       </label>
       <input
+        id="total-consumption"
         type="number"
         min="1"
         max="10000"
@@ -371,10 +372,11 @@ const TwoTierInputForm: React.FC<TwoTierInputFormProps> = ({
     />
     <div className="grid grid-cols-2 gap-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="peak-consumption" className="block text-sm font-medium text-gray-700 mb-1">
           尖峰用電
         </label>
         <input
+          id="peak-consumption"
           type="number"
           min="0"
           max="10000"
@@ -385,10 +387,11 @@ const TwoTierInputForm: React.FC<TwoTierInputFormProps> = ({
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="off-peak-consumption" className="block text-sm font-medium text-gray-700 mb-1">
           離峰用電
         </label>
         <input
+          id="off-peak-consumption"
           type="number"
           min="0"
           max="10000"
@@ -608,8 +611,8 @@ const ContractSection: React.FC<ContractSectionProps> = ({
 
 // 共享元件：錯誤訊息
 const ErrorMessage: React.FC<{ message: string }> = ({ message }) => (
-  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-    <p className="text-sm text-red-800">⚠️ {message}</p>
+  <div className="bg-[#ff6b6b]/10 border border-[#ff6b6b]/30 rounded-lg p-3">
+    <p className="text-sm text-[#e05555]">⚠️ {message}</p>
   </div>
 );
 
@@ -624,7 +627,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({ onClick, disabled, isSubmit
   <button
     onClick={onClick}
     disabled={disabled}
-    className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+    className="w-full py-3 px-4 bg-[#2d8b8b] text-white rounded-lg font-medium hover:bg-[#1b263b] transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:bg-gray-300"
   >
     {isSubmitting ? '處理中...' : '確認並開始比較'}
   </button>
@@ -643,8 +646,8 @@ const Tips: React.FC<TipsProps> = ({ type }) => {
   };
 
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
-      <p className="text-xs text-blue-800">{tips[type]}</p>
+    <div className="bg-[#f1faee] border border-[#d1eae8] rounded-lg p-3 mt-4">
+      <p className="text-xs text-[#1a2332]">{tips[type]}</p>
     </div>
   );
 };
