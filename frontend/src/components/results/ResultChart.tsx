@@ -16,7 +16,14 @@ interface ResultChartProps {
   maxCost?: number;
 }
 
-const COLORS = ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f'];
+// Ocean Depths Theme Colors - aligned with ocean-theme.css
+const OCEAN_OCEAN_COLORS = [
+  '#2d8b8b', // teal (primary) - rank 1
+  '#4cc9f0', // aqua - rank 2
+  '#a8dadc', // seafoam - rank 3
+  '#1b263b', // ocean - rank 4
+  '#ff6b6b', // coral (highlight) - rank 5
+];
 
 export const ResultChart: React.FC<ResultChartProps> = ({ results, maxCost }) => {
   // 空狀態處理
@@ -57,7 +64,7 @@ export const ResultChart: React.FC<ResultChartProps> = ({ results, maxCost }) =>
       ? result.planName.substring(0, 10) + '...'
       : (result.planName || `方案 ${index + 1}`),
     cost: result.charges.total || 0,
-    fill: COLORS[index % COLORS.length],
+    fill: OCEAN_COLORS[index % OCEAN_COLORS.length],
     planId: result.planId || `plan-${index}`,
   }));
 
@@ -65,7 +72,11 @@ export const ResultChart: React.FC<ResultChartProps> = ({ results, maxCost }) =>
     <div className="w-full" style={{ height: '320px' }}>
       <ResponsiveContainer width="100%" height={320}>
         <BarChart data={data} layout="vertical" barCategoryGap={8}>
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="#d1eae8"
+            strokeOpacity={0.5}
+          />
           <XAxis
             type="number"
             dataKey="cost"
@@ -91,10 +102,12 @@ export const ResultChart: React.FC<ResultChartProps> = ({ results, maxCost }) =>
               return '$0';
             }}
             contentStyle={{
-              backgroundColor: 'rgba(0, 0, 0, 0.8)',
-              color: '#fff',
-              borderRadius: '4px',
-              padding: '8px',
+              backgroundColor: '#1a2332',
+              color: '#f1faee',
+              borderRadius: '8px',
+              padding: '12px',
+              border: '1px solid #2d8b8b',
+              fontFamily: 'inherit',
             }}
           />
           <Bar dataKey="cost" radius={[0, 4, 4, 0]}>

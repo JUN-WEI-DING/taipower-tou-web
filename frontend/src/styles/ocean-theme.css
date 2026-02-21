@@ -222,6 +222,11 @@
   animation: slideInRight 0.4s ease forwards;
 }
 
+/* Fade In Up Animation for Main Content */
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
 /* Staggered animation delays */
 .ocean-delay-1 { animation-delay: 0.1s; }
 .ocean-delay-2 { animation-delay: 0.2s; }
