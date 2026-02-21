@@ -8,8 +8,20 @@ import type {
   ResultLabel,
   Comparison,
   BreakdownItem,
+  TimeSlot,
 } from '../../types';
 import { EstimationMode } from '../../types';
+import { PlansLoader } from './plans';
+
+/**
+ * 計費期間天數統計
+ */
+interface BillingPeriodDays {
+  weekdays: number;
+  saturdays: number;
+  sundaysHolidays: number;
+  total: number;
+}
 
 /**
  * 費率計算引擎
@@ -21,6 +33,61 @@ export class RateCalculator {
 
   constructor(plans: Plan[]) {
     this.plans = plans;
+  }
+
+  /**
+   * 計算計費期間的天數統計
+   */
+  private calculateBillingPeriodDays(period: { start: Date; end: Date }): BillingPeriodDays {
+    let weekdays = 0;
+    let saturdays = 0;
+    let sundaysHolidays = 0;
+
+    const current = new Date(period.start);
+    const end = new Date(period.end);
+
+    while (current <= end) {
+      const day = current.getDay();
+      if (day === 0) {
+        // Sunday
+        sundaysHolidays++;
+      } else if (day === 6) {
+        // Saturday
+        saturdays++;
+      } else {
+        // Weekday (Monday-Friday)
+        weekdays++;
+      }
+      current.setDate(current.getDate() + 1);
+    }
+
+    return {
+      weekdays,
+      saturdays,
+      sundaysHolidays,
+      total: weekdays + saturdays + sundaysHolidays,
+    };
+  }
+
+  /**
+   * 計算時段總小時數
+   */
+  private calculatePeriodHours(timeSlots: TimeSlot[]): number {
+    let totalHours = 0;
+    for (const slot of timeSlots) {
+      const [startH, startM] = slot.start.split(':').map(Number);
+      const [endH, endM] = slot.end.split(':').map(Number);
+      const startMinutes = startH * 60 + startM;
+      let endMinutes = endH * 60 + endM;
+
+      // Handle overnight slots (e.g., 22:00-24:00 or 00:00-08:00)
+      if (endMinutes < startMinutes) {
+        endMinutes += 24 * 60; // Next day
+      }
+
+      totalHours += (endMinutes - startMinutes) / 60;
+    }
+    return totalHours;
   }
 
   /**
@@ -37,8 +104,10 @@ export class RateCalculator {
     const results: PlanCalculationResult[] = availablePlans.map((plan) => {
       const result = this.calculatePlan(plan, processedInput, season);
 
-      // 加入標籤
-      result.label = this.createLabel(result, input, plan);
+      // 加入標籤（保留最低用電警告）
+      if (!result.label.badge.includes('最低用電')) {
+        result.label = this.createLabel(result, input, plan);
+      }
 
       // 加入比較資訊
       result.comparison = this.createComparison();
@@ -81,8 +150,23 @@ export class RateCalculator {
     season: Season
   ): PlanCalculationResult {
     const tierRates = plan.tierRates || [];
+
+    // 計算最低用電度數
+    const contractCapacity = input.contractCapacity || 10;
+    const phase = input.phase || 'single';
+    const voltageV = input.voltageV || 110;
+
+    const minimumUsage = PlansLoader.calculateMinimumUsage(
+      contractCapacity,
+      phase,
+      voltageV
+    );
+
+    // 使用實際用電與最低用電的較大值
+    const billableConsumption = Math.max(input.consumption, minimumUsage);
+
     let totalEnergyCharge = 0;
-    let remainingKwh = input.consumption;
+    let remainingKwh = billableConsumption;
     const tierBreakdown: BreakdownItem[] = [];
 
     const isSummer = season.name === 'summer';
@@ -117,6 +201,9 @@ export class RateCalculator {
       total: basicCharge + totalEnergyCharge,
     };
 
+    // 如果使用了最低用電規則，在標籤中標示
+    const usedMinimumUsage = input.consumption < minimumUsage;
+
     return {
       planId: plan.id,
       planName: plan.name,
@@ -124,9 +211,11 @@ export class RateCalculator {
       charges,
       breakdown: { tierBreakdown },
       label: {
-        accuracy: 'accurate',
-        badge: '✅ 準確',
-        tooltip: '依據電費單資料計算',
+        accuracy: usedMinimumUsage ? 'estimated' : 'accurate',
+        badge: usedMinimumUsage ? '⚠️ 最低用電' : '✅ 準確',
+        tooltip: usedMinimumUsage
+          ? `用電低於最低度數 ${minimumUsage} 度，按最低度數計費`
+          : '依據電費單資料計算',
       },
       comparison: {
         isCurrentPlan: false,
@@ -154,6 +243,37 @@ export class RateCalculator {
       throw new Error('TOU consumption required for 2-tier calculation');
     }
 
+    // 計算最低用電度數
+    const contractCapacity = input.contractCapacity || 10;
+    const phase = input.phase || 'single';
+    const voltageV = input.voltageV || 110;
+
+    const minimumUsage = PlansLoader.calculateMinimumUsage(
+      contractCapacity,
+      phase,
+      voltageV
+    );
+
+    // 計算總用電（時段用電總和）
+    const totalTOUConsumption = touConsumption.peakOnPeak +
+                                (touConsumption.semiPeak || 0) +
+                                touConsumption.offPeak;
+
+    // 檢查是否需要最低用電調整
+    const needsMinimumUsageAdjustment = totalTOUConsumption < minimumUsage;
+
+    let adjustedPeakOnPeak = touConsumption.peakOnPeak;
+    let adjustedSemiPeak = touConsumption.semiPeak || 0;
+    let adjustedOffPeak = touConsumption.offPeak;
+
+    // 如果需要調整到最低用電，按比例增加各時段用電
+    if (needsMinimumUsageAdjustment && totalTOUConsumption > 0) {
+      const usageRatio = minimumUsage / totalTOUConsumption;
+      adjustedPeakOnPeak = touConsumption.peakOnPeak * usageRatio;
+      adjustedSemiPeak = (touConsumption.semiPeak || 0) * usageRatio;
+      adjustedOffPeak = touConsumption.offPeak * usageRatio;
+    }
+
     const seasonKey = season.name === 'summer' ? 'summer' : 'nonSummer';
     const energyCharges = plan.energyCharges[seasonKey];
 
@@ -163,29 +283,75 @@ export class RateCalculator {
       energyCharges.find((r) => r.period === 'off_peak')?.rate || 0;
 
     // 計算流動電費
-    const peakCharge = touConsumption.peakOnPeak * peakRate;
-    const offPeakCharge = touConsumption.offPeak * offPeakRate;
+    const peakCharge = adjustedPeakOnPeak * peakRate;
+    const offPeakCharge = adjustedOffPeak * offPeakRate;
 
-    // 如果有半尖峰度數（來自估算），作為離峰計算
+    // 兩段式時間電價沒有半尖峰費率，將半尖峰度數按比例分配到尖峰和離峰
     let semiPeakCharge = 0;
-    if (touConsumption.semiPeak && touConsumption.semiPeak > 0) {
-      semiPeakCharge = touConsumption.semiPeak * offPeakRate;
+    let finalPeakCharge = peakCharge;
+    let finalOffPeakCharge = offPeakCharge;
+    let finalPeakKwh = adjustedPeakOnPeak;
+    let finalOffPeakKwh = adjustedOffPeak;
+
+    if (adjustedSemiPeak > 0) {
+      // 將半尖峰按比例分配到尖峰和離峰
+      const totalMainPeriods = adjustedPeakOnPeak + adjustedOffPeak;
+      if (totalMainPeriods > 0) {
+        const peakRatio = adjustedPeakOnPeak / totalMainPeriods;
+        const offPeakRatio = adjustedOffPeak / totalMainPeriods;
+
+        const semiToPeak = adjustedSemiPeak * peakRatio;
+        const semiToOffPeak = adjustedSemiPeak * offPeakRatio;
+
+        finalPeakKwh = adjustedPeakOnPeak + semiToPeak;
+        finalOffPeakKwh = adjustedOffPeak + semiToOffPeak;
+
+        finalPeakCharge = finalPeakKwh * peakRate;
+        finalOffPeakCharge = finalOffPeakKwh * offPeakRate;
+      } else {
+        // 如果沒有尖峰和離峰度數，全部按離峰計算
+        finalOffPeakKwh = adjustedOffPeak + adjustedSemiPeak;
+        finalOffPeakCharge = finalOffPeakKwh * offPeakRate;
+      }
     }
 
-    const totalEnergyCharge = peakCharge + offPeakCharge + semiPeakCharge;
+    const totalEnergyCharge = finalPeakCharge + finalOffPeakCharge;
 
-    const touBreakdown = [
-      { period: 'peak' as const, kwh: touConsumption.peakOnPeak, rate: peakRate, charge: peakCharge },
-      { period: 'off_peak' as const, kwh: touConsumption.offPeak, rate: offPeakRate, charge: offPeakCharge },
+    const touBreakdown: Array<{
+      period?: 'peak' | 'off_peak' | 'semi_peak';
+      kwh: number;
+      rate: number;
+      charge: number;
+      label?: string;
+    }> = [
+      { period: 'peak' as const, kwh: finalPeakKwh, rate: peakRate, charge: finalPeakCharge },
+      { period: 'off_peak' as const, kwh: finalOffPeakKwh, rate: offPeakRate, charge: finalOffPeakCharge },
     ];
 
-    if (touConsumption.semiPeak && touConsumption.semiPeak > 0) {
-      touBreakdown.push({
-        period: 'off_peak' as const,
-        kwh: touConsumption.semiPeak,
-        rate: offPeakRate,
-        charge: semiPeakCharge,
-      });
+    // 如果有半尖峰度數，加入分配說明
+    if (adjustedSemiPeak > 0) {
+      const totalMainPeriods = adjustedPeakOnPeak + adjustedOffPeak;
+      if (totalMainPeriods > 0) {
+        const peakRatio = adjustedPeakOnPeak / totalMainPeriods;
+        const offPeakRatio = adjustedOffPeak / totalMainPeriods;
+        const semiToPeak = adjustedSemiPeak * peakRatio;
+        const semiToOffPeak = adjustedSemiPeak * offPeakRatio;
+        touBreakdown.push({
+          label: `半尖峰 ${adjustedSemiPeak.toFixed(1)} 度 → 尖峰 ${semiToPeak.toFixed(1)} + 離峰 ${semiToOffPeak.toFixed(1)}`,
+          kwh: adjustedSemiPeak,
+          rate: 0,
+          charge: 0,
+        });
+      }
+    }
+
+    // 計算超過 2000 度的附加費（如適用）
+    let surcharge = 0;
+    const totalBillableConsumption = finalPeakKwh + finalOffPeakKwh;
+    if (plan.raw?.billing_rules?.over_2000_kwh_surcharge && totalBillableConsumption > 2000) {
+      const surchargeRule = plan.raw.billing_rules.over_2000_kwh_surcharge;
+      const overAmount = totalBillableConsumption - surchargeRule.threshold_kwh;
+      surcharge = overAmount * surchargeRule.cost_per_kwh;
     }
 
     // 基本電費
@@ -193,9 +359,22 @@ export class RateCalculator {
 
     const charges: Charges = {
       base: basicCharge,
-      energy: totalEnergyCharge,
-      total: basicCharge + totalEnergyCharge,
+      energy: totalEnergyCharge + surcharge,
+      total: basicCharge + totalEnergyCharge + surcharge,
     };
+
+    // 如果有附加費，加入 breakdown
+    if (surcharge > 0) {
+      touBreakdown.push({
+        kwh: totalBillableConsumption - 2000,
+        rate: plan.raw!.billing_rules!.over_2000_kwh_surcharge!.cost_per_kwh,
+        charge: surcharge,
+        label: '超過2000度附加費',
+      });
+    }
+
+    // 如果使用了最低用電規則，在標籤中標示
+    const usedMinimumUsage = totalTOUConsumption < minimumUsage;
 
     return {
       planId: plan.id,
@@ -204,9 +383,11 @@ export class RateCalculator {
       charges,
       breakdown: { touBreakdown },
       label: {
-        accuracy: 'accurate',
-        badge: '✅ 準確',
-        tooltip: '依據電費單資料計算',
+        accuracy: usedMinimumUsage ? 'estimated' : 'accurate',
+        badge: usedMinimumUsage ? '⚠️ 最低用電' : '✅ 準確',
+        tooltip: usedMinimumUsage
+          ? `用電低於最低度數 ${minimumUsage} 度，按最低度數計費`
+          : '依據電費單資料計算',
       },
       comparison: {
         isCurrentPlan: false,
@@ -234,6 +415,37 @@ export class RateCalculator {
       throw new Error('TOU consumption required for 3-tier calculation');
     }
 
+    // 計算最低用電度數
+    const contractCapacity = input.contractCapacity || 10;
+    const phase = input.phase || 'single';
+    const voltageV = input.voltageV || 110;
+
+    const minimumUsage = PlansLoader.calculateMinimumUsage(
+      contractCapacity,
+      phase,
+      voltageV
+    );
+
+    // 計算總用電（時段用電總和）
+    const totalTOUConsumption = touConsumption.peakOnPeak +
+                                touConsumption.semiPeak +
+                                touConsumption.offPeak;
+
+    // 檢查是否需要最低用電調整
+    const needsMinimumUsageAdjustment = totalTOUConsumption < minimumUsage;
+
+    let adjustedPeakOnPeak = touConsumption.peakOnPeak;
+    let adjustedSemiPeak = touConsumption.semiPeak;
+    let adjustedOffPeak = touConsumption.offPeak;
+
+    // 如果需要調整到最低用電，按比例增加各時段用電
+    if (needsMinimumUsageAdjustment && totalTOUConsumption > 0) {
+      const usageRatio = minimumUsage / totalTOUConsumption;
+      adjustedPeakOnPeak = touConsumption.peakOnPeak * usageRatio;
+      adjustedSemiPeak = touConsumption.semiPeak * usageRatio;
+      adjustedOffPeak = touConsumption.offPeak * usageRatio;
+    }
+
     const seasonKey = season.name === 'summer' ? 'summer' : 'nonSummer';
     const energyCharges = plan.energyCharges[seasonKey];
 
@@ -243,26 +455,54 @@ export class RateCalculator {
     const offPeakRate = energyCharges.find((r) => r.period === 'off_peak')?.rate || 0;
 
     // 計算流動電費
-    const peakCharge = touConsumption.peakOnPeak * peakRate;
-    const semiPeakCharge = touConsumption.semiPeak * semiPeakRate;
-    const offPeakCharge = touConsumption.offPeak * offPeakRate;
+    const peakCharge = adjustedPeakOnPeak * peakRate;
+    const semiPeakCharge = adjustedSemiPeak * semiPeakRate;
+    const offPeakCharge = adjustedOffPeak * offPeakRate;
 
     const totalEnergyCharge = peakCharge + semiPeakCharge + offPeakCharge;
 
-    const touBreakdown = [
-      { period: 'peak' as const, kwh: touConsumption.peakOnPeak, rate: peakRate, charge: peakCharge },
-      { period: 'semi_peak' as const, kwh: touConsumption.semiPeak, rate: semiPeakRate, charge: semiPeakCharge },
-      { period: 'off_peak' as const, kwh: touConsumption.offPeak, rate: offPeakRate, charge: offPeakCharge },
+    const touBreakdown: Array<{
+      period?: 'peak' | 'off_peak' | 'semi_peak';
+      kwh: number;
+      rate: number;
+      charge: number;
+      label?: string;
+    }> = [
+      { period: 'peak' as const, kwh: adjustedPeakOnPeak, rate: peakRate, charge: peakCharge },
+      { period: 'semi_peak' as const, kwh: adjustedSemiPeak, rate: semiPeakRate, charge: semiPeakCharge },
+      { period: 'off_peak' as const, kwh: adjustedOffPeak, rate: offPeakRate, charge: offPeakCharge },
     ];
+
+    // 計算超過 2000 度的附加費（如適用）
+    let surcharge = 0;
+    const totalBillableConsumption = adjustedPeakOnPeak + adjustedSemiPeak + adjustedOffPeak;
+    if (plan.raw?.billing_rules?.over_2000_kwh_surcharge && totalBillableConsumption > 2000) {
+      const surchargeRule = plan.raw.billing_rules.over_2000_kwh_surcharge;
+      const overAmount = totalBillableConsumption - surchargeRule.threshold_kwh;
+      surcharge = overAmount * surchargeRule.cost_per_kwh;
+    }
 
     // 基本電費
     const basicCharge = this.calculateBasicCharge(plan, input, season);
 
     const charges: Charges = {
       base: basicCharge,
-      energy: totalEnergyCharge,
-      total: basicCharge + totalEnergyCharge,
+      energy: totalEnergyCharge + surcharge,
+      total: basicCharge + totalEnergyCharge + surcharge,
     };
+
+    // 如果有附加費，加入 breakdown
+    if (surcharge > 0) {
+      touBreakdown.push({
+        kwh: totalBillableConsumption - 2000,
+        rate: plan.raw!.billing_rules!.over_2000_kwh_surcharge!.cost_per_kwh,
+        charge: surcharge,
+        label: '超過2000度附加費',
+      });
+    }
+
+    // 如果使用了最低用電規則，在標籤中標示
+    const usedMinimumUsage = totalTOUConsumption < minimumUsage;
 
     return {
       planId: plan.id,
@@ -271,9 +511,11 @@ export class RateCalculator {
       charges,
       breakdown: { touBreakdown },
       label: {
-        accuracy: 'accurate',
-        badge: '✅ 準確',
-        tooltip: '依據電費單資料計算',
+        accuracy: usedMinimumUsage ? 'estimated' : 'accurate',
+        badge: usedMinimumUsage ? '⚠️ 最低用電' : '✅ 準確',
+        tooltip: usedMinimumUsage
+          ? `用電低於最低度數 ${minimumUsage} 度，按最低度數計費`
+          : '依據電費單資料計算',
       },
       comparison: {
         isCurrentPlan: false,
@@ -303,21 +545,54 @@ export class RateCalculator {
 
   /**
    * 計算基本電費
+   * 根據臺電實際規則：
+   * 1. 基本電費依契約容量計算
+   * 2. 有最低用電度數要求，低於最低度數仍按最低度數計費
    */
   private calculateBasicCharge(
     plan: Plan,
     input: CalculationInput,
     season: Season
   ): number {
-    // 簡化版本：使用固定基本電費
-    // 實際應根據契約容量和電壓型別計算
-    const basicCharge = plan.basicCharges[0];
-    if (basicCharge) {
-      return season.name === 'summer' ? basicCharge.summerRate : basicCharge.nonSummerRate;
+    const contractCapacity = input.contractCapacity || 10; // 預設 10A
+    const phase = input.phase || 'single';
+    const voltageType = input.voltageType || 'low_voltage';
+
+    // 計算最低用電度數（根據契約容量）
+    const voltageV = voltageType === 'low_voltage' ?
+      input.voltageV || 110 : // 從 input 獲取實際電壓，預設 110V
+      220; // 高壓預設 220V
+
+    // 如果實際用電低於最低用電，仍按最低用電計算基本電費
+    // 這裡返回最低計費金額，不是基本電費本身
+    // 實際的基本電費計算較複雜，這裡使用簡化版本
+
+    // 使用方案定義的基本電費或最低月費
+    let baseCharge = 0;
+
+    if (plan.raw?.basic_fee) {
+      // TOU 方案有明確的基本電費
+      baseCharge = plan.raw.basic_fee;
+    } else if (plan.billingRules?.min_monthly_fee) {
+      // 非時間電價使用最低月費
+      baseCharge = plan.billingRules.min_monthly_fee;
+    } else if (plan.basicCharges && plan.basicCharges.length > 0) {
+      // 使用基本電費表中的第一個
+      const basicChargeData = plan.basicCharges[0];
+      baseCharge = season.name === 'summer' ?
+        basicChargeData.summerRate :
+        basicChargeData.nonSummerRate;
     }
 
-    // 如果沒有定義，使用預設值
-    return 75; // 住家用電基本電費
+    // 根據契約容量調整基本電費
+    // 臺電規則：基本電費與契約容量成正比
+    // 10A = $100 (最低月費)，其他容量按比例
+    if (contractCapacity !== 10 && baseCharge > 0) {
+      // 假設 10A 是基準
+      baseCharge = (baseCharge * contractCapacity) / 10;
+    }
+
+    return baseCharge;
   }
 
   /**
@@ -349,11 +624,16 @@ export class RateCalculator {
 
     // 如果有估算設定，使用估算
     if (input.estimationSettings) {
+      // 找一個有時段資料的方案用於估算
+      const planWithSlots = this.plans.find(p => p.timeSlots);
+
       const estimated = this.estimateTOUConsumption(
         input.consumption,
         input.estimationSettings.mode,
         season.name,
-        input.estimationSettings.customPercents
+        input.estimationSettings.customPercents,
+        input.billingPeriod,
+        planWithSlots
       );
 
       return {
@@ -367,10 +647,14 @@ export class RateCalculator {
     }
 
     // 預設使用平均估算
+    const planWithSlots = this.plans.find(p => p.timeSlots);
     const defaultEstimated = this.estimateTOUConsumption(
       input.consumption,
       EstimationMode.AVERAGE,
-      season.name
+      season.name,
+      undefined,
+      input.billingPeriod,
+      planWithSlots
     );
 
     return {
@@ -384,13 +668,15 @@ export class RateCalculator {
   }
 
   /**
-   * 估算時段用電分配
+   * 估算時段用電分配（考慮週末與平日時段差異）
    */
   private estimateTOUConsumption(
     totalConsumption: number,
     mode: EstimationMode,
     season: 'summer' | 'non_summer',
-    customPercents?: { peakOnPeak: number; semiPeak: number; offPeak: number }
+    customPercents?: { peakOnPeak: number; semiPeak: number; offPeak: number },
+    billingPeriod?: { start: Date; end: Date },
+    plan?: Plan
   ): TOUConsumption {
     if (mode === EstimationMode.CUSTOM && customPercents) {
       const totalPercent = customPercents.peakOnPeak + customPercents.semiPeak + customPercents.offPeak;
@@ -403,6 +689,17 @@ export class RateCalculator {
         semiPeak: (totalConsumption * customPercents.semiPeak) / 100,
         offPeak: (totalConsumption * customPercents.offPeak) / 100,
       };
+    }
+
+    // 如果有計費期間資訊和方案時段資料，使用更精確的估算
+    if (billingPeriod && plan && plan.timeSlots) {
+      return this.estimateTOUConsumptionBySchedule(
+        totalConsumption,
+        mode,
+        season,
+        billingPeriod,
+        plan.timeSlots
+      );
     }
 
     // 預設估算比例（根據用電習慣）
@@ -445,14 +742,107 @@ export class RateCalculator {
   }
 
   /**
+   * 根據實際時段表估算用電分配
+   */
+  private estimateTOUConsumptionBySchedule(
+    totalConsumption: number,
+    mode: EstimationMode,
+    season: 'summer' | 'non_summer',
+    billingPeriod: { start: Date; end: Date },
+    timeSlots: { weekday: TimeSlot[]; saturday: TimeSlot[]; sundayHoliday: TimeSlot[] }
+  ): TOUConsumption {
+    // 計算計費期間天數
+    const days = this.calculateBillingPeriodDays(billingPeriod);
+
+    // 根據用電習慣調整每日用電量
+    let dailyPattern: { weekday: number; saturday: number; sunday: number };
+    switch (mode) {
+      case EstimationMode.HOME_DURING_DAY:
+        dailyPattern = { weekday: 1.1, saturday: 1.0, sunday: 0.9 };
+        break;
+      case EstimationMode.NIGHT_OWL:
+        dailyPattern = { weekday: 0.9, saturday: 1.1, sunday: 1.2 };
+        break;
+      case EstimationMode.AVERAGE:
+      default:
+        dailyPattern = { weekday: 1.0, saturday: 0.9, sunday: 0.8 };
+        break;
+    }
+
+    // 計算加權天數
+    const weightedDays =
+      days.weekdays * dailyPattern.weekday +
+      days.saturdays * dailyPattern.saturday +
+      days.sundaysHolidays * dailyPattern.sunday;
+
+    // 計算每日平均用電
+    const avgDailyKwh = totalConsumption / weightedDays;
+
+    // 計算各時段的度數（基於用電習慣分佈在時段內）
+    let peakKwh = 0;
+    let semiPeakKwh = 0;
+    let offPeakKwh = 0;
+
+    // 處理平日
+    for (const slot of timeSlots.weekday) {
+      const slotHours = this.calculatePeriodHours([slot]);
+      const slotKwh = slotHours * avgDailyKwh * dailyPattern.weekday * days.weekdays / 24;
+      if (slot.period === 'peak') peakKwh += slotKwh;
+      else if (slot.period === 'semi_peak') semiPeakKwh += slotKwh;
+      else offPeakKwh += slotKwh;
+    }
+
+    // 處理週六
+    for (const slot of timeSlots.saturday) {
+      const slotHours = this.calculatePeriodHours([slot]);
+      const slotKwh = slotHours * avgDailyKwh * dailyPattern.saturday * days.saturdays / 24;
+      if (slot.period === 'peak') peakKwh += slotKwh;
+      else if (slot.period === 'semi_peak') semiPeakKwh += slotKwh;
+      else offPeakKwh += slotKwh;
+    }
+
+    // 處理週日/假日
+    for (const slot of timeSlots.sundayHoliday) {
+      const slotHours = this.calculatePeriodHours([slot]);
+      const slotKwh = slotHours * avgDailyKwh * dailyPattern.sunday * days.sundaysHolidays / 24;
+      if (slot.period === 'peak') peakKwh += slotKwh;
+      else if (slot.period === 'semi_peak') semiPeakKwh += slotKwh;
+      else offPeakKwh += slotKwh;
+    }
+
+    return {
+      peakOnPeak: peakKwh,
+      semiPeak: semiPeakKwh,
+      offPeak: offPeakKwh,
+    };
+  }
+
+  /**
    * 取得可用的方案
+   * 只顯示住家/表燈用電方案，過濾掉高壓/特高壓/電動車等工業用方案
    */
   private getAvailablePlans(): Plan[] {
-    // 簡化版本：回傳所有方案
-    // 實際應根據電壓型別、契約容量等篩選
     return this.plans.filter((plan) => {
-      // 只包含住家用電和表燈用電
-      return plan.type === 'residential' || plan.type === 'lighting';
+      // 只包含住家用電和表燈用電（住宅用、非營業用）
+      // 注意：category 欄位才是真正的用電類別，type 只是費率型別 (TIERED/TOU)
+      if (plan.category !== 'lighting' && plan.category !== 'residential') {
+        return false;
+      }
+
+      // 過濾掉營業用方案
+      if (plan.id.includes('business') || plan.id.includes('營業')) {
+        return false;
+      }
+
+      // 過濾掉電動車專用方案
+      if (plan.id.includes('ev') || plan.id.includes('電動車')) {
+        return false;
+      }
+      if (plan.id.includes('batch') || plan.id.includes('批次')) {
+        return false;
+      }
+
+      return true;
     });
   }
 

@@ -1,4 +1,4 @@
-import type { Plan, PlansData, TierRate, EnergyChargeRate, BasicChargeRate } from '../../types';
+import type { Plan, PlansData, TierRate, EnergyChargeRate, BasicChargeRate, TimeSlot } from '../../types';
 
 /**
  * Raw plan data from JSON
@@ -10,6 +10,7 @@ interface RawPlan {
   category: 'lighting' | 'residential' | 'commercial';
   season_strategy: string;
   basic_fee?: number;
+  over_2000_kwh_surcharge?: number;  // 方案層級的超額附加費率
   tiers?: Array<{ min: number; max: number | null; summer: number; non_summer: number }>;
   rates?: Array<{ season: string; period: string; cost: number }>;
   schedules?: Array<{
@@ -29,6 +30,18 @@ interface RawPlan {
 
 interface RawPlansData {
   version: string;
+  definitions?: {
+    minimum_usage_rules?: {
+      lighting_minimum_usage?: Array<{
+        label: string;
+        phase: 'single' | 'three';
+        voltage_v: number;
+        ampere_threshold: number;
+        kwh_per_ampere: number;
+        kwh_per_ampere_over?: number;
+      }>;
+    };
+  };
   plans: RawPlan[];
 }
 
@@ -38,6 +51,7 @@ interface RawPlansData {
 export class PlansLoader {
   private static plans: Plan[] | null = null;
   private static data: PlansData | null = null;
+  private static rawDefinitions: RawPlansData['definitions'] | null = null;
 
   /**
    * 載入費率資料
@@ -66,6 +80,7 @@ export class PlansLoader {
       }
 
       const rawData: RawPlansData = await response.json();
+      this.rawDefinitions = rawData.definitions;
       this.plans = rawData.plans.map(this.transformPlan);
       this.data = {
         version: rawData.version,
@@ -148,11 +163,53 @@ export class PlansLoader {
       });
     }
 
+    // 轉換時段表 (timeSlots)
+    let timeSlots: { weekday: TimeSlot[]; saturday: TimeSlot[]; sundayHoliday: TimeSlot[] } | undefined;
+    if (raw.schedules && raw.schedules.length > 0) {
+      const weekday: TimeSlot[] = [];
+      const saturday: TimeSlot[] = [];
+      const sundayHoliday: TimeSlot[] = [];
+
+      for (const sched of raw.schedules) {
+        const slot: TimeSlot = {
+          period: sched.period === 'peak' ? 'peak' :
+                  sched.period === 'off_peak' ? 'off_peak' :
+                  sched.period === 'semi_peak' ? 'semi_peak' : 'flat',
+          start: sched.start,
+          end: sched.end,
+        };
+
+        if (sched.day_type === 'weekday') {
+          weekday.push(slot);
+        } else if (sched.day_type === 'saturday') {
+          saturday.push(slot);
+        } else if (sched.day_type === 'sunday_holiday') {
+          sundayHoliday.push(slot);
+        }
+      }
+
+      timeSlots = { weekday, saturday, sundayHoliday };
+    }
+
+    // 處理 billing_rules，確保 over_2000_kwh_surcharge 格式統一
+    let billingRules = raw.billing_rules;
+    if (raw.over_2000_kwh_surcharge !== undefined) {
+      // 如果方案層級有 over_2000_kwh_surcharge，轉換為 billing_rules 格式
+      billingRules = {
+        ...raw.billing_rules,
+        over_2000_kwh_surcharge: {
+          threshold_kwh: 2000,
+          cost_per_kwh: raw.over_2000_kwh_surcharge,
+        },
+      };
+    }
+
     return {
       id: raw.id,
       name: raw.name,
       nameEn: raw.id, // 使用 ID 作為英文名稱
       type,
+      category: raw.category,
       touType,
       voltage: 'low_voltage',
       phase: 'single',
@@ -161,9 +218,15 @@ export class PlansLoader {
       basicCharges,
       energyCharges,
       tierRates: tierRates.length > 0 ? tierRates : undefined,
+      timeSlots,
       seasons: {
         summer: { name: 'summer', start: '06-01', end: '09-30' },
         nonSummer: { name: 'non_summer', start: '10-01', end: '05-31' },
+      },
+      billingRules,
+      raw: {
+        basic_fee: raw.basic_fee,
+        billing_rules: billingRules,
       },
     };
   }
@@ -255,5 +318,55 @@ export class PlansLoader {
   static clearCache(): void {
     this.plans = null;
     this.data = null;
+    this.rawDefinitions = null;
+  }
+
+  /**
+   * 取得最低用電規則
+   */
+  static getMinimumUsageRules(): Array<{
+    label: string;
+    phase: 'single' | 'three';
+    voltage_v: number;
+    ampere_threshold: number;
+    kwh_per_ampere: number;
+    kwh_per_ampere_over?: number;
+  }> {
+    return this.rawDefinitions?.minimum_usage_rules?.lighting_minimum_usage || [];
+  }
+
+  /**
+   * 計算最低用電度數（根據契約容量）
+   * @param contractCapacity 契約容量（安培數）
+   * @param phase 相位型別
+   * @param voltageV 電壓
+   */
+  static calculateMinimumUsage(
+    contractCapacity: number,
+    phase: 'single' | 'three' = 'single',
+    voltageV: number = 110
+  ): number {
+    const rules = this.getMinimumUsageRules();
+
+    // 找出匹配的規則
+    const matchingRule = rules.find(rule => {
+      return rule.phase === phase && rule.voltage_v === voltageV;
+    });
+
+    if (!matchingRule) {
+      // 預設：單相 110V，2 kWh/安培
+      return contractCapacity * 2;
+    }
+
+    // 根據規則計算最低用電
+    if (contractCapacity <= matchingRule.ampere_threshold) {
+      return contractCapacity * matchingRule.kwh_per_ampere;
+    } else {
+      // 超過門檻的部分使用不同的費率
+      const thresholdPart = matchingRule.ampere_threshold * matchingRule.kwh_per_ampere;
+      const overPart = (contractCapacity - matchingRule.ampere_threshold) *
+                       (matchingRule.kwh_per_ampere_over || matchingRule.kwh_per_ampere);
+      return thresholdPart + overPart;
+    }
   }
 }

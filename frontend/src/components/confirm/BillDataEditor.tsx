@@ -156,6 +156,66 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
           )}
         </div>
 
+        {/* 契約容量 - 影響最低用電計算 */}
+        <div>
+          <label className="text-sm text-gray-600">契約容量 (安培數)</label>
+          {isEditing ? (
+            <select
+              value={editedData.contractCapacity || 10}
+              onChange={(e) => {
+                setEditedData({
+                  ...editedData,
+                  contractCapacity: parseInt(e.target.value) || 10,
+                });
+              }}
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="10">10 A</option>
+              <option value="15">15 A</option>
+              <option value="20">20 A</option>
+              <option value="30">30 A</option>
+              <option value="40">40 A</option>
+              <option value="50">50 A</option>
+              <option value="60">60 A</option>
+              <option value="70">70 A</option>
+            </select>
+          ) : (
+            <p className="text-lg font-medium">{billData.contractCapacity || 10} A</p>
+          )}
+          {!isEditing && (
+            <p className="text-xs text-gray-500 mt-1">
+              💡 影響最低用電度數計算
+            </p>
+          )}
+        </div>
+
+        {/* 電壓型別 - 影響最低用電計算 */}
+        <div>
+          <label className="text-sm text-gray-600">電壓型別</label>
+          {isEditing ? (
+            <select
+              value={editedData.voltageType || '110'}
+              onChange={(e) => {
+                setEditedData({
+                  ...editedData,
+                  voltageType: e.target.value as '110' | '220',
+                });
+              }}
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="110">110V (一般家電)</option>
+              <option value="220">220V (大型家電)</option>
+            </select>
+          ) : (
+            <p className="text-lg font-medium">{billData.voltageType || 110}V</p>
+          )}
+          {!isEditing && (
+            <p className="text-xs text-gray-500 mt-1">
+              💡 影響最低用電度數計算
+            </p>
+          )}
+        </div>
+
         {/* 時段用電 - 可編輯 */}
         {(billData.consumption.peakOnPeak !== undefined ||
           billData.consumption.offPeak !== undefined ||

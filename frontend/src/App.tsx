@@ -12,6 +12,17 @@ import { ResultChart } from './components/results/ResultChart';
 import { PlansLoader } from './services/calculation/plans';
 import { RateCalculator } from './services/calculation/RateCalculator';
 import { DataCompletenessLevel } from './types';
+import type { CalculationInput } from './types';
+
+/**
+ * 判斷計費期間的季節
+ * 臺電季節定義：夏季(6/1-9/30)、非夏季(10/1-5/31)
+ */
+function determineSeason(billingPeriod: { start: Date; end: Date }): 'summer' | 'non_summer' {
+  const month = billingPeriod.start.getMonth() + 1; // 1-12
+  // 夏季：6-9月
+  return (month >= 6 && month <= 9) ? 'summer' : 'non_summer';
+}
 
 /**
  * 主應用程式
@@ -60,7 +71,7 @@ function App() {
       const calculator = new RateCalculator(plans);
 
       // 建立輸入 - 使用更新後的 billData
-      const input = {
+      const input: CalculationInput = {
         consumption: updatedBillData.consumption.usage,
         billingPeriod: updatedBillData.billingPeriod,
         touConsumption: updatedBillData.consumption.peakOnPeak !== undefined
@@ -70,31 +81,36 @@ function App() {
               offPeak: updatedBillData.consumption.offPeak || 0,
             }
           : undefined,
-        voltageType: 'low_voltage' as const,
-        phase: 'single' as const,
+        voltageType: updatedBillData.voltageType === '220' ? 'low_voltage' as const : 'low_voltage',
+        voltageV: updatedBillData.voltageType ? parseInt(updatedBillData.voltageType) : 110,
+        phase: (updatedBillData.phaseType === 'three' ? 'three' : 'single') as 'single' | 'three',
+        contractCapacity: updatedBillData.contractCapacity,
         estimationSettings: {
           mode: estimationMode,
-          season: (updatedBillData.billingPeriod.start.getMonth() >= 5 &&
-                 updatedBillData.billingPeriod.start.getMonth() <= 8
-            ? 'summer'
-            : 'non_summer') as 'summer' | 'non_summer',
+          season: determineSeason(updatedBillData.billingPeriod),
         },
       };
 
       // 計算所有方案
       const calculatedResults = calculator.calculateAll(input);
 
+      // 找出非時間電價方案作為基準方案（當前方案）
+      const nonTOUPlan = calculatedResults.find(r =>
+        r.planId.includes('non_tou') || r.planId === 'residential_non_tou'
+      );
+      const baselineTotal = nonTOUPlan?.charges.total || 0;
+
       // 更新排名
       calculatedResults.forEach((result, index) => {
         result.comparison.rank = index + 1;
-        result.comparison.difference = result.charges.total -
-          (updatedBillData.currentPlan?.total || 0);
-        result.comparison.savingPercentage = (result.comparison.difference /
-          (updatedBillData.currentPlan?.total || 1)) * 100;
+        result.comparison.difference = result.charges.total - baselineTotal;
+        // 使用非時間電價作為基準計算百分比
+        result.comparison.savingPercentage = baselineTotal > 0
+          ? ((result.charges.total - baselineTotal) / baselineTotal) * 100
+          : 0;
 
-        // 標記當前方案
-        // （這裡簡化處理，假設非時間電價是當前方案）
-        if (result.planId.includes('non_tou') || result.planId === 'residential_non_tou') {
+        // 標記當前方案（非時間電價）
+        if (result.planId === nonTOUPlan?.planId) {
           result.comparison.isCurrentPlan = true;
         }
       });

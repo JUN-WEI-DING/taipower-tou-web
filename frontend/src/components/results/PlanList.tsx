@@ -39,19 +39,46 @@ export const PlanList: React.FC<PlanListProps> = ({ results }) => {
       ))}
 
       {/* 總結建議 */}
-      {results.length > 1 && results[0].charges.total !== results[results.length - 1].charges.total && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-6">
-          <h4 className="font-bold text-green-900 mb-2">💰 省錢建議</h4>
-          <p className="text-sm text-green-800">
-            如果改用「{results[0].planName}」，每月可比當前方案省
-            <span className="font-bold">
-              ${Math.abs(results[0].charges.total - (currentPlan?.charges.total || 0)).toFixed(0)}
-            </span>
-          </p>
-          <p className="text-xs text-green-700 mt-2">
-            實際省多少要看您的用電時間分佈
-          </p>
-        </div>
+      {results.length > 1 && currentPlan && (
+        (() => {
+          const cheapestPlan = results[0];
+          const currentPlanTotal = currentPlan.charges.total;
+          const cheapestIsCurrent = cheapestPlan.planId === currentPlan.planId;
+          const savings = currentPlanTotal - cheapestPlan.charges.total;
+
+          // 只有當最便宜的方案不是當前方案時，才顯示切換建議
+          if (!cheapestIsCurrent && savings > 0) {
+            return (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-6">
+                <h4 className="font-bold text-green-900 mb-2">💰 省錢建議</h4>
+                <p className="text-sm text-green-800">
+                  如果改用「{cheapestPlan.planName}」，每月可比當前方案省
+                  <span className="font-bold">${savings.toFixed(0)}</span>
+                </p>
+                <p className="text-xs text-green-700 mt-2">
+                  實際省多少要看您的用電時間分佈
+                </p>
+              </div>
+            );
+          }
+
+          // 當前方案已經是最便宜的，顯示不同提示
+          if (cheapestIsCurrent) {
+            return (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+                <h4 className="font-bold text-blue-900 mb-2">✅ 您的方案很棒</h4>
+                <p className="text-sm text-blue-800">
+                  根據您的用電習慣，「{currentPlan.planName}」已經是最划算的選擇！
+                </p>
+                <p className="text-xs text-blue-700 mt-2">
+                  如果您的用電習慣改變（例如更多在深夜用電），時間電價可能會更省錢
+                </p>
+              </div>
+            );
+          }
+
+          return null;
+        })()
       )}
     </div>
   );
