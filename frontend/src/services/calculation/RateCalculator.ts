@@ -620,9 +620,10 @@ export class RateCalculator {
 
       if (householdFee && contractCharge) {
         // 標準型時間電價：按戶計收 + 經常契約費
-        const householdAmount = phase === 'three'
-          ? 262.5 // 三相按戶計收
-          : 129.1; // 單相按戶計收
+        // 使用方案資料中的實際按戶計收費用（根據季節）
+        const householdAmount = season.name === 'summer'
+          ? householdFee.summerRate
+          : householdFee.nonSummerRate;
 
         const contractKW = this.convertAmpsToKW(contractCapacity, phase, voltageV);
         const contractRate = season.name === 'summer'

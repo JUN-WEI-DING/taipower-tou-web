@@ -11,6 +11,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
+    "test:e2e": "playwright test",
     "test-electricity": "node test.mjs",
     "browse": "./browse.sh",
     "tool": "node fe-tool.mjs",

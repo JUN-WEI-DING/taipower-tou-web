@@ -95,28 +95,43 @@ function App() {
       const calculatedResults = calculator.calculateAll(input);
 
       // 找出非時間電價方案作為基準方案（當前方案）
-      // 優先使用 residential_non_tou（表燈用電），其次 low_voltage_power（低壓電力）
+      // 明確匹配已知的非時間電價方案 ID
+      const knownBaselinePlanIds = [
+        'residential_non_tou',      // 表燈用電（非時間電價）
+        'low_voltage_power_non_tou', // 低壓電力（非時間電價）
+        'lighting_non_tou',         // 表燈用電
+      ];
+
       const nonTOUPlan = calculatedResults.find(r =>
+        knownBaselinePlanIds.includes(r.planId) ||
         r.planId === 'residential_non_tou' ||
-        (r.planId.includes('non_tou') && r.planId.includes('power'))
+        (r.planId.includes('lighting') && r.planId.includes('non_tou')) ||
+        (r.planId.includes('low_voltage') && r.planId.includes('non_tou'))
       );
 
-      // 如果沒有找到非時間電價方案，使用第一個結果作為基準
-      const actualBaseline = nonTOUPlan || calculatedResults[0];
-      const actualBaselineTotal = actualBaseline?.charges.total || 0;
+      // 只有找到非時間電價方案時才將其標記為當前方案
+      // 如果沒有找到，不使用第一個（最便宜）方案作為基準，避免錯誤標記
+      let actualBaselineTotal = 0;
+      if (nonTOUPlan) {
+        actualBaselineTotal = nonTOUPlan.charges.total;
+        // 標記非時間電價方案為當前方案
+        nonTOUPlan.comparison.isCurrentPlan = true;
+      }
 
-      // 更新排名
+      // 更新排名和比較資訊
       calculatedResults.forEach((result, index) => {
         result.comparison.rank = index + 1;
-        result.comparison.difference = result.charges.total - actualBaselineTotal;
-        // 使用非時間電價作為基準計算百分比
-        result.comparison.savingPercentage = actualBaselineTotal > 0
-          ? ((result.charges.total - actualBaselineTotal) / actualBaselineTotal) * 100
-          : 0;
 
-        // 標記當前方案（非時間電價）
-        if (result.planId === actualBaseline?.planId) {
-          result.comparison.isCurrentPlan = true;
+        // 只有在找到非時間電價基準方案時才計算差異和百分比
+        if (nonTOUPlan) {
+          result.comparison.difference = result.charges.total - actualBaselineTotal;
+          result.comparison.savingPercentage = actualBaselineTotal > 0
+            ? ((result.charges.total - actualBaselineTotal) / actualBaselineTotal) * 100
+            : 0;
+        } else {
+          // 沒有非時間電價基準方案時，不計算差異（避免錯誤標記）
+          result.comparison.difference = 0;
+          result.comparison.savingPercentage = 0;
         }
       });
 

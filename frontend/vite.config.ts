@@ -13,8 +13,18 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     fs: {
-      // 允許訪問 node_modules 中的 Tesseract worker 檔案
-      strict: false,
+      // 啟用嚴格模式，只允許訪問特定目錄
+      strict: true,
+      // 允許訪問專案目錄和 node_modules（用於 Tesseract worker）
+      allow: [
+        // 工作目錄
+        '.',
+        // 父目錄（用於 monorepo 設定）
+        '..',
+        // node_modules 用於 Tesseract worker
+        '/node_modules',
+        '/Users/macmini/Project/taipower-tou-web/node_modules',
+      ],
     },
   },
 
@@ -51,6 +61,12 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    // 排除 E2E 測試，避免 Vitest 執行 Playwright 規格
+    exclude: [
+      'node_modules',
+      'dist',
+      'tests/e2e/**',
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

@@ -91,15 +91,6 @@ export type Period = 'peak' | 'semi_peak' | 'off_peak' | 'flat';
 export type DayType = 'weekday' | 'saturday' | 'sunday_holiday';
 
 /**
- * 時段定義
- */
-export interface TimeSlot {
-  period: Period;
-  start: string; // "HH:MM"
-  end: string;   // "HH:MM"
-}
-
-/**
  * 最低用電規則
  */
 export interface MinimumUsageRule {
