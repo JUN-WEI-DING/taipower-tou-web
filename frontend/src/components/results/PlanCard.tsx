@@ -63,7 +63,25 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
       </div>
 
       {/* 費用明細 */}
-      {result.breakdown.tierBreakdown && result.breakdown.tierBreakdown.length > 0 && (
+      {result.breakdown.touBreakdown && result.breakdown.touBreakdown.length > 0 ? (
+        <div className="border-t border-gray-100 pt-3 mt-3">
+          <p className="text-xs font-medium text-gray-700 mb-2">時段用電明細：</p>
+          {result.breakdown.touBreakdown.map((item, i) => {
+            const periodLabel = item.period === 'peak' ? '尖峰' :
+                               item.period === 'semi_peak' ? '半尖峰' :
+                               item.period === 'off_peak' ? '離峰' :
+                               item.label || '其他';
+            return (
+              <div key={i} className="flex justify-between text-xs py-1">
+                <span className="text-gray-600">
+                  {periodLabel} ({item.kwh.toFixed(1)} 度)
+                </span>
+                <span className="font-mono">${item.charge.toFixed(1)}</span>
+              </div>
+            );
+          })}
+        </div>
+      ) : result.breakdown.tierBreakdown && result.breakdown.tierBreakdown.length > 0 && (
         <div className="border-t border-gray-100 pt-3 mt-3">
           <p className="text-xs font-medium text-gray-700 mb-2">累進費率明細：</p>
           {result.breakdown.tierBreakdown.map((tier, i) => (

@@ -3,13 +3,22 @@ import type { Plan, PlansData, TierRate, EnergyChargeRate, BasicChargeRate, Time
 /**
  * Raw plan data from JSON
  */
+interface BasicFeeEntry {
+  label: string;
+  unit: string;
+  cost?: number;
+  summer?: number;
+  non_summer?: number;
+}
+
 interface RawPlan {
   id: string;
   name: string;
-  type: 'TIERED' | 'TOU' | 'FULL_TOU';
-  category: 'lighting' | 'residential' | 'commercial';
+  type: 'TIERED' | 'TOU' | 'FULL_TOU' | 'NON_TOU';
+  category: 'lighting' | 'residential' | 'commercial' | 'low_voltage' | 'high_voltage' | 'extra_high_voltage';
   season_strategy: string;
   basic_fee?: number;
+  basic_fees?: BasicFeeEntry[];
   over_2000_kwh_surcharge?: number;  // 方案層級的超額附加費率
   tiers?: Array<{ min: number; max: number | null; summer: number; non_summer: number }>;
   rates?: Array<{ season: string; period: string; cost: number }>;
@@ -90,7 +99,19 @@ export class PlansLoader {
       return this.data!;
     } catch (error) {
       console.error('Error loading plans:', error);
-      throw error;
+
+      // 提供更詳細的錯誤訊息
+      if (error instanceof Error) {
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+          throw new Error('無法連線到伺服器載入費率資料，請檢查網路連線');
+        } else if (error.message.includes('404')) {
+          throw new Error('找不到費率資料檔案 (plans.json)');
+        } else if (error.message.includes('JSON')) {
+          throw new Error('費率資料格式錯誤');
+        }
+      }
+
+      throw new Error('載入費率資料失敗，請重新整理頁面');
     }
   }
 
@@ -100,7 +121,8 @@ export class PlansLoader {
   private static transformPlan(raw: RawPlan): Plan {
     // 決定 touType
     let touType: 'none' | 'simple_2_tier' | 'simple_3_tier' | 'full_tou';
-    if (raw.type === 'TIERED') {
+    if (raw.type === 'TIERED' || raw.type === 'NON_TOU') {
+      // TIERED 和 NON_TOU 都是非時間電價
       touType = 'none';
     } else if (raw.id.includes('simple_2_tier') || raw.id.includes('二段式')) {
       touType = 'simple_2_tier';
@@ -111,23 +133,75 @@ export class PlansLoader {
     }
 
     // 決定 type (從 category 對映)
+    // lighting = 表燈用電，low_voltage = 低壓電力（住家用電）
     let type: 'residential' | 'lighting' | 'commercial';
     if (raw.category === 'lighting') {
       type = 'lighting';
-    } else if (raw.category === 'residential') {
+    } else if (raw.category === 'residential' || raw.category === 'low_voltage') {
       type = 'residential';
     } else {
       type = 'commercial';
     }
 
     // 轉換基本電費
-    const basicCharges: BasicChargeRate[] = [{
-      voltageType: 'low_voltage',
-      phase: 'single',
-      capacityRange: { min: 0, max: null },
-      summerRate: raw.basic_fee || raw.billing_rules?.min_monthly_fee || 75,
-      nonSummerRate: raw.basic_fee || raw.billing_rules?.min_monthly_fee || 75,
-    }];
+    // 對於標準型時間電價，需要保留所有 basic_fees 資訊
+    let basicCharges: BasicChargeRate[] = [];
+    let baseCharge = 0;
+
+    if (raw.basic_fee) {
+      // 簡易型時間電價：固定基本電費
+      baseCharge = raw.basic_fee;
+      basicCharges = [{
+        voltageType: 'low_voltage',
+        phase: 'single',
+        capacityRange: { min: 0, max: null },
+        summerRate: baseCharge,
+        nonSummerRate: baseCharge,
+      }];
+    } else if (raw.basic_fees && raw.basic_fees.length > 0) {
+      // 標準型時間電價：有多個基本電費專案
+      // 將每個 basic_fee 轉換為 BasicChargeRate
+      basicCharges = raw.basic_fees.map(fee => {
+        const phase = fee.label.includes('三相') ? 'three' : 'single';
+        const capacityRange = fee.unit === 'per_kw_month'
+          ? { min: 1, max: null }  // 經常契約按 kW 計算
+          : { min: 0, max: null }; // 按戶計收
+
+        return {
+          voltageType: 'low_voltage',
+          phase,
+          capacityRange,
+          summerRate: fee.summer || fee.cost || 0,
+          nonSummerRate: fee.non_summer || fee.cost || 0,
+        };
+      });
+
+      // 設定 baseCharge 為按戶計收的單相費用（作為後備）
+      const perHouseholdSingle = raw.basic_fees.find(fee =>
+        fee.label.includes('按戶計收') && fee.label.includes('單相')
+      );
+      baseCharge = perHouseholdSingle?.cost || 0;
+    } else if (raw.billing_rules?.min_monthly_fee) {
+      // 非時間電價：最低月費
+      baseCharge = raw.billing_rules.min_monthly_fee;
+      basicCharges = [{
+        voltageType: 'low_voltage',
+        phase: 'single',
+        capacityRange: { min: 0, max: null },
+        summerRate: baseCharge,
+        nonSummerRate: baseCharge,
+      }];
+    } else {
+      // 預設值
+      baseCharge = raw.type === 'TIERED' ? 100 : 75;
+      basicCharges = [{
+        voltageType: 'low_voltage',
+        phase: 'single',
+        capacityRange: { min: 0, max: null },
+        summerRate: baseCharge,
+        nonSummerRate: baseCharge,
+      }];
+    }
 
     // 轉換流動電費 (TOU) 或累進費率 (TIERED)
     const energyCharges = {
@@ -204,6 +278,12 @@ export class PlansLoader {
       };
     }
 
+    // 決定電壓型別（從 category 對映）
+    let voltage: 'low_voltage' | 'high_voltage' = 'low_voltage';
+    if (raw.category === 'high_voltage' || raw.category === 'extra_high_voltage') {
+      voltage = 'high_voltage';
+    }
+
     return {
       id: raw.id,
       name: raw.name,
@@ -211,7 +291,7 @@ export class PlansLoader {
       type,
       category: raw.category,
       touType,
-      voltage: 'low_voltage',
+      voltage,
       phase: 'single',
       requiresMeter: touType !== 'none',
       minimumConsumption: null,
@@ -225,7 +305,7 @@ export class PlansLoader {
       },
       billingRules,
       raw: {
-        basic_fee: raw.basic_fee,
+        basic_fee: raw.basic_fee || baseCharge,
         billing_rules: billingRules,
       },
     };
@@ -358,13 +438,22 @@ export class PlansLoader {
       return contractCapacity * 2;
     }
 
+    // 檢查是否有門檻值
+    const hasThreshold = matchingRule.ampere_threshold !== undefined &&
+                         matchingRule.ampere_threshold !== null;
+
+    if (!hasThreshold) {
+      // 沒有門檻，直接用費率計算
+      return contractCapacity * matchingRule.kwh_per_ampere;
+    }
+
     // 根據規則計算最低用電
-    if (contractCapacity <= matchingRule.ampere_threshold) {
+    if (contractCapacity <= matchingRule.ampere_threshold!) {
       return contractCapacity * matchingRule.kwh_per_ampere;
     } else {
       // 超過門檻的部分使用不同的費率
-      const thresholdPart = matchingRule.ampere_threshold * matchingRule.kwh_per_ampere;
-      const overPart = (contractCapacity - matchingRule.ampere_threshold) *
+      const thresholdPart = matchingRule.ampere_threshold! * matchingRule.kwh_per_ampere;
+      const overPart = (contractCapacity - matchingRule.ampere_threshold!) *
                        (matchingRule.kwh_per_ampere_over || matchingRule.kwh_per_ampere);
       return thresholdPart + overPart;
     }

@@ -40,6 +40,24 @@ export enum EstimationMode {
 }
 
 /**
+ * 時段定義
+ */
+export interface TimeSlot {
+  period: Period;
+  start: string; // "HH:MM"
+  end: string;   // "HH:MM"
+}
+
+/**
+ * 每日用電模式
+ */
+export interface DailyUsagePattern {
+  weekday: number;  // 週一至週五每日用電
+  saturday: number; // 週六用電
+  sunday: number;   // 週日/假日用電
+}
+
+/**
  * 拆分模式（兩段式 → 三段式）
  */
 export enum SplitMode {
@@ -82,6 +100,28 @@ export interface TimeSlot {
 }
 
 /**
+ * 最低用電規則
+ */
+export interface MinimumUsageRule {
+  label: string;
+  phase: 'single' | 'three';
+  voltage_v: number;
+  ampere_threshold: number;
+  kwh_per_ampere: number;
+  kwh_per_ampere_over?: number;
+}
+
+/**
+ * 計費規則
+ */
+export interface BillingRules {
+  min_monthly_fee?: number;
+  minimum_usage_rules_ref?: string;
+  billing_cycle_months?: number;
+  over_2000_kwh_surcharge?: { threshold_kwh: number; cost_per_kwh: number };
+}
+
+/**
  * 費率方案
  */
 export interface Plan {
@@ -89,6 +129,7 @@ export interface Plan {
   name: string;
   nameEn: string;
   type: 'residential' | 'lighting' | 'commercial';
+  category?: 'lighting' | 'residential' | 'commercial' | 'low_voltage' | 'high_voltage' | 'extra_high_voltage';
   touType: 'none' | 'simple_2_tier' | 'simple_3_tier' | 'full_tou';
   voltage: 'low_voltage' | 'high_voltage';
   phase?: 'single' | 'three';
@@ -116,6 +157,15 @@ export interface Plan {
   seasons: {
     summer: Season;
     nonSummer: Season;
+  };
+
+  // 計費規則（最低用電、基本電費等）
+  billingRules?: BillingRules;
+
+  // 原始資料（用於訪問最低用電規則等）
+  raw?: {
+    basic_fee?: number;
+    billing_rules?: BillingRules;
   };
 }
 
@@ -224,9 +274,13 @@ export interface BillData {
   billingPeriod: BillingPeriod;
   consumption: Consumption & Partial<TOUConsumption>;
   currentPlan?: CurrentPlan;
+  // 契約容量資訊 - 影響基本電費和最低用電計算
+  contractCapacity?: number; // 安培數 (10, 15, 20, etc.)
+  voltageType?: '110' | '220'; // 電壓型別
+  phaseType?: 'single' | 'three'; // 相位型別
   ocrMetadata?: {
     confidence: number;
-    fieldConfidences: { [key: string]: number };
+    fieldConfidences: { [field: string]: number };
     processingTime: number;
   };
   source: {
@@ -246,6 +300,7 @@ export interface CalculationInput {
   touConsumption?: TOUConsumption;
   billingPeriod: BillingPeriod;
   voltageType: 'low_voltage' | 'high_voltage';
+  voltageV?: number; // 實際電壓值 (110, 220, etc.) - 用於最低用電計算
   phase: 'single' | 'three';
   contractCapacity?: number;
   estimationSettings?: {
@@ -277,6 +332,7 @@ export interface BreakdownItem {
   kwh: number;
   rate: number;
   charge: number;
+  label?: string; // 用於特殊專案如附加費（此時 period 為空）
 }
 
 /**

@@ -82,7 +82,7 @@ function App() {
             }
           : undefined,
         voltageType: 'low_voltage', // 住宅使用者都是低壓 (110V 或 220V)
-        voltageV: updatedBillData.voltageType ? parseInt(updatedBillData.voltageType) : 110,
+        voltageV: updatedBillData.voltageType ? parseInt(updatedBillData.voltageType, 10) : 110,
         phase: (updatedBillData.phaseType === 'three' ? 'three' : 'single') as 'single' | 'three',
         contractCapacity: updatedBillData.contractCapacity,
         estimationSettings: {
@@ -95,22 +95,27 @@ function App() {
       const calculatedResults = calculator.calculateAll(input);
 
       // 找出非時間電價方案作為基準方案（當前方案）
+      // 優先使用 residential_non_tou（表燈用電），其次 low_voltage_power（低壓電力）
       const nonTOUPlan = calculatedResults.find(r =>
-        r.planId.includes('non_tou') || r.planId === 'residential_non_tou'
+        r.planId === 'residential_non_tou' ||
+        (r.planId.includes('non_tou') && r.planId.includes('power'))
       );
-      const baselineTotal = nonTOUPlan?.charges.total || 0;
+
+      // 如果沒有找到非時間電價方案，使用第一個結果作為基準
+      const actualBaseline = nonTOUPlan || calculatedResults[0];
+      const actualBaselineTotal = actualBaseline?.charges.total || 0;
 
       // 更新排名
       calculatedResults.forEach((result, index) => {
         result.comparison.rank = index + 1;
-        result.comparison.difference = result.charges.total - baselineTotal;
+        result.comparison.difference = result.charges.total - actualBaselineTotal;
         // 使用非時間電價作為基準計算百分比
-        result.comparison.savingPercentage = baselineTotal > 0
-          ? ((result.charges.total - baselineTotal) / baselineTotal) * 100
+        result.comparison.savingPercentage = actualBaselineTotal > 0
+          ? ((result.charges.total - actualBaselineTotal) / actualBaselineTotal) * 100
           : 0;
 
         // 標記當前方案（非時間電價）
-        if (result.planId === nonTOUPlan?.planId) {
+        if (result.planId === actualBaseline?.planId) {
           result.comparison.isCurrentPlan = true;
         }
       });
@@ -119,7 +124,21 @@ function App() {
       setStage('result');
     } catch (error) {
       console.error('Error calculating plans:', error);
-      setCalculationError('計算失敗，請重試');
+      let errorMessage = '計算失敗，請重試';
+
+      if (error instanceof Error) {
+        if (error.message.includes('Failed to load')) {
+          errorMessage = '無法載入費率資料，請檢查網路連線';
+        } else if (error.message.includes('Custom percentages')) {
+          errorMessage = '自訂比例總和必須是 100%';
+        } else if (error.message.includes('consumption')) {
+          errorMessage = '用電度數無效，請重新輸入';
+        } else {
+          errorMessage = `計算錯誤：${error.message}`;
+        }
+      }
+
+      setCalculationError(errorMessage);
     }
   };
 
@@ -274,9 +293,21 @@ function App() {
 
         {stage === 'result' && results.length > 0 && (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">
-              方案比較結果
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">
+                方案比較結果
+              </h2>
+              {/* 季節指示器 */}
+              {billData && (
+                <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                  determineSeason(billData.billingPeriod) === 'summer'
+                    ? 'bg-red-100 text-red-800'
+                    : 'bg-blue-100 text-blue-800'
+                }`}>
+                  {determineSeason(billData.billingPeriod) === 'summer' ? '🌞 夏季費率 (6-9月)' : '❄️ 非夏季費率 (10-5月)'}
+                </div>
+              )}
+            </div>
 
             {/* 圖表 */}
             <div className="bg-white rounded-lg shadow p-6">

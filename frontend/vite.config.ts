@@ -12,7 +12,10 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     strictPort: true,
-    // 移除 proxy，因為是純前端
+    fs: {
+      // 允許訪問 node_modules 中的 Tesseract worker 檔案
+      strict: false,
+    },
   },
 
   build: {
@@ -34,6 +37,12 @@ export default defineConfig({
 
   optimizeDeps: {
     include: ['tesseract.js', 'recharts'],
+  },
+
+  // 全域定義，讓 Tesseract 可以正確載入 worker
+  define: {
+    // Tesseract.js 在生產環境需要知道正確的 base 路徑
+    'import.meta.env.BASE_URL': JSON.stringify(process.env.VITE_BASE_URL || '/taipower-tou-web/'),
   },
 
   // Vitest 設定 (test property is injected by vitest)

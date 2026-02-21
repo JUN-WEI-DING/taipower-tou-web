@@ -20,10 +20,9 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
     offPeak: number;
   }>({ peakOnPeak: 33, semiPeak: 33, offPeak: 34 });
   const setEstimationMode = useAppStore((state) => state.setEstimationMode);
-  const season = billData.billingPeriod.start.getMonth() >= 5 &&
-    billData.billingPeriod.start.getMonth() <= 8
-    ? 'summer'
-    : 'non_summer';
+  // 正確判斷季節：夏季是6-9月（月份索引5-8），非夏季是10-5月
+  const month = billData.billingPeriod.start.getMonth() + 1; // 1-12
+  const season = (month >= 6 && month <= 9) ? 'summer' : 'non_summer';
 
   const totalConsumption = billData.consumption.usage;
 

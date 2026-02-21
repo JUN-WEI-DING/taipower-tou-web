@@ -94,6 +94,15 @@ export class RateCalculator {
    * 計算所有可用方案
    */
   calculateAll(input: CalculationInput): PlanCalculationResult[] {
+    // 驗證輸入
+    if (!input || typeof input.consumption !== 'number' || input.consumption <= 0) {
+      throw new Error('用電度數必須大於 0');
+    }
+
+    if (!input.billingPeriod || !input.billingPeriod.start || !input.billingPeriod.end) {
+      throw new Error('計費期間無效');
+    }
+
     const season = this.determineSeason(input.billingPeriod);
     const processedInput = this.ensureTOUData(input, season);
 
@@ -142,7 +151,7 @@ export class RateCalculator {
   }
 
   /**
-   * 非時間電價（累進費率）計算
+   * 非時間電價（累進費率或固定費率）計算
    */
   private calculateNonTOU(
     plan: Plan,
@@ -166,30 +175,47 @@ export class RateCalculator {
     const billableConsumption = Math.max(input.consumption, minimumUsage);
 
     let totalEnergyCharge = 0;
-    let remainingKwh = billableConsumption;
     const tierBreakdown: BreakdownItem[] = [];
 
     const isSummer = season.name === 'summer';
 
-    for (const tier of tierRates) {
-      if (remainingKwh <= 0) break;
+    // 檢查是否有固定費率（flat rate）
+    const seasonKey = season.name === 'summer' ? 'summer' : 'nonSummer';
+    const flatRate = plan.energyCharges[seasonKey].find(r => r.period === 'flat');
 
-      const tierMaxKwh = tier.maxKwh ?? Infinity;
-      const tierMinKwh = tier.minKwh;
-      const tierRange = tierMaxKwh - tierMinKwh;
-      const kwhInTier = Math.min(remainingKwh, tierRange);
-      const rate = isSummer ? tier.summerRate : tier.nonSummerRate;
-      const charge = kwhInTier * rate;
-
-      totalEnergyCharge += charge;
-      remainingKwh -= kwhInTier;
-
+    if (flatRate && tierRates.length === 0) {
+      // 使用固定費率計算（如低壓電力非時間電價）
+      totalEnergyCharge = billableConsumption * flatRate.rate;
       tierBreakdown.push({
-        tier: tier.tier,
-        kwh: kwhInTier,
-        rate: rate,
-        charge: charge,
+        kwh: billableConsumption,
+        rate: flatRate.rate,
+        charge: totalEnergyCharge,
+        label: '固定費率',
       });
+    } else if (tierRates.length > 0) {
+      // 使用累進費率計算
+      let remainingKwh = billableConsumption;
+
+      for (const tier of tierRates) {
+        if (remainingKwh <= 0) break;
+
+        const tierMaxKwh = tier.maxKwh ?? Infinity;
+        const tierMinKwh = tier.minKwh;
+        const tierRange = tierMaxKwh - tierMinKwh;
+        const kwhInTier = Math.min(remainingKwh, tierRange);
+        const rate = isSummer ? tier.summerRate : tier.nonSummerRate;
+        const charge = kwhInTier * rate;
+
+        totalEnergyCharge += charge;
+        remainingKwh -= kwhInTier;
+
+        tierBreakdown.push({
+          tier: tier.tier,
+          kwh: kwhInTier,
+          rate: rate,
+          charge: charge,
+        });
+      }
     }
 
     // 基本電費（依契約容量）
@@ -287,7 +313,6 @@ export class RateCalculator {
     const offPeakCharge = adjustedOffPeak * offPeakRate;
 
     // 兩段式時間電價沒有半尖峰費率，將半尖峰度數按比例分配到尖峰和離峰
-    let semiPeakCharge = 0;
     let finalPeakCharge = peakCharge;
     let finalOffPeakCharge = offPeakCharge;
     let finalPeakKwh = adjustedPeakOnPeak;
@@ -544,10 +569,30 @@ export class RateCalculator {
   }
 
   /**
+   * 將契約容量（安培數）轉換為功率（kW）
+   * 標準型時間電價需要用 kW 來計算基本電費
+   */
+  private convertAmpsToKW(
+    amps: number,
+    phase: 'single' | 'three',
+    voltageV: number
+  ): number {
+    if (phase === 'three') {
+      // 三相：kW = A * V * √3 / 1000
+      return (amps * voltageV * Math.sqrt(3)) / 1000;
+    } else {
+      // 單相：kW = A * V / 1000
+      return (amps * voltageV) / 1000;
+    }
+  }
+
+  /**
    * 計算基本電費
    * 根據臺電實際規則：
-   * 1. 基本電費依契約容量計算
-   * 2. 有最低用電度數要求，低於最低度數仍按最低度數計費
+   * 1. 簡易型時間電價：固定基本電費（如 $75）
+   * 2. 標準型時間電價：按戶計收 + 經常契約費（按 kW 計算）
+   * 3. 低壓電力：裝置契約費（按 kW 計算）
+   * 4. 非時間電價：最低月費（如 $100）
    */
   private calculateBasicCharge(
     plan: Plan,
@@ -556,43 +601,73 @@ export class RateCalculator {
   ): number {
     const contractCapacity = input.contractCapacity || 10; // 預設 10A
     const phase = input.phase || 'single';
-    const voltageType = input.voltageType || 'low_voltage';
+    const voltageV = input.voltageV || 110;
 
-    // 計算最低用電度數（根據契約容量）
-    const voltageV = voltageType === 'low_voltage' ?
-      input.voltageV || 110 : // 從 input 獲取實際電壓，預設 110V
-      220; // 高壓預設 220V
+    // 檢查是否為標準型時間電價或低壓電力（需要從 basic_fees 計算）
+    if (plan.raw && plan.basicCharges && plan.basicCharges.length > 0) {
+      // 標準型時間電價：按戶計收 + 經常契約費
+      // 低壓電力：裝置契約費（按 kW 計算）
 
-    // 如果實際用電低於最低用電，仍按最低用電計算基本電費
-    // 這裡返回最低計費金額，不是基本電費本身
-    // 實際的基本電費計算較複雜，這裡使用簡化版本
+      // 1. 找出按戶計收的費用（單相或三相）- 只有標準型時間電價有
+      const householdFee = plan.basicCharges.find(charge =>
+        charge.capacityRange.min === 0 && charge.capacityRange.max === null
+      );
 
-    // 使用方案定義的基本電費或最低月費
-    let baseCharge = 0;
+      // 2. 找出契約費率（裝置契約或經常契約）
+      const contractCharge = plan.basicCharges.find(charge =>
+        charge.capacityRange.min !== 0 || charge.capacityRange.max !== null
+      );
 
+      if (householdFee && contractCharge) {
+        // 標準型時間電價：按戶計收 + 經常契約費
+        const householdAmount = phase === 'three'
+          ? 262.5 // 三相按戶計收
+          : 129.1; // 單相按戶計收
+
+        const contractKW = this.convertAmpsToKW(contractCapacity, phase, voltageV);
+        const contractRate = season.name === 'summer'
+          ? contractCharge.summerRate
+          : contractCharge.nonSummerRate;
+        const contractAmount = contractRate * contractKW;
+
+        return householdAmount + contractAmount;
+      }
+
+      if (contractCharge && !householdFee) {
+        // 低壓電力：只有契約費（按 kW 計算）
+        const contractKW = this.convertAmpsToKW(contractCapacity, phase, voltageV);
+        const contractRate = season.name === 'summer'
+          ? (contractCharge.summerRate || contractCharge.nonSummerRate)
+          : contractCharge.nonSummerRate;
+        return contractRate * contractKW;
+      }
+    }
+
+    // 簡易型時間電價：使用固定基本電費
     if (plan.raw?.basic_fee) {
-      // TOU 方案有明確的基本電費
-      baseCharge = plan.raw.basic_fee;
-    } else if (plan.billingRules?.min_monthly_fee) {
-      // 非時間電價使用最低月費
-      baseCharge = plan.billingRules.min_monthly_fee;
-    } else if (plan.basicCharges && plan.basicCharges.length > 0) {
-      // 使用基本電費表中的第一個
+      // 簡易型的基本電費是固定的，不隨契約容量變化
+      return plan.raw.basic_fee;
+    }
+
+    // 非時間電價：使用最低月費
+    if (plan.billingRules?.min_monthly_fee) {
+      // 最低月費依契約容量調整（10A 是基準）
+      const minMonthlyFee = plan.billingRules.min_monthly_fee;
+      if (contractCapacity !== 10) {
+        return (minMonthlyFee * contractCapacity) / 10;
+      }
+      return minMonthlyFee;
+    }
+
+    // 如果沒有其他資訊，使用 basicCharges 的第一個
+    if (plan.basicCharges && plan.basicCharges.length > 0) {
       const basicChargeData = plan.basicCharges[0];
-      baseCharge = season.name === 'summer' ?
-        basicChargeData.summerRate :
-        basicChargeData.nonSummerRate;
+      return season.name === 'summer'
+        ? basicChargeData.summerRate
+        : basicChargeData.nonSummerRate;
     }
 
-    // 根據契約容量調整基本電費
-    // 臺電規則：基本電費與契約容量成正比
-    // 10A = $100 (最低月費)，其他容量按比例
-    if (contractCapacity !== 10 && baseCharge > 0) {
-      // 假設 10A 是基準
-      baseCharge = (baseCharge * contractCapacity) / 10;
-    }
-
-    return baseCharge;
+    return 0;
   }
 
   /**
@@ -819,18 +894,25 @@ export class RateCalculator {
 
   /**
    * 取得可用的方案
-   * 只顯示住家/表燈用電方案，過濾掉高壓/特高壓/電動車等工業用方案
+   * 只顯示住家/表燈用電方案，過濾掉高壓/特高壓/電動車/營業用等工業用方案
    */
   private getAvailablePlans(): Plan[] {
     return this.plans.filter((plan) => {
-      // 只包含住家用電和表燈用電（住宅用、非營業用）
+      // 只包含住家用電、表燈用電和低壓用電（住宅用、非營業用）
       // 注意：category 欄位才是真正的用電類別，type 只是費率型別 (TIERED/TOU)
-      if (plan.category !== 'lighting' && plan.category !== 'residential') {
+      // lighting = 表燈用電，low_voltage = 低壓電力（住家用電）
+      const isResidential = plan.category === 'lighting' ||
+                           plan.category === 'residential' ||
+                           plan.category === 'low_voltage';
+
+      if (!isResidential) {
         return false;
       }
 
-      // 過濾掉營業用方案
-      if (plan.id.includes('business') || plan.id.includes('營業')) {
+      // 過濾掉營業用方案（檢查 ID 和名稱）
+      const isBusiness = plan.id.includes('business') ||
+                        plan.name.includes('營業');
+      if (isBusiness) {
         return false;
       }
 
@@ -838,6 +920,8 @@ export class RateCalculator {
       if (plan.id.includes('ev') || plan.id.includes('電動車')) {
         return false;
       }
+
+      // 過濾掉批次用電方案
       if (plan.id.includes('batch') || plan.id.includes('批次')) {
         return false;
       }

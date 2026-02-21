@@ -7,6 +7,9 @@ export const ManualInputForm: React.FC = () => {
   const [consumption, setConsumption] = useState('');
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
+  const [contractCapacity, setContractCapacity] = useState('10'); // Default to 10A
+  const [voltageType, setVoltageType] = useState<'110' | '220'>('110'); // Default to 110V
+  const [phaseType, setPhaseType] = useState<'single' | 'three'>('single'); // Default to single phase
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -42,6 +45,10 @@ export const ManualInputForm: React.FC = () => {
         usage,
         multiplier: 1,
       },
+      // 新增契約容量資訊
+      contractCapacity: parseInt(contractCapacity),
+      voltageType: voltageType as '110' | '220',
+      phaseType: phaseType as 'single' | 'three',
       source: {
         type: 'manual',
         completenessLevel: DataCompletenessLevel.TOTAL_ONLY,
@@ -51,6 +58,7 @@ export const ManualInputForm: React.FC = () => {
 
     setBillData(billData);
     setStage('confirm');
+    setIsSubmitting(false);
   };
 
   return (
@@ -111,6 +119,63 @@ export const ManualInputForm: React.FC = () => {
             <p className="text-xs text-orange-600 mt-1">
               ⚠️ 夏季(6-9月)與非夏季(10-5月)電價不同，請選擇電費單上的月份
             </p>
+          </div>
+
+          {/* 契約容量 - 重要！影響基本電費 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              契約容量 <span className="text-red-500">*</span>
+            </label>
+            <select
+              value={contractCapacity}
+              onChange={(e) => setContractCapacity(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="10">10 A (最常見)</option>
+              <option value="15">15 A</option>
+              <option value="20">20 A</option>
+              <option value="30">30 A</option>
+              <option value="40">40 A</option>
+              <option value="50">50 A</option>
+              <option value="60">60 A</option>
+              <option value="70">70 A</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              💡 您的電費單上會有「契約容量」，例如「10A」「20A」等
+            </p>
+          </div>
+
+          {/* 相位型別 - 影響基本電費計算 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              相位型別
+            </label>
+            <select
+              value={phaseType}
+              onChange={(e) => setPhaseType(e.target.value as 'single' | 'three')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="single">單相 (最常見)</option>
+              <option value="three">三相 (大型家電/需申裝)</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              💡 一般住宅都是單相，三相需要特殊申裝
+            </p>
+          </div>
+
+          {/* 電壓型別 - 影響最低用電計算 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              電壓型別
+            </label>
+            <select
+              value={voltageType}
+              onChange={(e) => setVoltageType(e.target.value as '110' | '220')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="110">110V (一般家電)</option>
+              <option value="220">220V (大型家電)</option>
+            </select>
           </div>
 
           {/* 用電度數輸入 */}

@@ -10,7 +10,12 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "test-electricity": "node test.mjs",
+    "browse": "./browse.sh",
+    "tool": "node fe-tool.mjs",
+    "check": "node check.mjs",
+    "workspace": "node fe-workspace.mjs"
   },
   "dependencies": {
     "@types/papaparse": "^5.5.2",

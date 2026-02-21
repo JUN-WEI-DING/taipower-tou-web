@@ -216,6 +216,33 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
           )}
         </div>
 
+        {/* 相位型別 - 影響基本電費計算 */}
+        <div>
+          <label className="text-sm text-gray-600">相位型別</label>
+          {isEditing ? (
+            <select
+              value={editedData.phaseType || 'single'}
+              onChange={(e) => {
+                setEditedData({
+                  ...editedData,
+                  phaseType: e.target.value as 'single' | 'three',
+                });
+              }}
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="single">單相 (最常見)</option>
+              <option value="three">三相 (大型家電/需申裝)</option>
+            </select>
+          ) : (
+            <p className="text-lg font-medium">{billData.phaseType === 'three' ? '三相' : '單相'}</p>
+          )}
+          {!isEditing && (
+            <p className="text-xs text-gray-500 mt-1">
+              💡 影響基本電費計算
+            </p>
+          )}
+        </div>
+
         {/* 時段用電 - 可編輯 */}
         {(billData.consumption.peakOnPeak !== undefined ||
           billData.consumption.offPeak !== undefined ||

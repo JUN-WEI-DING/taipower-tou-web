@@ -30,6 +30,7 @@ export class OCRService {
     }
 
     try {
+      // 使用簡化的初始化，讓 Tesseract 自動處理 worker 路徑
       this.worker = await Tesseract.createWorker(this.config.language);
     } catch (error) {
       console.error('Failed to initialize OCR worker:', error);

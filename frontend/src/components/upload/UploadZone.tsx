@@ -44,6 +44,10 @@ export const UploadZone: React.FC = () => {
         billingPeriod: parsedBill.billingPeriod,
         consumption: parsedBill.consumption,
         currentPlan: parsedBill.currentPlan,
+        // 新增契約容量資訊（OCR 可能無法識別，設為預設值供使用者編輯）
+        contractCapacity: 10, // 預設 10A
+        voltageType: '110', // 預設 110V
+        phaseType: 'single', // 預設單相
         ocrMetadata: {
           confidence: ocrResult.confidence,
           fieldConfidences: parsedBill.confidences,
@@ -66,7 +70,19 @@ export const UploadZone: React.FC = () => {
     } catch (error) {
       console.error('Error processing image:', error);
       setOcrStatus('error');
-      setErrorMessage('圖片處理失敗，請確認圖片清晰並重試');
+
+      let errorMsg = '圖片處理失敗，請確認圖片清晰並重試';
+      if (error instanceof Error) {
+        if (error.message.includes('Network') || error.message.includes('fetch')) {
+          errorMsg = '網路連線錯誤，請檢查您的網路連線';
+        } else if (error.message.includes('memory') || error.message.includes('Memory')) {
+          errorMsg = '圖片檔案太大，請使用較小的圖片';
+        } else if (error.message.includes('format') || error.message.includes('decode')) {
+          errorMsg = '不支援的圖片格式，請使用 JPG 或 PNG';
+        }
+      }
+
+      setErrorMessage(errorMsg);
     }
   }, [setUploadedImage, setBillData, setOcrStatus, setStage]);
 
