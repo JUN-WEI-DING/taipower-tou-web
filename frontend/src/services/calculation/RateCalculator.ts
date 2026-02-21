@@ -485,7 +485,7 @@ export class RateCalculator {
     let finalOffPeakKwh = adjustedOffPeak;
     let finalPeakRate = peakRate;
     let finalSemiPeakRate = semiPeakRate;
-    let finalOffPeakRate = offPeakRate;
+    const finalOffPeakRate = offPeakRate;
 
     // 如果沒有尖峰費率（如標準型三段式非夏季），將尖峰度數併入半尖峰
     if (peakRate === undefined && adjustedPeakOnPeak > 0) {

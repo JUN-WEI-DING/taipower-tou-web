@@ -6,8 +6,6 @@ import { OCRProgress } from './components/ocr/OCRProgress';
 import { DataCompletenessBanner } from './components/data/DataCompletenessBanner';
 import { UsageHabitSelector } from './components/habit/UsageHabitSelector';
 import { BillDataEditor } from './components/confirm/BillDataEditor';
-import { ManualInputForm } from './components/input/ManualInputForm';
-import { BillTypeSelector } from './components/bill-type';
 import { BillTypeInputForm } from './components/input';
 import { PlanList } from './components/results/PlanList';
 import { ResultChart } from './components/results/ResultChart';
@@ -15,7 +13,6 @@ import { PlansLoader } from './services/calculation/plans';
 import { RateCalculator } from './services/calculation/RateCalculator';
 import { DataCompletenessLevel } from './types';
 import type { CalculationInput } from './types';
-import type { BillType } from './components/bill-type';
 
 /**
  * 判斷計費期間的季節
