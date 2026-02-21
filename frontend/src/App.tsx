@@ -81,7 +81,7 @@ function App() {
               offPeak: updatedBillData.consumption.offPeak || 0,
             }
           : undefined,
-        voltageType: updatedBillData.voltageType === '220' ? 'low_voltage' as const : 'low_voltage',
+        voltageType: 'low_voltage', // 住宅使用者都是低壓 (110V 或 220V)
         voltageV: updatedBillData.voltageType ? parseInt(updatedBillData.voltageType) : 110,
         phase: (updatedBillData.phaseType === 'three' ? 'three' : 'single') as 'single' | 'three',
         contractCapacity: updatedBillData.contractCapacity,
