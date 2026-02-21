@@ -19,7 +19,7 @@ test.describe('臺電時間電價比較網站 - E2E 測試', () => {
     await page.locator('input[type="number"]').fill('350');
 
     // 提交表單
-    await page.click('button:has-text("開始比較")');
+    await page.click('button:has-text("確認並開始比較")');
 
     // 應該進入確認階段
     await expect(page.locator('h2:has-text("確認電費單資訊")')).toBeVisible();
@@ -33,7 +33,7 @@ test.describe('臺電時間電價比較網站 - E2E 測試', () => {
     await page.locator('input[type="number"]').fill('350');
 
     // 提交表單
-    await page.click('button:has-text("開始比較")');
+    await page.click('button:has-text("確認並開始比較")');
 
     // 等待確認頁面
     await expect(page.locator('h2:has-text("確認電費單資訊")')).toBeVisible();
@@ -61,7 +61,7 @@ test.describe('臺電時間電價比較網站 - E2E 測試', () => {
     await page.locator('input[type="number"]').fill('350');
 
     // 提交表單
-    await page.click('button:has-text("開始比較")');
+    await page.click('button:has-text("確認並開始比較")');
 
     // 等待確認頁面
     await expect(page.locator('h2:has-text("確認電費單資訊")')).toBeVisible();
@@ -114,8 +114,11 @@ test.describe('臺電時間電價比較網站 - E2E 測試', () => {
     const monthSelect = page.locator('select').nth(1); // 第二個 select 是月份
     await monthSelect.selectOption('7');
 
-    // 應該顯示夏季標示在下拉選項中
-    await expect(monthSelect.locator('option[value="7"]')).toContainText('夏季');
+    // 驗證月份選項已選中（季節資訊在下方提示中）
+    await expect(monthSelect).toHaveValue('7');
+
+    // 檢查是否有夏季警告提示
+    await expect(page.locator('text=夏季電價較高').or(page.locator('text=6-9月電價較高'))).toBeVisible();
   });
 
   test('季節指示器在結果頁顯示', async ({ page }) => {
@@ -127,15 +130,15 @@ test.describe('臺電時間電價比較網站 - E2E 測試', () => {
     const monthSelect = page.locator('select').nth(1);
     await monthSelect.selectOption('7');
 
-    await page.click('button:has-text("開始比較")');
+    await page.click('button:has-text("確認並開始比較")');
 
     // 選擇習慣並確認
     const habitCards = page.locator('.cursor-pointer.rounded-lg');
     await habitCards.first().click();
     await page.click('button:has-text("使用此估算結果繼續")');
 
-    // 在結果頁應該有季節指示器
-    await expect(page.locator('text=🌞 夏季費率')).toBeVisible();
+    // 在結果頁應該有季節指示器（完整文字包含月份範圍）
+    await expect(page.locator('text=夏季費率 (6-9月)').or(page.locator('text=🌞 夏季費率'))).toBeVisible();
   });
 
   test('契約容量下拉選項可選', async ({ page }) => {
@@ -153,12 +156,12 @@ test.describe('臺電時間電價比較網站 - E2E 測試', () => {
     await expect(contractSelect).toHaveValue('20');
   });
 
-  test('電壓型別下拉選項可選', async ({ page }) => {
+  test('電壓下拉選項可選', async ({ page }) => {
     // 切換到手動輸入模式
     await page.click('button:has-text("手動輸入")');
 
-    // 找電壓型別下拉選項
-    const voltageLabel = page.locator('label:has-text("電壓型別")');
+    // 找電壓下拉選項 (使用 "電壓" 標籤)
+    const voltageLabel = page.locator('label:has-text("電壓")');
     const voltageSelect = voltageLabel.locator('xpath=following-sibling::select');
 
     // 選擇 220V
@@ -168,12 +171,12 @@ test.describe('臺電時間電價比較網站 - E2E 測試', () => {
     await expect(voltageSelect).toHaveValue('220');
   });
 
-  test('相位型別下拉選項可選', async ({ page }) => {
+  test('相位下拉選項可選', async ({ page }) => {
     // 切換到手動輸入模式
     await page.click('button:has-text("手動輸入")');
 
-    // 找相位型別下拉選項
-    const phaseLabel = page.locator('label:has-text("相位型別")');
+    // 找相位下拉選項 (使用 "相位" 標籤)
+    const phaseLabel = page.locator('label:has-text("相位")');
     const phaseSelect = phaseLabel.locator('xpath=following-sibling::select');
 
     // 選擇三相
