@@ -94,39 +94,67 @@ function App() {
       // 計算所有方案
       const calculatedResults = calculator.calculateAll(input);
 
-      // 找出非時間電價方案作為基準方案（當前方案）
-      // 使用實際存在於 plans.json 的方案 ID
-      const knownBaselinePlanIds = [
-        'residential_non_tou',           // 表燈(住商)非時間電價-住宅用
-        'lighting_non_business_tiered', // 表燈(住商)非時間電價-住宅以外非營業用
-        'low_voltage_power',            // 低壓電力非時間電價
-      ];
+      // 找出當前方案作為 baseline
+      // 優先使用 OCR 識別的方案名稱，如果沒有則使用預設邏輯
+      let baselinePlan: typeof calculatedResults[0] | undefined;
 
-      const nonTOUPlan = calculatedResults.find(r =>
-        knownBaselinePlanIds.includes(r.planId)
-      );
+      if (updatedBillData.currentPlan?.name) {
+        // 使用電費單上識別的方案名稱來匹配
+        const currentPlanName = updatedBillData.currentPlan.name;
 
-      // 只有找到非時間電價方案時才將其標記為當前方案
-      // 如果沒有找到，不使用第一個（最便宜）方案作為基準，避免錯誤標記
+        // 嘗試精確匹配方案名稱
+        baselinePlan = calculatedResults.find(r => r.planName === currentPlanName);
+
+        // 如果沒找到，嘗試模糊匹配（關鍵詞匹配）
+        if (!baselinePlan) {
+          baselinePlan = calculatedResults.find(r => {
+            const resultName = r.planName.toLowerCase();
+            const searchName = currentPlanName.toLowerCase();
+
+            // 關鍵詞匹配：檢查是否包含重要的方案型別關鍵詞
+            const bothHaveTwoTier = resultName.includes('二段式') && searchName.includes('二段式');
+            const bothHaveThreeTier = resultName.includes('三段式') && searchName.includes('三段式');
+            const bothHaveSimple = resultName.includes('簡易型') && searchName.includes('簡易型');
+            const bothHaveStandard = resultName.includes('標準型') && searchName.includes('標準型');
+            const bothHaveNonTOU = (resultName.includes('非時間電價') || resultName.includes('累進')) &&
+                                  (searchName.includes('非時間電價') || searchName.includes('累進'));
+            const bothHaveLowVoltage = resultName.includes('低壓電力') && searchName.includes('低壓電力');
+
+            return bothHaveTwoTier || bothHaveThreeTier || bothHaveSimple ||
+                   bothHaveStandard || bothHaveNonTOU || bothHaveLowVoltage;
+          });
+        }
+      }
+
+      // 如果沒有從 currentPlan 找到匹配，使用預設邏輯（非時間電價作為 baseline）
+      if (!baselinePlan) {
+        const knownBaselinePlanIds = [
+          'residential_non_tou',           // 表燈(住商)非時間電價-住宅用
+          'lighting_non_business_tiered', // 表燈(住商)非時間電價-住宅以外非營業用
+          'low_voltage_power',            // 低壓電力非時間電價
+        ];
+        baselinePlan = calculatedResults.find(r => knownBaselinePlanIds.includes(r.planId));
+      }
+
+      // 標記當前方案並計算 baseline
       let actualBaselineTotal = 0;
-      if (nonTOUPlan) {
-        actualBaselineTotal = nonTOUPlan.charges.total;
-        // 標記非時間電價方案為當前方案
-        nonTOUPlan.comparison.isCurrentPlan = true;
+      if (baselinePlan) {
+        actualBaselineTotal = baselinePlan.charges.total;
+        baselinePlan.comparison.isCurrentPlan = true;
       }
 
       // 更新排名和比較資訊
       calculatedResults.forEach((result, index) => {
         result.comparison.rank = index + 1;
 
-        // 只有在找到非時間電價基準方案時才計算差異和百分比
-        if (nonTOUPlan) {
+        // 只有在找到 baseline 方案時才計算差異和百分比
+        if (baselinePlan) {
           result.comparison.difference = result.charges.total - actualBaselineTotal;
           result.comparison.savingPercentage = actualBaselineTotal > 0
             ? ((result.charges.total - actualBaselineTotal) / actualBaselineTotal) * 100
             : 0;
         } else {
-          // 沒有非時間電價基準方案時，不計算差異（避免錯誤標記）
+          // 沒有 baseline 方案時，不計算差異（避免錯誤標記）
           result.comparison.difference = 0;
           result.comparison.savingPercentage = 0;
         }
