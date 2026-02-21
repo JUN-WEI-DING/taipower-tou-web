@@ -610,12 +610,15 @@ export class RateCalculator {
 
       // 1. 找出按戶計收的費用（單相或三相）- 只有標準型時間電價有
       const householdFee = plan.basicCharges.find(charge =>
-        charge.capacityRange.min === 0 && charge.capacityRange.max === null
+        charge.capacityRange.min === 0 &&
+        charge.capacityRange.max === null &&
+        charge.phase === phase
       );
 
       // 2. 找出契約費率（裝置契約或經常契約）
       const contractCharge = plan.basicCharges.find(charge =>
-        charge.capacityRange.min !== 0 || charge.capacityRange.max !== null
+        (charge.capacityRange.min !== 0 || charge.capacityRange.max !== null) &&
+        charge.phase === phase
       );
 
       if (householdFee && contractCharge) {
