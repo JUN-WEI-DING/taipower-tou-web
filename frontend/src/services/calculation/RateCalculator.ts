@@ -609,17 +609,36 @@ export class RateCalculator {
       // 低壓電力：裝置契約費（按 kW 計算）
 
       // 1. 找出按戶計收的費用（單相或三相）- 只有標準型時間電價有
-      const householdFee = plan.basicCharges.find(charge =>
+      // 首先嘗試匹配相位，如果沒有找到則嘗試相位無關的費用
+      let householdFee = plan.basicCharges.find(charge =>
         charge.capacityRange.min === 0 &&
         charge.capacityRange.max === null &&
         charge.phase === phase
       );
 
+      // 如果沒有找到相位特定的費用，嘗試找相位無關的費用
+      if (!householdFee) {
+        householdFee = plan.basicCharges.find(charge =>
+          charge.capacityRange.min === 0 &&
+          charge.capacityRange.max === null &&
+          !charge.phase
+        );
+      }
+
       // 2. 找出契約費率（裝置契約或經常契約）
-      const contractCharge = plan.basicCharges.find(charge =>
+      // 首先嘗試匹配相位，如果沒有找到則嘗試相位無關的費用
+      let contractCharge = plan.basicCharges.find(charge =>
         (charge.capacityRange.min !== 0 || charge.capacityRange.max !== null) &&
         charge.phase === phase
       );
+
+      // 如果沒有找到相位特定的費用，嘗試找相位無關的費用
+      if (!contractCharge) {
+        contractCharge = plan.basicCharges.find(charge =>
+          (charge.capacityRange.min !== 0 || charge.capacityRange.max !== null) &&
+          !charge.phase
+        );
+      }
 
       if (householdFee && contractCharge) {
         // 標準型時間電價：按戶計收 + 經常契約費

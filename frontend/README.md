@@ -1,73 +1,60 @@
-# React + TypeScript + Vite
+# 臺電時間電價比較網站 - 測試工具
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🚀 使用方式
 
-Currently, two official plugins are available:
+### 步驟 1: 啟動 Dev Server
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+保持這個終端機開啟。
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 步驟 2: 開啟瀏覽器
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+在新終端機執行：
+
+```bash
+open http://localhost:5173/
 ```
+
+### 步驟 3: 測試功能
+
+在新終端機執行：
+
+```bash
+npm run test-electricity
+```
+
+或直接：
+
+```bash
+node test.mjs
+```
+
+## ✅ 測試結果
+
+成功會顯示：
+
+```
+✅ 測試成功！前端功能正常運作。
+```
+
+並生成截圖到：`~/Desktop/fe-test.png`
+
+## ⚠️ 重要
+
+**Dev Server 必須先啟動** - 所有功能依賴於 `npm run dev` 執行。
+
+## 📁 專案檔案
+
+- `README.md` - 本說明檔案
+- `test.mjs` - 測試指令碼
+- `package.json` - npm 配置 (包含 test-electricity 指令碼)
+
+---
+
+**簡單就是可靠** - 只需要三個命令：
+1. `npm run dev` - 啟動
+2. `open http://localhost:5173/` - 檢視
+3. `npm run test-electricity` - 測試
