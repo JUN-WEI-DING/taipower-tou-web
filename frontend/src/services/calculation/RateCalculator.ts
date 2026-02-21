@@ -626,17 +626,24 @@ export class RateCalculator {
       }
 
       // 2. 找出契約費率（裝置契約或經常契約）
-      // 首先嘗試匹配相位，如果沒有找到則嘗試相位無關的費用
+      // 需要先計算 contractKW 才能正確匹配容量範圍
+      const contractKW = this.convertAmpsToKW(contractCapacity, phase, voltageV);
+
+      // 首先嘗試匹配相位和容量範圍
       let contractCharge = plan.basicCharges.find(charge =>
-        (charge.capacityRange.min !== 0 || charge.capacityRange.max !== null) &&
-        charge.phase === phase
+        charge.phase === phase &&
+        charge.capacityRange.min !== 0 &&
+        (charge.capacityRange.max === null || contractKW <= charge.capacityRange.max) &&
+        contractKW >= charge.capacityRange.min
       );
 
-      // 如果沒有找到相位特定的費用，嘗試找相位無關的費用
+      // 如果沒有找到相位特定的費用，嘗試找相位無關但匹配容量範圍的費用
       if (!contractCharge) {
         contractCharge = plan.basicCharges.find(charge =>
-          (charge.capacityRange.min !== 0 || charge.capacityRange.max !== null) &&
-          !charge.phase
+          !charge.phase &&
+          charge.capacityRange.min !== 0 &&
+          (charge.capacityRange.max === null || contractKW <= charge.capacityRange.max) &&
+          contractKW >= charge.capacityRange.min
         );
       }
 
@@ -647,7 +654,6 @@ export class RateCalculator {
           ? householdFee.summerRate
           : householdFee.nonSummerRate;
 
-        const contractKW = this.convertAmpsToKW(contractCapacity, phase, voltageV);
         const contractRate = season.name === 'summer'
           ? contractCharge.summerRate
           : contractCharge.nonSummerRate;
@@ -658,7 +664,6 @@ export class RateCalculator {
 
       if (contractCharge && !householdFee) {
         // 低壓電力：只有契約費（按 kW 計算）
-        const contractKW = this.convertAmpsToKW(contractCapacity, phase, voltageV);
         const contractRate = season.name === 'summer'
           ? (contractCharge.summerRate || contractCharge.nonSummerRate)
           : contractCharge.nonSummerRate;
