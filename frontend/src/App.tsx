@@ -7,12 +7,15 @@ import { DataCompletenessBanner } from './components/data/DataCompletenessBanner
 import { UsageHabitSelector } from './components/habit/UsageHabitSelector';
 import { BillDataEditor } from './components/confirm/BillDataEditor';
 import { ManualInputForm } from './components/input/ManualInputForm';
+import { BillTypeSelector } from './components/bill-type';
+import { BillTypeInputForm } from './components/input';
 import { PlanList } from './components/results/PlanList';
 import { ResultChart } from './components/results/ResultChart';
 import { PlansLoader } from './services/calculation/plans';
 import { RateCalculator } from './services/calculation/RateCalculator';
 import { DataCompletenessLevel } from './types';
 import type { CalculationInput } from './types';
+import type { BillType } from './components/bill-type';
 
 /**
  * 判斷計費期間的季節
@@ -30,6 +33,7 @@ function determineSeason(billingPeriod: { start: Date; end: Date }): 'summer' | 
 function App() {
   const [calculationError, setCalculationError] = useState<string | null>(null);
   const stage = useAppStore((state) => state.stage);
+  const billType = useAppStore((state) => state.billType);
   const uploadedImage = useAppStore((state) => state.uploadedImage);
   const billData = useAppStore((state) => state.billData);
   const results = useAppStore((state) => state.results);
@@ -37,6 +41,7 @@ function App() {
   const setBillData = useAppStore((state) => state.setBillData);
   const setResults = useAppStore((state) => state.setResults);
   const setStage = useAppStore((state) => state.setStage);
+  const setBillType = useAppStore((state) => state.setBillType);
 
   // 處理 OCR 識別完成後，進入確認階段
   const handleConfirmFromHabit = async (estimatedData?: { peakOnPeak: number; semiPeak: number; offPeak: number }) => {
@@ -187,9 +192,6 @@ function App() {
     useAppStore.getState().reset();
   };
 
-  // 輸入模式狀態
-  const [inputMode, setInputMode] = useState<'ocr' | 'manual'>('ocr');
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Skip link for keyboard navigation */}
@@ -213,46 +215,54 @@ function App() {
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {stage === 'upload' && (
           <div className="space-y-6">
-            {/* Upload Stage */}
-            <div className="text-center">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                上傳你的電費單
-              </h2>
-              <p className="text-gray-600">
-                選擇一種方式輸入您的用電資訊
-              </p>
-            </div>
-
-            {/* 輸入方式選擇 */}
-            <div className="flex justify-center gap-4 mb-6">
-              <button
-                onClick={() => setInputMode('ocr')}
-                className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                  inputMode === 'ocr'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                📸 拍照上傳
-              </button>
-              <button
-                onClick={() => setInputMode('manual')}
-                className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                  inputMode === 'manual'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                ⌨️ 手動輸入
-              </button>
-            </div>
-
-            {/* OCR 上傳區域 */}
-            {inputMode === 'ocr' && (
+            {!billType ? (
               <>
+                {/* 選擇輸入方式 */}
+                <div className="text-center mb-8">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                    選擇輸入方式
+                  </h2>
+                  <p className="text-gray-600">
+                    您想如何輸入電費資訊？
+                  </p>
+                </div>
+
+                {/* OCR 上傳按鈕 */}
+                <div className="flex justify-center gap-4 mb-8">
+                  <button
+                    onClick={() => setBillType('auto_detect')}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                  >
+                    📸 拍照上傳電費單
+                  </button>
+                  <button
+                    onClick={() => setBillType('non_tou')}
+                    className="px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  >
+                    ⌨️ 手動輸入
+                  </button>
+                </div>
+              </>
+            ) : billType === 'auto_detect' ? (
+              <>
+                {/* OCR 上傳區域 */}
+                <div className="text-center mb-4">
+                  <button
+                    onClick={() => setBillType(null)}
+                    className="text-sm text-gray-600 hover:text-gray-900 mb-4 inline-flex items-center gap-1"
+                  >
+                    ← 返回選擇其他方式
+                  </button>
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    上傳電費單照片
+                  </h2>
+                  <p className="text-gray-600 mt-1">
+                    系統會自動識別電費單型別和用電資訊
+                  </p>
+                </div>
                 <UploadZone />
                 {uploadedImage && (
-                  <div className="max-w-2xl mx-auto">
+                  <div className="max-w-2xl mx-auto mt-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">
                       已上傳的圖片
                     </h3>
@@ -261,10 +271,20 @@ function App() {
                 )}
                 <OCRProgress />
               </>
+            ) : (
+              <>
+                {/* 手動輸入 - 根據電費單型別顯示對應表單 */}
+                <div className="text-center mb-4">
+                  <button
+                    onClick={() => setBillType(null)}
+                    className="text-sm text-gray-600 hover:text-gray-900 mb-4 inline-flex items-center gap-1"
+                  >
+                    ← 返回重新選擇型別
+                  </button>
+                </div>
+                <BillTypeInputForm billType={billType} />
+              </>
             )}
-
-            {/* 手動輸入區域 */}
-            {inputMode === 'manual' && <ManualInputForm />}
           </div>
         )}
 

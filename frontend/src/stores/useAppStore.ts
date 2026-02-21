@@ -8,6 +8,7 @@ import type {
   PlanCalculationResult,
   OCRResult,
 } from '../types';
+import type { BillType } from '../components/bill-type';
 
 /**
  * 應用程式階段
@@ -26,6 +27,10 @@ interface AppStore {
   // 階段
   stage: AppStage;
   setStage: (stage: AppStage) => void;
+
+  // 電費單型別
+  billType: BillType | null;
+  setBillType: (type: BillType) => void;
 
   // 電費單資料
   billData: BillData | null;
@@ -63,6 +68,7 @@ interface AppStore {
 export const useAppStore = create<AppStore>((set) => ({
   // 初始狀態
   stage: 'upload',
+  billType: null,
   billData: null,
   uploadedImage: null,
   ocrStatus: 'idle',
@@ -74,6 +80,9 @@ export const useAppStore = create<AppStore>((set) => ({
 
   // 設定階段
   setStage: (stage) => set({ stage }),
+
+  // 設定電費單型別
+  setBillType: (type) => set({ billType: type }),
 
   // 設定電費單資料
   setBillData: (data) => set({ billData: data }),
@@ -101,6 +110,7 @@ export const useAppStore = create<AppStore>((set) => ({
   reset: () =>
     set({
       stage: 'upload',
+      billType: null,
       billData: null,
       uploadedImage: null,
       ocrStatus: 'idle',
