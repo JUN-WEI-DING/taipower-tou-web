@@ -95,11 +95,11 @@ function App() {
       const calculatedResults = calculator.calculateAll(input);
 
       // 找出非時間電價方案作為基準方案（當前方案）
-      // 只使用明確的方案 ID 白名單，避免鬆散匹配造成錯誤標記
+      // 使用實際存在於 plans.json 的方案 ID
       const knownBaselinePlanIds = [
-        'residential_non_tou',      // 表燈用電（非時間電價）
-        'low_voltage_power_non_tou', // 低壓電力（非時間電價）
-        'lighting_non_tou',         // 表燈用電
+        'residential_non_tou',           // 表燈(住商)非時間電價-住宅用
+        'lighting_non_business_tiered', // 表燈(住商)非時間電價-住宅以外非營業用
+        'low_voltage_power',            // 低壓電力非時間電價
       ];
 
       const nonTOUPlan = calculatedResults.find(r =>
