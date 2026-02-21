@@ -51,8 +51,7 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.BASE_URL': JSON.stringify(env.VITE_BASE_URL || '/taipower-tou-web/'),
     },
 
-    // Vitest 設定 (test property is injected by vitest)
-    // @ts-expect-error - vitest adds 'test' property to UserConfig
+    // Vitest 設定 (vitest adds 'test' property to UserConfig)
     test: {
       globals: true,
       environment: 'jsdom',
