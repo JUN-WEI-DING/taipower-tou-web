@@ -1,6 +1,7 @@
 /* Global styles */
 @import './styles/ocean-theme.css';
 @import './styles/ocean-theme-enhanced.css';
+@import './styles/ocean-theme-color-fix.css';
 
 * {
   box-sizing: border-box;
