@@ -1,0 +1,185 @@
+/**
+ * Ocean Depths Theme
+ * Professional and calming maritime theme for Taipower tariff comparison
+ */
+
+:root {
+  /* Core Colors */
+  --color-primary: #1a2332;
+  --color-teal: #2d8b8b;
+  --color-seafoam: #a8dadc;
+  --color-cream: #f1faee;
+
+  /* Extended Palette */
+  --color-midnight: #0d1b2a;
+  --color-ocean: #1b263b;
+  --color-aqua: #4cc9f0;
+  --color-coral: #ff6b6b;
+  --color-sand: #e8e4da;
+
+  /* Semantic Colors */
+  --color-text: #1a2332;
+  --color-text-muted: #4a5568;
+  --color-bg: #f1faee;
+  --color-bg-card: #ffffff;
+  --color-border: #d1eae8;
+
+  /* Status Colors */
+  --color-success: #2d8b8b;
+  --color-warning: #ffa62b;
+  --color-error: #ff6b6b;
+  --color-info: #4cc9f0;
+
+  /* Chart Colors */
+  --chart-1: #1a2332;
+  --chart-2: #2d8b8b;
+  --chart-3: #a8dadc;
+  --chart-4: #4cc9f0;
+  --chart-5: #ff6b6b;
+}
+
+/* Ocean Depths Theme Classes */
+.ocean-bg {
+  background: linear-gradient(135deg, var(--color-cream) 0%, #e8f4f5 100%);
+}
+
+.ocean-bg-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+}
+
+.ocean-text {
+  color: var(--color-text);
+}
+
+.ocean-text-muted {
+  color: var(--color-text-muted);
+}
+
+.ocean-text-primary {
+  color: var(--color-primary);
+}
+
+.ocean-text-teal {
+  color: var(--color-teal);
+}
+
+.ocean-text-seafoam {
+  color: var(--color-seafoam);
+}
+
+/* Button Styles */
+.ocean-btn-primary {
+  background-color: var(--color-teal);
+  color: var(--color-cream);
+  transition: all 0.2s ease;
+}
+
+.ocean-btn-primary:hover {
+  background-color: var(--color-ocean);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(45, 139, 139, 0.3);
+}
+
+.ocean-btn-secondary {
+  background-color: var(--color-seafoam);
+  color: var(--color-primary);
+  transition: all 0.2s ease;
+}
+
+.ocean-btn-secondary:hover {
+  background-color: var(--color-teal);
+  color: var(--color-cream);
+}
+
+/* Card Styles */
+.ocean-card {
+  background: var(--color-bg-card);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(26, 35, 50, 0.08);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+
+.ocean-card:hover {
+  box-shadow: 0 4px 20px rgba(26, 35, 50, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Input Styles */
+.ocean-input {
+  border: 1px solid var(--color-border);
+  transition: all 0.2s ease;
+}
+
+.ocean-input:focus {
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 3px rgba(45, 139, 139, 0.1);
+  outline: none;
+}
+
+/* Badge Styles */
+.ocean-badge-success {
+  background-color: rgba(45, 139, 139, 0.1);
+  color: var(--color-teal);
+}
+
+.ocean-badge-warning {
+  background-color: rgba(255, 166, 43, 0.1);
+  color: var(--color-warning);
+}
+
+.ocean-badge-error {
+  background-color: rgba(255, 107, 107, 0.1);
+  color: var(--color-error);
+}
+
+/* Progress Bar */
+.ocean-progress {
+  background-color: var(--color-border);
+}
+
+.ocean-progress-bar {
+  background: linear-gradient(90deg, var(--color-teal), var(--color-seafoam));
+}
+
+/* Skip Link for Accessibility */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 1rem;
+  background-color: var(--color-teal);
+  color: var(--color-cream);
+  text-decoration: none;
+  border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus {
+  left: 0;
+  top: 0;
+}
+
+/* Animation for Results */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ocean-animate-in {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Wave Pattern for Hero Section */
+.ocean-wave {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='%232d8b8b' fill-opacity='0.1'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: cover;
+}

@@ -1,4 +1,5 @@
 /* Global styles */
+@import './styles/ocean-theme.css';
 
 * {
   box-sizing: border-box;
@@ -11,6 +12,8 @@ body {
     "Microsoft JhengHei", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #f1faee 0%, #e8f4f5 100%);
+  min-height: 100vh;
 }
 
 #root {
@@ -255,7 +258,7 @@ body {
   font-weight: 700;
 }
 
-/* Colors */
+/* Colors - Ocean Depths Theme */
 .text-white {
   color: #ffffff;
 }
@@ -280,29 +283,51 @@ body {
   color: #111827;
 }
 
+/* Ocean Depths Theme Colors */
+.text-teal {
+  color: #2d8b8b;
+}
+
+.text-seafoam {
+  color: #a8dadc;
+}
+
+.text-coral {
+  color: #ff6b6b;
+}
+
+.text-ocean-dark {
+  color: #1a2332;
+}
+
+/* Override blue colors with ocean theme */
 .text-blue-600 {
-  color: #2563eb;
+  color: #2d8b8b;
 }
 
 .text-blue-700 {
-  color: #1d4ed8;
+  color: #1b263b;
 }
 
 .text-green-600 {
-  color: #16a34a;
+  color: #2d8b8b;
 }
 
 .text-red-600 {
-  color: #dc2626;
+  color: #ff6b6b;
 }
 
 .text-red-700 {
-  color: #b91c1c;
+  color: #e05555;
 }
 
-/* Background */
+/* Background - Ocean Depths Theme */
 .bg-white {
   background-color: #ffffff;
+}
+
+.bg-cream {
+  background-color: #f1faee;
 }
 
 .bg-gray-50 {
@@ -314,15 +339,15 @@ body {
 }
 
 .bg-blue-50 {
-  background-color: #eff6ff;
+  background-color: #f1faee;
 }
 
 .bg-blue-600 {
-  background-color: #2563eb;
+  background-color: #2d8b8b;
 }
 
 .bg-blue-700 {
-  background-color: #1d4ed8;
+  background-color: #1b263b;
 }
 
 .bg-red-50 {
@@ -330,11 +355,11 @@ body {
 }
 
 .bg-green-100 {
-  background-color: #dcfce7;
+  background-color: #d1eae8;
 }
 
 .bg-green-700 {
-  background-color: #15803d;
+  background-color: #2d8b8b;
 }
 
 /* Borders */
@@ -483,14 +508,15 @@ button {
   font-family: inherit;
 }
 
-/* Focus styles */
+/* Focus styles - Ocean Depths Theme */
 *:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid #2d8b8b;
   outline-offset: 2px;
 }
 
 select:focus,
 input:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid #2d8b8b;
   outline-offset: 2px;
+  border-color: #2d8b8b;
 }
