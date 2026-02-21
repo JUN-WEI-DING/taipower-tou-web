@@ -302,23 +302,12 @@ export class RateCalculator {
 
     const seasonKey = season.name === 'summer' ? 'summer' : 'nonSummer';
     const energyCharges = plan.energyCharges[seasonKey];
-    const otherSeasonKey = season.name === 'summer' ? 'nonSummer' : 'summer';
-    const otherEnergyCharges = plan.energyCharges[otherSeasonKey];
 
     // 找出尖峰和離峰費率
-    // 如果當前季節沒有某個時段的費率，嘗試從另一個季節獲取（後備邏輯）
-    const peakRate = energyCharges.find((r) => r.period === 'peak')?.rate ||
-                     otherEnergyCharges.find((r) => r.period === 'peak')?.rate || 0;
-    const offPeakRate = energyCharges.find((r) => r.period === 'off_peak')?.rate ||
-                        otherEnergyCharges.find((r) => r.period === 'off_peak')?.rate || 0;
-
-    // 計算流動電費
-    const peakCharge = adjustedPeakOnPeak * peakRate;
-    const offPeakCharge = adjustedOffPeak * offPeakRate;
+    const peakRate = energyCharges.find((r) => r.period === 'peak')?.rate;
+    const offPeakRate = energyCharges.find((r) => r.period === 'off_peak')?.rate;
 
     // 兩段式時間電價沒有半尖峰費率，將半尖峰度數按比例分配到尖峰和離峰
-    let finalPeakCharge = peakCharge;
-    let finalOffPeakCharge = offPeakCharge;
     let finalPeakKwh = adjustedPeakOnPeak;
     let finalOffPeakKwh = adjustedOffPeak;
 
@@ -334,27 +323,33 @@ export class RateCalculator {
 
         finalPeakKwh = adjustedPeakOnPeak + semiToPeak;
         finalOffPeakKwh = adjustedOffPeak + semiToOffPeak;
-
-        finalPeakCharge = finalPeakKwh * peakRate;
-        finalOffPeakCharge = finalOffPeakKwh * offPeakRate;
       } else {
         // 如果沒有尖峰和離峰度數，全部按離峰計算
         finalOffPeakKwh = adjustedOffPeak + adjustedSemiPeak;
-        finalOffPeakCharge = finalOffPeakKwh * offPeakRate;
       }
     }
 
-    const totalEnergyCharge = finalPeakCharge + finalOffPeakCharge;
+    // 計算流動電費（如果沒有費率則為 0）
+    const peakCharge = (peakRate || 0) * finalPeakKwh;
+    const offPeakCharge = (offPeakRate || 0) * finalOffPeakKwh;
 
+    const totalEnergyCharge = peakCharge + offPeakCharge;
+
+    // 建立 breakdown，只包含有費率的時段
     const touBreakdown: Array<{
       period?: 'peak' | 'off_peak' | 'semi_peak';
       kwh: number;
       rate: number;
       charge: number;
       label?: string;
-    }> = [
-      { period: 'peak' as const, kwh: finalPeakKwh, rate: peakRate, charge: finalPeakCharge },
-      { period: 'off_peak' as const, kwh: finalOffPeakKwh, rate: offPeakRate, charge: finalOffPeakCharge },
+    }> = [];
+
+    if (peakRate !== undefined && finalPeakKwh > 0) {
+      touBreakdown.push({ period: 'peak' as const, kwh: finalPeakKwh, rate: peakRate, charge: peakCharge });
+    }
+    if (offPeakRate !== undefined && finalOffPeakKwh > 0) {
+      touBreakdown.push({ period: 'off_peak' as const, kwh: finalOffPeakKwh, rate: offPeakRate, charge: offPeakCharge });
+    }
     ];
 
     // 如果有半尖峰度數，加入分配說明
@@ -477,40 +472,76 @@ export class RateCalculator {
 
     const seasonKey = season.name === 'summer' ? 'summer' : 'nonSummer';
     const energyCharges = plan.energyCharges[seasonKey];
-    const otherSeasonKey = season.name === 'summer' ? 'nonSummer' : 'summer';
-    const otherEnergyCharges = plan.energyCharges[otherSeasonKey];
 
     // 找出各時段費率
-    // 如果當前季節沒有某個時段的費率，嘗試從另一個季節獲取（後備邏輯）
-    const peakRate = energyCharges.find((r) => r.period === 'peak')?.rate ||
-                     otherEnergyCharges.find((r) => r.period === 'peak')?.rate || 0;
-    const semiPeakRate = energyCharges.find((r) => r.period === 'semi_peak')?.rate ||
-                         otherEnergyCharges.find((r) => r.period === 'semi_peak')?.rate || 0;
-    const offPeakRate = energyCharges.find((r) => r.period === 'off_peak')?.rate ||
-                        otherEnergyCharges.find((r) => r.period === 'off_peak')?.rate || 0;
+    const peakRate = energyCharges.find((r) => r.period === 'peak')?.rate;
+    const semiPeakRate = energyCharges.find((r) => r.period === 'semi_peak')?.rate;
+    const offPeakRate = energyCharges.find((r) => r.period === 'off_peak')?.rate;
+
+    // 處理時段度數分配：如果某時段沒有費率，將其度數分配到其他時段
+    let finalPeakKwh = adjustedPeakOnPeak;
+    let finalSemiPeakKwh = adjustedSemiPeak;
+    let finalOffPeakKwh = adjustedOffPeak;
+    let finalPeakRate = peakRate;
+    let finalSemiPeakRate = semiPeakRate;
+    let finalOffPeakRate = offPeakRate;
+
+    // 如果沒有尖峰費率（如標準型三段式非夏季），將尖峰度數併入半尖峰
+    if (peakRate === undefined && adjustedPeakOnPeak > 0) {
+      finalPeakKwh = 0;
+      finalSemiPeakKwh = adjustedSemiPeak + adjustedPeakOnPeak;
+      finalPeakRate = 0; // 沒有尖峰費率
+    }
+
+    // 如果沒有半尖峰費率，將半尖峰度數按比例分配到尖峰和離峰
+    if (semiPeakRate === undefined && adjustedSemiPeak > 0) {
+      const totalMainPeriods = adjustedPeakOnPeak + adjustedOffPeak;
+      if (totalMainPeriods > 0) {
+        const peakRatio = adjustedPeakOnPeak / totalMainPeriods;
+        const offPeakRatio = adjustedOffPeak / totalMainPeriods;
+        finalPeakKwh = adjustedPeakOnPeak + adjustedSemiPeak * peakRatio;
+        finalOffPeakKwh = adjustedOffPeak + adjustedSemiPeak * offPeakRatio;
+      } else {
+        finalOffPeakKwh = adjustedOffPeak + adjustedSemiPeak;
+      }
+      finalSemiPeakKwh = 0;
+      finalSemiPeakRate = 0; // 沒有半尖峰費率
+    }
 
     // 計算流動電費
-    const peakCharge = adjustedPeakOnPeak * peakRate;
-    const semiPeakCharge = adjustedSemiPeak * semiPeakRate;
-    const offPeakCharge = adjustedOffPeak * offPeakRate;
+    const peakCharge = (finalPeakRate || 0) * finalPeakKwh;
+    const semiPeakCharge = (finalSemiPeakRate || 0) * finalSemiPeakKwh;
+    const offPeakCharge = (finalOffPeakRate || 0) * finalOffPeakKwh;
 
     const totalEnergyCharge = peakCharge + semiPeakCharge + offPeakCharge;
 
+    // 建立 breakdown，只包含有費率的時段
     const touBreakdown: Array<{
       period?: 'peak' | 'off_peak' | 'semi_peak';
       kwh: number;
       rate: number;
       charge: number;
       label?: string;
-    }> = [
-      { period: 'peak' as const, kwh: adjustedPeakOnPeak, rate: peakRate, charge: peakCharge },
-      { period: 'semi_peak' as const, kwh: adjustedSemiPeak, rate: semiPeakRate, charge: semiPeakCharge },
-      { period: 'off_peak' as const, kwh: adjustedOffPeak, rate: offPeakRate, charge: offPeakCharge },
-    ];
+    }> = [];
+
+    if (finalPeakRate !== undefined && finalPeakKwh > 0) {
+      touBreakdown.push({ period: 'peak' as const, kwh: finalPeakKwh, rate: finalPeakRate, charge: peakCharge });
+    }
+    if (finalSemiPeakRate !== undefined && finalSemiPeakKwh > 0) {
+      touBreakdown.push({ period: 'semi_peak' as const, kwh: finalSemiPeakKwh, rate: finalSemiPeakRate, charge: semiPeakCharge });
+    }
+    if (finalOffPeakRate !== undefined && finalOffPeakKwh > 0) {
+      touBreakdown.push({ period: 'off_peak' as const, kwh: finalOffPeakKwh, rate: finalOffPeakRate, charge: offPeakCharge });
+    }
+
+    // 如果 breakdown 為空（不應該發生），新增一個預設專案
+    if (touBreakdown.length === 0) {
+      touBreakdown.push({ kwh: totalTOUConsumption, rate: 0, charge: 0, label: '費率資料缺失' });
+    }
 
     // 計算超過 2000 度的附加費（如適用）
     let surcharge = 0;
-    const totalBillableConsumption = adjustedPeakOnPeak + adjustedSemiPeak + adjustedOffPeak;
+    const totalBillableConsumption = finalPeakKwh + finalSemiPeakKwh + finalOffPeakKwh;
     if (plan.raw?.billing_rules?.over_2000_kwh_surcharge && totalBillableConsumption > 2000) {
       const surchargeRule = plan.raw.billing_rules.over_2000_kwh_surcharge;
       const overAmount = totalBillableConsumption - surchargeRule.threshold_kwh;
