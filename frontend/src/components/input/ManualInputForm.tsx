@@ -79,10 +79,12 @@ export const ManualInputForm: React.FC = () => {
         <div className="space-y-4">
           {/* 年份選擇 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="year-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               年份
             </label>
             <select
+              id="year-select"
+              name="year"
               value={year}
               onChange={(e) => setYear(parseInt(e.target.value))}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-white dark:bg-gray-800"
@@ -100,10 +102,12 @@ export const ManualInputForm: React.FC = () => {
 
           {/* 月份選擇 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="month-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               月份
             </label>
             <select
+              id="month-select"
+              name="month"
               value={month}
               onChange={(e) => setMonth(parseInt(e.target.value))}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-white dark:bg-gray-800"
@@ -128,10 +132,12 @@ export const ManualInputForm: React.FC = () => {
 
           {/* 契約容量 - 重要！影響基本電費 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="capacity-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               契約容量 <span className="text-red-500">*</span>
             </label>
             <select
+              id="capacity-select"
+              name="contractCapacity"
               value={contractCapacity}
               onChange={(e) => setContractCapacity(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-white dark:bg-gray-800"
@@ -152,10 +158,12 @@ export const ManualInputForm: React.FC = () => {
 
           {/* 相位型別 - 影響基本電費計算 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="phase-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               相位型別
             </label>
             <select
+              id="phase-select"
+              name="phaseType"
               value={phaseType}
               onChange={(e) => setPhaseType(e.target.value as 'single' | 'three')}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-white dark:bg-gray-800"
@@ -170,10 +178,12 @@ export const ManualInputForm: React.FC = () => {
 
           {/* 電壓型別 - 影響最低用電計算 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="voltage-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               電壓型別
             </label>
             <select
+              id="voltage-select"
+              name="voltageType"
               value={voltageType}
               onChange={(e) => setVoltageType(e.target.value as '110' | '220')}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-white dark:bg-gray-800"
@@ -185,19 +195,23 @@ export const ManualInputForm: React.FC = () => {
 
           {/* 用電度數輸入 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="consumption-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               用電度數
             </label>
             <input
+              id="consumption-input"
+              name="consumption"
               type="number"
               min="1"
               max="10000"
+              inputMode="numeric"
               value={consumption}
               onChange={(e) => {
                 setConsumption(e.target.value);
                 setErrorMessage(null); // 清除錯誤訊息
               }}
               placeholder="例如：350"
+              autoComplete="off"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-white dark:bg-gray-800"
             />
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -221,7 +235,7 @@ export const ManualInputForm: React.FC = () => {
           <button
             onClick={handleSubmit}
             disabled={!consumption || isSubmitting}
-            className="w-full py-3 px-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-orange-500 disabled:hover:to-orange-600 shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 active:scale-[0.98]"
+            className="w-full py-3 px-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-background-color duration-200 transition-transform duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-orange-500 disabled:hover:to-orange-600 shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 active:scale-[0.98]"
           >
             {isSubmitting ? '處理中...' : '開始比較'}
           </button>

@@ -41,6 +41,9 @@ export const ImagePreview: React.FC = () => {
               <img
                 src={uploadedImage}
                 alt="電費單預覽"
+                width={800}
+                height={384}
+                loading="lazy"
                 className="relative w-full max-h-96 object-contain bg-gray-50 rounded-xl"
               />
 
@@ -63,7 +66,7 @@ export const ImagePreview: React.FC = () => {
 
               {/* Remove button */}
               <motion.div
-                className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transition-transform duration-300"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 0 }}
                 whileHover={{ scale: 1.1, rotate: 90 }}
@@ -97,7 +100,7 @@ export const ImagePreview: React.FC = () => {
 
               {/* Success indicator */}
               <motion.div
-                className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100"
+                className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 transition-transform duration-500 delay-100"
                 initial={{ x: -10 }}
                 animate={{ x: 0 }}
               >

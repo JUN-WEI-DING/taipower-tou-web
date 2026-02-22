@@ -33,13 +33,6 @@ export const HeroSection: React.FC<{
 
   return (
     <section className={styles.hero}>
-      {/* Animated gradient backgrounds */}
-      <div className={styles.heroBackground}>
-        <div className={styles.heroGradient1} />
-        <div className={styles.heroGradient2} />
-        <div className={styles.heroGradient3} />
-      </div>
-
       <div className="container w-full relative z-10">
         <motion.div
           className={styles.heroContent}
@@ -207,7 +200,7 @@ export const HeroSection: React.FC<{
           ].map((feature, idx) => (
             <motion.div
               key={idx}
-              className="p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-orange-100 hover:shadow-xl hover:border-orange-200 transition-all duration-300 group"
+              className="p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-orange-100 hover:shadow-xl hover:border-orange-200 transition-shadow duration-300 transition-border-color duration-300 group"
               whileHover={{ y: -8 }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}

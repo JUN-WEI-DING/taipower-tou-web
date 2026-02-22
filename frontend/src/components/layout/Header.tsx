@@ -43,7 +43,7 @@ export function Header() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 transition-all duration-300",
+        "sticky top-0 z-50 transition-background-color duration-300 transition-backdrop-blur duration-300 transition-border-color duration-300 transition-box-shadow duration-300",
         isScrolled
           ? 'bg-background/90 backdrop-blur-xl border-b border-border/50 shadow-lg shadow-orange-500/5'
           : 'bg-background/70 backdrop-blur-md border-b border-border'
@@ -101,7 +101,7 @@ export function Header() {
               href="https://github.com/JUN-WEI-DING/taipower-tou-web"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors duration-200"
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.98 }}
               aria-label="檢視 GitHub 專案"
@@ -195,7 +195,7 @@ export function Header() {
                     href="https://github.com/JUN-WEI-DING/taipower-tou-web"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-3 w-full px-4 py-3 rounded-lg text-foreground hover:bg-muted transition-all"
+                    className="flex items-center justify-center gap-3 w-full px-4 py-3 rounded-lg text-foreground hover:bg-muted transition-colors duration-200"
                   >
                     <Github size={20} />
                     <span className="font-medium">GitHub Repository</span>
