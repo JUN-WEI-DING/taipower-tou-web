@@ -1,18 +1,89 @@
 /* NextUI Global Styles */
 @import '@nextui-org/theme/dist/default.css';
 
-/* Global styles */
+/* Import Inter font for modern typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ===================================
+   CSS Custom Properties - Tech Theme
+   =================================== */
+:root {
+  /* Tech Innovation Theme Colors */
+  --tech-blue: #0066ff;
+  --tech-cyan: #00ffff;
+  --tech-violet: #7c3aed;
+  --tech-magenta: #ec4899;
+  --tech-emerald: #10b981;
+  --tech-amber: #f59e0b;
+  --tech-dark: #1e1e1e;
+  --tech-surface: #2d2d2d;
+
+  /* Semantic Colors */
+  --color-primary: var(--tech-blue);
+  --color-secondary: var(--tech-violet);
+  --color-accent: var(--tech-cyan);
+  --color-success: var(--tech-emerald);
+  --color-warning: var(--tech-amber);
+  --color-danger: #ef4444;
+
+  /* Gradients */
+  --gradient-tech: linear-gradient(135deg, #0066ff 0%, #7c3aed 100%);
+  --gradient-tech-cyan: linear-gradient(135deg, #0066ff 0%, #00ffff 100%);
+  --gradient-tech-violet: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+  --gradient-tech-emerald: linear-gradient(135deg, #10b981 0%, #00ffff 100%);
+
+  /* Spacing Scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-tech-glow: 0 0 20px rgba(0, 102, 255, 0.4), 0 0 40px rgba(0, 102, 255, 0.2);
+  --shadow-tech-glow-lg: 0 0 30px rgba(0, 102, 255, 0.5), 0 0 60px rgba(0, 102, 255, 0.3);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-base: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===================================
+   Global Reset & Base Styles
+   =================================== */
 * {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    "Microsoft JhengHei", sans-serif;
+html {
+  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    "Microsoft JhengHei", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: hsl(var(--nextui-foreground));
+  background-color: hsl(var(--nextui-background));
   min-height: 100vh;
 }
 
@@ -20,16 +91,57 @@ body {
   min-height: 100vh;
 }
 
-/* Skip link for accessibility */
+/* ===================================
+   Typography
+   =================================== */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  color: hsl(var(--nextui-foreground));
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* ===================================
+   Focus Styles for Accessibility
+   =================================== */
+:focus-visible {
+  outline: 2px solid var(--tech-blue);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ===================================
+   Skip Link for Accessibility
+   =================================== */
 .skip-link {
   position: absolute;
   left: -9999px;
   z-index: 999;
-  padding: 1rem;
-  background-color: hsl(var(--nextui-primary));
+  padding: 1rem 1.5rem;
+  background: var(--gradient-tech);
   color: white;
   text-decoration: none;
-  border-radius: 0 0 8px 0;
+  border-radius: 0 var(--radius-xl) 0 0;
+  font-weight: 600;
+  transition: left var(--transition-fast);
 }
 
 .skip-link:focus {
@@ -37,7 +149,9 @@ body {
   top: 0;
 }
 
-/* Screen Reader Only Content */
+/* ===================================
+   Screen Reader Only Content
+   =================================== */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -48,4 +162,82 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* ===================================
+   Utility Classes
+   =================================== */
+.text-gradient {
+  background: var(--gradient-tech);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-cyan {
+  background: var(--gradient-tech-cyan);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Animated gradient background */
+.animated-gradient {
+  background: linear-gradient(
+    -45deg,
+    var(--tech-blue),
+    var(--tech-violet),
+    var(--tech-cyan),
+    var(--tech-magenta)
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ===================================
+   Smooth Scrollbar
+   =================================== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--nextui-default-50));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--nextui-default-300));
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--nextui-default-400));
+}
+
+/* ===================================
+   Selection Styles
+   =================================== */
+::selection {
+  background-color: var(--tech-blue);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: var(--tech-blue);
+  color: white;
 }
