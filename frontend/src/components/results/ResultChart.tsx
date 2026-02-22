@@ -12,6 +12,7 @@ import {
 import { motion } from 'framer-motion';
 import type { PlanCalculationResult } from '../../types';
 import { cn } from '../../lib/utils';
+import { CHART_COLORS, NEUTRAL_COLORS } from '../../lib/constants';
 
 // Types for Recharts props
 interface TooltipProps {
@@ -30,33 +31,13 @@ interface ResultChartProps {
   maxCost?: number;
 }
 
-// Orange Theme Colors - aligned with brand
+// Orange Theme Colors - aligned with brand (from constants)
 const ORANGE_COLORS = [
-  {
-    fill: 'url(#gradient-rank1)',
-    stroke: '#ea580c',
-    glow: 'rgba(234, 88, 12, 0.3)',
-  },
-  {
-    fill: 'url(#gradient-rank2)',
-    stroke: '#f97316',
-    glow: 'rgba(249, 115, 22, 0.2)',
-  },
-  {
-    fill: 'url(#gradient-rank3)',
-    stroke: '#fb923c',
-    glow: 'rgba(251, 146, 60, 0.15)',
-  },
-  {
-    fill: '#94a3b8',
-    stroke: '#64748b',
-    glow: 'rgba(100, 116, 139, 0.1)',
-  },
-  {
-    fill: '#cbd5e1',
-    stroke: '#94a3b8',
-    glow: 'rgba(148, 163, 184, 0.1)',
-  },
+  CHART_COLORS.rank1,
+  CHART_COLORS.rank2,
+  CHART_COLORS.rank3,
+  CHART_COLORS.other,
+  CHART_COLORS.dim,
 ];
 
 // Custom Tooltip Component
@@ -148,16 +129,16 @@ export const ResultChart: React.FC<ResultChartProps> = ({ results, maxCost }) =>
       <svg width="0" height="0" className="absolute">
         <defs>
           <linearGradient id="gradient-rank1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#ea580c" />
-            <stop offset="100%" stopColor="#f97316" />
+            <stop offset="0%" stopColor={CHART_COLORS.rank1.gradientStart} />
+            <stop offset="100%" stopColor={CHART_COLORS.rank1.gradientEnd} />
           </linearGradient>
           <linearGradient id="gradient-rank2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#f97316" />
-            <stop offset="100%" stopColor="#fb923c" />
+            <stop offset="0%" stopColor={CHART_COLORS.rank2.gradientStart} />
+            <stop offset="100%" stopColor={CHART_COLORS.rank2.gradientEnd} />
           </linearGradient>
           <linearGradient id="gradient-rank3" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#fb923c" />
-            <stop offset="100%" stopColor="#fdba74" />
+            <stop offset="0%" stopColor={CHART_COLORS.rank3.gradientStart} />
+            <stop offset="100%" stopColor={CHART_COLORS.rank3.gradientEnd} />
           </linearGradient>
         </defs>
       </svg>
@@ -171,7 +152,7 @@ export const ResultChart: React.FC<ResultChartProps> = ({ results, maxCost }) =>
         >
           <CartesianGrid
             strokeDasharray="4 4"
-            stroke="#e2e8f0"
+            stroke={NEUTRAL_COLORS[200]}
             strokeOpacity={0.6}
             horizontal={true}
             vertical={false}
@@ -181,14 +162,14 @@ export const ResultChart: React.FC<ResultChartProps> = ({ results, maxCost }) =>
             dataKey="cost"
             domain={[0, yAxisMax]}
             tickFormatter={(value) => `$${Math.round(value)}`}
-            tick={{ fontSize: 12, fill: '#64748b' }}
+            tick={{ fontSize: 12, fill: NEUTRAL_COLORS[500] }}
             tickLine={false}
-            axisLine={{ stroke: '#e2e8f0', strokeWidth: 1 }}
+            axisLine={{ stroke: NEUTRAL_COLORS[200], strokeWidth: 1 }}
           />
           <YAxis
             type="category"
             dataKey="name"
-            tick={{ fontSize: 13, fill: '#475569', fontWeight: 500 }}
+            tick={{ fontSize: 13, fill: NEUTRAL_COLORS[600], fontWeight: 500 }}
             tickLine={false}
             axisLine={false}
             width={130}
