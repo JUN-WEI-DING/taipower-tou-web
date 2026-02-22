@@ -9,6 +9,7 @@ import { BillDataEditor } from './components/confirm/BillDataEditor';
 import { BillTypeInputForm } from './components/input';
 import { PlanList } from './components/results/PlanList';
 import { ResultChart } from './components/results/ResultChart';
+import { HeroSection } from './components/landing';
 import { PlansLoader } from './services/calculation/plans';
 import { RateCalculator } from './services/calculation/RateCalculator';
 import { DataCompletenessLevel } from './types';
@@ -222,38 +223,10 @@ function App() {
         {stage === 'upload' && (
           <div className="space-y-6">
             {!billType ? (
-              <>
-                {/* 選擇輸入方式 */}
-                <div className="text-center mb-8">
-                  <h2 className="text-2xl font-bold text-foreground mb-2">
-                    選擇輸入方式
-                  </h2>
-                  <p className="text-default-500">
-                    您想如何輸入電費資訊？
-                  </p>
-                </div>
-
-                {/* OCR 上傳按鈕 */}
-                <div className="flex justify-center gap-4 mb-8">
-                  <Button
-                    onClick={() => setBillType('auto_detect')}
-                    color="primary"
-                    size="lg"
-                    className="h-14 px-8"
-                  >
-                    📸 拍照上傳電費單
-                  </Button>
-                  <Button
-                    onClick={() => setBillType('non_tou')}
-                    color="default"
-                    size="lg"
-                    variant="bordered"
-                    className="h-14 px-8"
-                  >
-                    ⌨️ 手動輸入
-                  </Button>
-                </div>
-              </>
+              <HeroSection
+                onOCRClick={() => setBillType('auto_detect')}
+                onManualClick={() => setBillType('non_tou')}
+              />
             ) : billType === 'auto_detect' ? (
               <>
                 {/* OCR 上傳區域 */}
@@ -415,11 +388,47 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-default-100 text-foreground-70 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-center text-sm">
-            臺電時間電價比較網站 | 純前端應用，資料不上傳伺服器
-          </p>
+      <footer className="bg-default-100 border-t border-divider mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid sm:grid-cols-3 gap-8 mb-8">
+            {/* About */}
+            <div>
+              <h4 className="font-semibold text-foreground mb-3">關於本服務</h4>
+              <p className="text-sm text-default-500">
+                臺電時間電價比較工具幫助您找出最省錢的電價方案，根據臺灣電力公司最新費率計算。
+              </p>
+            </div>
+
+            {/* Features */}
+            <div>
+              <h4 className="font-semibold text-foreground mb-3">功能特色</h4>
+              <ul className="space-y-2 text-sm text-default-500">
+                <li>• 支援 20+ 種電價方案比較</li>
+                <li>• AI 智慧識別電費單</li>
+                <li>• 純前端運算，資料安全</li>
+              </ul>
+            </div>
+
+            {/* Privacy */}
+            <div>
+              <h4 className="font-semibold text-foreground mb-3">隱私保護</h4>
+              <p className="text-sm text-default-500">
+                本服務為純前端應用，所有資料均在您的瀏覽器中處理，不會上傳到任何伺服器。
+              </p>
+            </div>
+          </div>
+
+          <Divider className="mb-6" />
+
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-default-400">
+              © 2025 臺電時間電價比較網站 | 資料來源：臺灣電力公司
+            </p>
+            <div className="flex items-center gap-2 text-xs text-default-400">
+              <Zap size={14} />
+              <span>純前端應用，資料不上傳伺服器</span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
