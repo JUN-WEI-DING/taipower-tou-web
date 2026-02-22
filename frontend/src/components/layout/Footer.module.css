@@ -36,9 +36,9 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
   color: white;
-  border-radius: 8px;
+  border-radius: var(--radius, 0.75rem);
 }
 
 .footer-logo svg {
