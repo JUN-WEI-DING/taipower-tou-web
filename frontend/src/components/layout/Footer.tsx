@@ -37,42 +37,24 @@ export function Footer() {
             <div className="footer-links grid grid-cols-2 gap-8">
               <div className="footer-section">
                 <h4 className="footer-heading text-sm font-semibold text-foreground mb-4">
-                  功能
+                  功能特色
                 </h4>
                 <ul className="footer-list space-y-2">
-                  <li>
-                    <motion.a
-                      href="#features"
-                      className="text-sm text-muted-foreground hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
-                      whileHover={{ x: 2 }}
-                    >
-                      20+ 方案比較
-                    </motion.a>
+                  <li className="text-sm text-muted-foreground">
+                    20+ 電價方案比較
                   </li>
-                  <li>
-                    <motion.a
-                      href="#features"
-                      className="text-sm text-muted-foreground hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
-                      whileHover={{ x: 2 }}
-                    >
-                      AI 智慧識別
-                    </motion.a>
+                  <li className="text-sm text-muted-foreground">
+                    AI 智慧 OCR 識別
                   </li>
-                  <li>
-                    <motion.a
-                      href="#features"
-                      className="text-sm text-muted-foreground hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
-                      whileHover={{ x: 2 }}
-                    >
-                      資料安全
-                    </motion.a>
+                  <li className="text-sm text-muted-foreground">
+                    純前端運算，資料安全
                   </li>
                 </ul>
               </div>
 
               <div className="footer-section">
                 <h4 className="footer-heading text-sm font-semibold text-foreground mb-4">
-                  關於
+                  相關連結
                 </h4>
                 <ul className="footer-list space-y-2">
                   <li>

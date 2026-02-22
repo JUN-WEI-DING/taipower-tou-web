@@ -29,9 +29,7 @@ export function Header() {
   }, [isMobileMenuOpen]);
 
   const navItems = [
-    { name: '首頁', href: '#', id: 'home' },
-    { name: '使用說明', href: '#how-to', id: 'how-to' },
-    { name: '常見問題', href: '#faq', id: 'faq' },
+    { name: '首頁', href: '/', id: 'home' },
   ];
 
   return (
