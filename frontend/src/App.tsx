@@ -329,8 +329,8 @@ function App() {
                 {billData && (
                   <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
                     determineSeason(billData.billingPeriod) === 'summer'
-                      ? 'bg-destructive/10 text-destructive border border-destructive/20'
-                      : 'bg-primary/10 text-primary border border-primary/20'
+                      ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 border border-orange-300 dark:border-orange-700'
+                      : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
                   }`} role="status" aria-live="polite">
                     {determineSeason(billData.billingPeriod) === 'summer' ? '🌞 夏季費率 (6-9月)' : '❄️ 非夏季費率 (10-5月)'}
                   </div>
