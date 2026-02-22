@@ -8,7 +8,7 @@ import type { BillData } from '../../types';
 
 /**
  * UploadZone Component
- * Modern drag-and-drop file upload with tech-inspired design
+ * Modern drag-and-drop file upload with clean professional design
  */
 export const UploadZone: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
@@ -49,10 +49,9 @@ export const UploadZone: React.FC = () => {
         billingPeriod: parsedBill.billingPeriod,
         consumption: parsedBill.consumption,
         currentPlan: parsedBill.currentPlan,
-        // 新增契約容量資訊（OCR 可能無法識別，設為預設值供使用者編輯）
-        contractCapacity: 10, // 預設 10A
-        voltageType: '110', // 預設 110V
-        phaseType: 'single', // 預設單相
+        contractCapacity: 10,
+        voltageType: '110',
+        phaseType: 'single',
         ocrMetadata: {
           confidence: ocrResult.confidence,
           fieldConfidences: parsedBill.confidences,
@@ -68,7 +67,6 @@ export const UploadZone: React.FC = () => {
       setBillData(billData);
       setOcrStatus('done');
 
-      // 移動到確認階段
       setTimeout(() => {
         setStage('confirm');
       }, 500);
@@ -125,13 +123,13 @@ export const UploadZone: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.5 }}
       >
         <Card
           className={`transition-all duration-300 cursor-pointer overflow-hidden backdrop-blur-sm ${
             isDragging
-              ? 'border-2 border-tech-blue shadow-tech-glow-lg bg-gradient-to-br from-tech-blue/15 via-tech-violet/10 to-tech-cyan/15 scale-[1.01]'
-              : 'border-2 border-dashed border-default-300 hover:border-tech-blue/60 hover:shadow-tech-card bg-default-50/50'
+              ? 'border-2 border-primary-500 shadow-glow-lg bg-gradient-to-br from-primary-50 to-secondary-50 scale-[1.01]'
+              : 'border-2 border-dashed border-gray-300 hover:border-primary-400 hover:shadow-card bg-white'
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -151,25 +149,22 @@ export const UploadZone: React.FC = () => {
             />
 
             <div className="space-y-8 text-center">
-              {/* Enhanced animated upload icon */}
+              {/* Animated upload icon */}
               <motion.div
                 className="relative inline-flex items-center justify-center"
-                animate={isDragging ? { scale: 1.15, rotate: [0, -5, 5, -5, 0] } : { scale: 1, rotate: 0 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                animate={isDragging ? { scale: 1.15 } : { scale: 1 }}
+                transition={{ duration: 0.3 }}
               >
                 {/* Glow effect */}
                 <div className={`absolute inset-0 rounded-full blur-2xl transition-colors duration-300 ${
-                  isDragging ? 'bg-tech-blue/40' : 'bg-tech-blue/20'
-                }`} />
-                <div className={`absolute inset-0 rounded-full blur-xl transition-colors duration-300 ${
-                  isDragging ? 'bg-tech-cyan/30' : 'bg-tech-cyan/10'
+                  isDragging ? 'bg-primary-400/40' : 'bg-primary-400/20'
                 }`} />
 
                 {/* Icon container */}
                 <div className={`relative w-28 h-28 rounded-full flex items-center justify-center transition-all duration-300 ${
                   isDragging
-                    ? 'bg-gradient-to-br from-tech-blue to-tech-violet shadow-tech-glow'
-                    : 'bg-gradient-to-br from-tech-blue/90 to-tech-violet/80 shadow-lg'
+                    ? 'bg-gradient-primary shadow-glow'
+                    : 'bg-gradient-to-br from-primary-600 to-secondary-600 shadow-lg'
                 }`}>
                   <svg
                     className={`w-14 h-14 text-white transition-transform duration-300 ${
@@ -190,27 +185,27 @@ export const UploadZone: React.FC = () => {
               </motion.div>
 
               <div className="space-y-3">
-                <h3 className="text-2xl md:text-3xl font-bold text-foreground">
+                <h3 className="text-2xl md:text-3xl font-bold text-gray-900">
                   上傳電費單照片
                 </h3>
-                <p className="text-default-500 text-base md:text-lg">
+                <p className="text-gray-600 text-base md:text-lg">
                   拖曳圖片到這裡，或點選選擇檔案
                 </p>
               </div>
 
-              {/* Enhanced feature chips */}
+              {/* Feature chips */}
               <div className="flex flex-wrap justify-center gap-3">
                 {[
-                  { icon: '⚡', text: 'AI 智慧識別', gradient: 'from-tech-blue/20 to-tech-blue/5', border: 'border-tech-blue/30' },
-                  { icon: '🔒', text: '資料不上傳', gradient: 'from-tech-emerald/20 to-tech-emerald/5', border: 'border-tech-emerald/30' },
-                  { icon: '⏱️', text: '30 秒完成', gradient: 'from-tech-cyan/20 to-tech-cyan/5', border: 'border-tech-cyan/30' },
+                  { icon: '⚡', text: 'AI 智慧識別', gradient: 'from-primary-100 to-primary-50', border: 'border-primary-200', textColor: 'text-primary-700' },
+                  { icon: '🔒', text: '資料不上傳', gradient: 'from-success-100 to-success-50', border: 'border-success-200', textColor: 'text-success-700' },
+                  { icon: '⏱️', text: '30 秒完成', gradient: 'from-secondary-100 to-secondary-50', border: 'border-secondary-200', textColor: 'text-secondary-700' },
                 ].map((feature, idx) => (
                   <motion.span
                     key={idx}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 * idx }}
-                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-br ${feature.gradient} border ${feature.border} text-sm font-semibold text-default-700 shadow-sm`}
+                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-br ${feature.gradient} border ${feature.border} ${feature.textColor} text-sm font-semibold shadow-sm`}
                   >
                     <span>{feature.icon}</span>
                     <span>{feature.text}</span>
@@ -218,8 +213,8 @@ export const UploadZone: React.FC = () => {
                 ))}
               </div>
 
-              <div className="pt-6 border-t border-default-200">
-                <p className="text-sm text-default-400">
+              <div className="pt-6 border-t border-gray-200">
+                <p className="text-sm text-gray-500">
                   支援 JPG、PNG 格式，建議檔案小於 10MB
                 </p>
               </div>
@@ -257,11 +252,11 @@ export const UploadZone: React.FC = () => {
         </Card>
       </motion.div>
 
-      {/* Enhanced camera button (mobile) */}
+      {/* Camera button (mobile) */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.4 }}
+        transition={{ delay: 0.2 }}
         className="mt-8"
       >
         <label className="block">
@@ -276,10 +271,7 @@ export const UploadZone: React.FC = () => {
             color="primary"
             variant="bordered"
             size="lg"
-            className="w-full h-14 text-base font-semibold border-2 border-tech-blue/40 hover:border-tech-blue hover:bg-tech-blue/5 transition-all"
-            style={{
-              background: isDragging ? 'linear-gradient(135deg, #0066ff 0%, #7c3aed 100%)' : 'transparent'
-            }}
+            className="w-full h-14 text-base font-semibold border-2 border-primary-300 hover:border-primary-500 hover:bg-primary-50 transition-all"
             startContent={
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
