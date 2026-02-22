@@ -1,5 +1,5 @@
 import { Button } from '@nextui-org/react';
-import { Zap, TrendingUp, Shield, Clock, Sparkles, ChevronRight } from '../icons';
+import { Zap, TrendingUp, Shield, Clock, Sparkles } from '../icons';
 import { motion } from 'framer-motion';
 
 /**

@@ -158,10 +158,9 @@ function App() {
           errorMessage = '自訂比例總和必須是 100%';
         } else if (error.message.includes('consumption')) {
           errorMessage = '用電度數無效，請重新輸入';
-        } else {
-          errorMessage = `計算錯誤：${error.message}`;
         }
-      }
+        // For security, don't expose internal error messages to users
+        // Detailed errors are logged via console.error above
 
       setCalculationError(errorMessage);
     }
