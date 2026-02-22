@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Trophy, Medal, Award, Info, Zap } from '../icons';
 import { Card, CardBody, Chip, Button, Badge } from '@nextui-org/react';
+import { motion } from 'framer-motion';
 import type { PlanCalculationResult } from '../../types';
 
 interface PlanCardProps {
@@ -30,11 +31,17 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
   };
 
   return (
-    <Card
-      className={`transition-all duration-300 hover:shadow-md ${getCardStyles()}`}
-      isPressable
-      onPress={() => setIsExpanded(!isExpanded)}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: rank * 0.1 }}
+      whileHover={{ y: -4 }}
     >
+      <Card
+        className={`transition-all duration-300 hover:shadow-xl ${getCardStyles()}`}
+        isPressable
+        onPress={() => setIsExpanded(!isExpanded)}
+      >
       <CardBody className="p-4">
         {/* Header with rank and title */}
         <div className="flex items-start justify-between mb-4">
@@ -217,5 +224,6 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
         )}
       </CardBody>
     </Card>
+    </motion.div>
   );
 };
