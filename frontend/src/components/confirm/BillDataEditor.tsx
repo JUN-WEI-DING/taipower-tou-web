@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardBody, Button, Input, Select, SelectItem, Chip } from '@nextui-org/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { BillData } from '../../types';
 
 interface BillDataEditorProps {
@@ -37,53 +38,82 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
   const seasonInfo = getSeasonInfo();
 
   return (
-    <Card className="shadow-sm">
+    <Card className="shadow-md border border-divider">
       <CardBody className="p-6">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-6">
           <div>
-            <h3 className="font-semibold text-foreground">
+            <h3 className="text-lg font-bold text-foreground">
               已識別的資訊
             </h3>
-            <Chip size="sm" color={seasonInfo.isSummer ? 'danger' : 'primary'} variant="flat" className="mt-1">
-              {seasonInfo.label}
-            </Chip>
-          </div>
-          {!isEditing ? (
-            <Button
-              onClick={() => setIsEditing(true)}
-              color="primary"
-              variant="flat"
-              size="sm"
-            >
-              編輯
-            </Button>
-          ) : (
-            <div className="flex gap-2">
-              <Button
-                onClick={handleCancel}
-                color="default"
+            <div className="flex items-center gap-2 mt-2">
+              <Chip
+                size="sm"
+                color={seasonInfo.isSummer ? 'danger' : 'primary'}
                 variant="flat"
-                size="sm"
+                className="font-semibold"
               >
-                取消
-              </Button>
-              <Button
-                onClick={handleSave}
-                color="primary"
-                variant="solid"
-                size="sm"
-              >
-                儲存
-              </Button>
+                {seasonInfo.label}
+              </Chip>
+              {billData.source.isEstimated && (
+                <Chip size="sm" color="warning" variant="flat">
+                  估算資料
+                </Chip>
+              )}
             </div>
-          )}
+          </div>
+          <AnimatePresence mode="wait">
+            {!isEditing ? (
+              <motion.div
+                key="edit"
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+              >
+                <Button
+                  onClick={() => setIsEditing(true)}
+                  color="primary"
+                  variant="flat"
+                  size="sm"
+                  className="font-medium"
+                >
+                  編輯
+                </Button>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="actions"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                className="flex gap-2"
+              >
+                <Button
+                  onClick={handleCancel}
+                  color="default"
+                  variant="flat"
+                  size="sm"
+                >
+                  取消
+                </Button>
+                <Button
+                  onClick={handleSave}
+                  color="primary"
+                  variant="solid"
+                  size="sm"
+                  className="font-semibold"
+                >
+                  儲存
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           {/* 計費期間 */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm text-default-500">計費期間</label>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-default-600">計費期間</label>
               {isEditing ? (
                 <Input
                   type="date"
@@ -104,14 +134,14 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
                   }}
                 />
               ) : (
-                <p className="text-lg font-medium text-foreground">
+                <p className="text-base font-medium text-foreground py-1">
                   {formatDisplayDate(billData.billingPeriod.start)} ~ {formatDisplayDate(billData.billingPeriod.end)}
                 </p>
               )}
             </div>
 
-            <div>
-              <label className="text-sm text-default-500">計費天數</label>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-default-600">計費天數</label>
               {isEditing ? (
                 <Input
                   type="number"
@@ -130,14 +160,14 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
                   }}
                 />
               ) : (
-                <p className="text-lg font-medium text-foreground">{billData.billingPeriod.days} 天</p>
+                <p className="text-base font-medium text-foreground py-1">{billData.billingPeriod.days} 天</p>
               )}
             </div>
           </div>
 
           {/* 用電度數 */}
-          <div>
-            <label className="text-sm text-default-500">總用電度數</label>
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-default-600">總用電度數</label>
             {isEditing ? (
               <Input
                 type="number"
@@ -155,15 +185,21 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
                   });
                 }}
                 endContent={<span className="text-default-400">度</span>}
+                classNames={{
+                  input: 'text-base',
+                }}
               />
             ) : (
-              <p className="text-lg font-medium text-foreground">{billData.consumption.usage} 度</p>
+              <p className="text-lg font-semibold text-foreground py-1">{billData.consumption.usage} 度</p>
             )}
           </div>
 
           {/* 契約容量 - 影響最低用電計算 */}
-          <div>
-            <label className="text-sm text-default-500">契約容量 (安培數)</label>
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-default-600">
+              契約容量
+              <span className="text-default-400 font-normal ml-1">(影響最低用電計算)</span>
+            </label>
             {isEditing ? (
               <Select
                 label="契約容量"
@@ -186,18 +222,16 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
                 <SelectItem key="70" value="70">70 A</SelectItem>
               </Select>
             ) : (
-              <p className="text-lg font-medium text-foreground">{billData.contractCapacity || 10} A</p>
-            )}
-            {!isEditing && (
-              <p className="text-xs text-default-400 mt-1">
-                💡 影響最低用電度數計算
-              </p>
+              <p className="text-base font-medium text-foreground py-1">{billData.contractCapacity || 10} A</p>
             )}
           </div>
 
           {/* 電壓型別 - 影響最低用電計算 */}
-          <div>
-            <label className="text-sm text-default-500">電壓型別</label>
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-default-600">
+              電壓型別
+              <span className="text-default-400 font-normal ml-1">(影響最低用電計算)</span>
+            </label>
             {isEditing ? (
               <Select
                 label="電壓型別"
@@ -214,18 +248,16 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
                 <SelectItem key="220" value="220">220V (大型家電)</SelectItem>
               </Select>
             ) : (
-              <p className="text-lg font-medium text-foreground">{billData.voltageType || 110}V</p>
-            )}
-            {!isEditing && (
-              <p className="text-xs text-default-400 mt-1">
-                💡 影響最低用電度數計算
-              </p>
+              <p className="text-base font-medium text-foreground py-1">{billData.voltageType || 110}V</p>
             )}
           </div>
 
           {/* 相位型別 - 影響基本電費計算 */}
-          <div>
-            <label className="text-sm text-default-500">相位型別</label>
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-default-600">
+              相位型別
+              <span className="text-default-400 font-normal ml-1">(影響基本電費計算)</span>
+            </label>
             {isEditing ? (
               <Select
                 label="相位型別"
@@ -242,12 +274,7 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
                 <SelectItem key="three" value="three">三相 (大型家電/需申裝)</SelectItem>
               </Select>
             ) : (
-              <p className="text-lg font-medium text-foreground">{billData.phaseType === 'three' ? '三相' : '單相'}</p>
-            )}
-            {!isEditing && (
-              <p className="text-xs text-default-400 mt-1">
-                💡 影響基本電費計算
-              </p>
+              <p className="text-base font-medium text-foreground py-1">{billData.phaseType === 'three' ? '三相' : '單相'}</p>
             )}
           </div>
 
@@ -255,11 +282,11 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
           {(billData.consumption.peakOnPeak !== undefined ||
             billData.consumption.offPeak !== undefined ||
             billData.consumption.semiPeak !== undefined) && (
-            <div>
-              <label className="text-sm text-default-500 block mb-2">時段用電分配</label>
-              <div className="grid grid-cols-3 gap-2">
-                <div className="text-center p-3 bg-danger-50 rounded-lg border border-danger-200">
-                  <div className="text-danger text-xs mb-1">尖峰</div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-default-600 block">時段用電分配</label>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="text-center p-4 bg-danger-50 rounded-xl border-2 border-danger-200">
+                  <div className="text-danger text-xs font-semibold mb-2">尖峰</div>
                   {isEditing ? (
                     <Input
                       type="number"
@@ -275,15 +302,16 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
                         });
                       }}
                       size="sm"
+                      classNames={{
+                        input: 'text-center font-bold text-danger',
+                      }}
                     />
                   ) : (
-                    <div className="text-danger font-bold">
-                      {billData.consumption.peakOnPeak || 0} 度
-                    </div>
+                    <div className="text-danger font-bold text-lg">{billData.consumption.peakOnPeak || 0} 度</div>
                   )}
                 </div>
-                <div className="text-center p-3 bg-warning-50 rounded-lg border border-warning-200">
-                  <div className="text-warning text-xs mb-1">半尖峰</div>
+                <div className="text-center p-4 bg-warning-50 rounded-xl border-2 border-warning-200">
+                  <div className="text-warning text-xs font-semibold mb-2">半尖峰</div>
                   {isEditing ? (
                     <Input
                       type="number"
@@ -299,15 +327,16 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
                         });
                       }}
                       size="sm"
+                      classNames={{
+                        input: 'text-center font-bold text-warning',
+                      }}
                     />
                   ) : (
-                    <div className="text-warning font-bold">
-                      {billData.consumption.semiPeak || 0} 度
-                    </div>
+                    <div className="text-warning font-bold text-lg">{billData.consumption.semiPeak || 0} 度</div>
                   )}
                 </div>
-                <div className="text-center p-3 bg-success-50 rounded-lg border border-success-200">
-                  <div className="text-success text-xs mb-1">離峰</div>
+                <div className="text-center p-4 bg-success-50 rounded-xl border-2 border-success-200">
+                  <div className="text-success text-xs font-semibold mb-2">離峰</div>
                   {isEditing ? (
                     <Input
                       type="number"
@@ -323,17 +352,21 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
                         });
                       }}
                       size="sm"
+                      classNames={{
+                        input: 'text-center font-bold text-success',
+                      }}
                     />
                   ) : (
-                    <div className="text-success font-bold">
-                      {billData.consumption.offPeak || 0} 度
-                    </div>
+                    <div className="text-success font-bold text-lg">{billData.consumption.offPeak || 0} 度</div>
                   )}
                 </div>
               </div>
               {isEditing && (
-                <div className="mt-2 text-xs text-default-400">
-                  提示：尖峰 + 半尖峰 + 離峰 應該接近總用電度數
+                <div className="flex items-start gap-2 p-3 bg-default-50 rounded-xl border border-default-200">
+                  <span className="text-energy-blue">💡</span>
+                  <p className="text-xs text-default-600">
+                    提示：尖峰 + 半尖峰 + 離峰 應該接近總用電度數
+                  </p>
                 </div>
               )}
             </div>
@@ -341,14 +374,22 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
 
           {/* 識別信心度 */}
           {billData.ocrMetadata && !isEditing && (
-            <div className="mt-4 p-3 bg-default-100 rounded-lg">
-              <p className="text-xs text-default-600">
-                識別信心度：{(billData.ocrMetadata.confidence * 100).toFixed(0)}%
-              </p>
-              {billData.ocrMetadata.confidence < 0.8 && (
-                <p className="text-xs text-warning mt-1">
-                  ⚠️ 識別信心度較低，建議手動確認或編輯資料
+            <div className="mt-4 p-4 bg-default-50 rounded-xl border border-default-200">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-default-700">
+                  識別信心度
                 </p>
+                <p className="text-sm font-bold text-foreground">
+                  {(billData.ocrMetadata.confidence * 100).toFixed(0)}%
+                </p>
+              </div>
+              {billData.ocrMetadata.confidence < 0.8 && (
+                <div className="flex items-start gap-2 mt-3 p-3 bg-warning-50 rounded-lg">
+                  <span className="text-warning">⚠️</span>
+                  <p className="text-xs text-warning-700">
+                    識別信心度較低，建議手動確認或編輯資料
+                  </p>
+                </div>
               )}
             </div>
           )}
