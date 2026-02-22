@@ -97,8 +97,8 @@ export const OCRProgress: React.FC = () => {
                 showValueLabel={true}
                 classNames={{
                   track: 'h-3 bg-default-200 border border-default-300 rounded-full overflow-hidden',
-                  indicator: 'bg-gradient-tech h-full shadow-tech-glow',
-                  valueLabel: 'text-sm font-semibold text-tech-blue',
+                  indicator: 'bg-gradient-primary h-full shadow-glow',
+                  label: 'text-sm font-semibold text-primary-600',
                 }}
               />
               <motion.div
