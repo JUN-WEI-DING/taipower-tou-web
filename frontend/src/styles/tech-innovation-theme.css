@@ -1,0 +1,184 @@
+/**
+ * Tech Innovation Theme
+ * A modern, bold design system with electric blues, purples, and neon accents
+ * Perfect for tech products and data-driven applications
+ */
+
+:root {
+  /* Primary Color - Electric Blue */
+  --tech-primary-50: #eff6ff;
+  --tech-primary-100: #dbeafe;
+  --tech-primary-200: #bfdbfe;
+  --tech-primary-300: #93c5fd;
+  --tech-primary-400: #60a5fa;
+  --tech-primary-500: #3b82f6;
+  --tech-primary-600: #2563eb;
+  --tech-primary-700: #1d4ed8;
+  --tech-primary-800: #1e40af;
+  --tech-primary-900: #1e3a8a;
+  --tech-primary-950: #172554;
+
+  /* Secondary Color - Electric Purple */
+  --tech-secondary-50: #faf5ff;
+  --tech-secondary-100: #f3e8ff;
+  --tech-secondary-200: #e9d5ff;
+  --tech-secondary-300: #d8b4fe;
+  --tech-secondary-400: #c084fc;
+  --tech-secondary-500: #a855f7;
+  --tech-secondary-600: #9333ea;
+  --tech-secondary-700: #7e22ce;
+  --tech-secondary-800: #6b21a8;
+  --tech-secondary-900: #581c87;
+  --tech-secondary-950: #3b0764;
+
+  /* Accent Color - Neon Cyan */
+  --tech-accent-50: #ecfeff;
+  --tech-accent-100: #cffafe;
+  --tech-accent-200: #a5f3fc;
+  --tech-accent-300: #67e8f9;
+  --tech-accent-400: #22d3ee;
+  --tech-accent-500: #06b6d4;
+  --tech-accent-600: #0891b2;
+  --tech-accent-700: #0e7490;
+  --tech-accent-800: #155e75;
+  --tech-accent-900: #164e63;
+  --tech-accent-950: #083344;
+
+  /* Success - Neon Green */
+  --tech-success-50: #f0fdf4;
+  --tech-success-100: #dcfce7;
+  --tech-success-200: #bbf7d0;
+  --tech-success-300: #86efac;
+  --tech-success-400: #4ade80;
+  --tech-success-500: #22c55e;
+  --tech-success-600: #16a34a;
+  --tech-success-700: #15803d;
+  --tech-success-800: #166534;
+  --tech-success-900: #14532d;
+
+  /* Warning - Neon Amber */
+  --tech-warning-50: #fffbeb;
+  --tech-warning-100: #fef3c7;
+  --tech-warning-200: #fde68a;
+  --tech-warning-300: #fcd34d;
+  --tech-warning-400: #fbbf24;
+  --tech-warning-500: #f59e0b;
+  --tech-warning-600: #d97706;
+  --tech-warning-700: #b45309;
+  --tech-warning-800: #92400e;
+  --tech-warning-900: #78350f;
+
+  /* Danger - Neon Red */
+  --tech-danger-50: #fef2f2;
+  --tech-danger-100: #fee2e2;
+  --tech-danger-200: #fecaca;
+  --tech-danger-300: #fca5a5;
+  --tech-danger-400: #f87171;
+  --tech-danger-500: #ef4444;
+  --tech-danger-600: #dc2626;
+  --tech-danger-700: #b91c1c;
+  --tech-danger-800: #991b1b;
+  --tech-danger-900: #7f1d1d;
+
+  /* Neutral Grays - Cool Toned */
+  --tech-gray-50: #f8fafc;
+  --tech-gray-100: #f1f5f9;
+  --tech-gray-200: #e2e8f0;
+  --tech-gray-300: #cbd5e1;
+  --tech-gray-400: #94a3b8;
+  --tech-gray-500: #64748b;
+  --tech-gray-600: #475569;
+  --tech-gray-700: #334155;
+  --tech-gray-800: #1e293b;
+  --tech-gray-900: #0f172a;
+  --tech-gray-950: #020617;
+
+  /* Dark Mode Background */
+  --tech-dark-bg: #0a0a0f;
+  --tech-dark-surface: #13131a;
+  --tech-dark-elevated: #1a1a24;
+
+  /* Gradients */
+  --tech-gradient-primary: linear-gradient(135deg, #3b82f6 0%, #a855f7 100%);
+  --tech-gradient-secondary: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  --tech-gradient-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  --tech-gradient-hero: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #0f172a 100%);
+  --tech-gradient-success: linear-gradient(135deg, #22c55e 0%, #06b6d4 100%);
+
+  /* Glow Effects */
+  --tech-glow-primary: 0 0 40px rgba(59, 130, 246, 0.3);
+  --tech-glow-secondary: 0 0 40px rgba(168, 85, 247, 0.3);
+  --tech-glow-accent: 0 0 40px rgba(6, 182, 212, 0.3);
+  --tech-glow-success: 0 0 40px rgba(34, 197, 94, 0.3);
+
+  /* Shadow System */
+  --tech-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --tech-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --tech-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --tech-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --tech-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --tech-shadow-glow: 0 0 60px rgba(59, 130, 246, 0.15);
+  --tech-shadow-glow-lg: 0 0 80px rgba(59, 130, 246, 0.25);
+  --tech-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --tech-shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.15);
+  --tech-shadow-neon: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(168, 85, 247, 0.3);
+
+  /* Border Radius */
+  --tech-radius-sm: 0.375rem;
+  --tech-radius-md: 0.5rem;
+  --tech-radius-lg: 0.75rem;
+  --tech-radius-xl: 1rem;
+  --tech-radius-2xl: 1.5rem;
+  --tech-radius-3xl: 2rem;
+  --tech-radius-full: 9999px;
+
+  /* Spacing Scale */
+  --tech-spacing-xs: 0.25rem;
+  --tech-spacing-sm: 0.5rem;
+  --tech-spacing-md: 1rem;
+  --tech-spacing-lg: 1.5rem;
+  --tech-spacing-xl: 2rem;
+  --tech-spacing-2xl: 3rem;
+  --tech-spacing-3xl: 4rem;
+  --tech-spacing-4xl: 6rem;
+
+  /* Typography */
+  --tech-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --tech-font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --tech-font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+
+  /* Font Sizes */
+  --tech-text-xs: 0.75rem;
+  --tech-text-sm: 0.875rem;
+  --tech-text-base: 1rem;
+  --tech-text-lg: 1.125rem;
+  --tech-text-xl: 1.25rem;
+  --tech-text-2xl: 1.5rem;
+  --tech-text-3xl: 1.875rem;
+  --tech-text-4xl: 2.25rem;
+  --tech-text-5xl: 3rem;
+  --tech-text-6xl: 3.75rem;
+  --tech-text-hero: clamp(2.5rem, 5vw, 4rem);
+  --tech-text-title: clamp(2rem, 4vw, 3rem);
+
+  /* Font Weights */
+  --tech-font-normal: 400;
+  --tech-font-medium: 500;
+  --tech-font-semibold: 600;
+  --tech-font-bold: 700;
+  --tech-font-extrabold: 800;
+}
+
+/* Dark Mode Overrides */
+.dark {
+  --tech-gray-50: #0f172a;
+  --tech-gray-100: #1e293b;
+  --tech-gray-200: #334155;
+  --tech-gray-300: #475569;
+  --tech-gray-400: #64748b;
+  --tech-gray-500: #94a3b8;
+  --tech-gray-600: #cbd5e1;
+  --tech-gray-700: #e2e8f0;
+  --tech-gray-800: #f1f5f9;
+  --tech-gray-900: #f8fafc;
+}

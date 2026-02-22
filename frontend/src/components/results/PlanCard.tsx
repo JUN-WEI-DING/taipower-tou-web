@@ -13,16 +13,16 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const getRankIcon = (r: number) => {
-    if (r === 1) return <Trophy className="text-warning-500" size={28} />;
-    if (r === 2) return <Medal className="text-gray-400" size={28} />;
-    if (r === 3) return <Award className="text-gray-500" size={28} />;
+    if (r === 1) return <Trophy className="text-warning-400" size={28} />;
+    if (r === 2) return <Medal className="text-gray-300" size={28} />;
+    if (r === 3) return <Award className="text-gray-400" size={28} />;
     return null;
   };
 
   const getRankBadge = (r: number) => {
     if (r === 1) return { text: '最省錢', gradient: 'bg-gradient-primary' };
-    if (r === 2) return { text: '第二選擇', gradient: 'bg-gradient-to-r from-secondary-600/20 to-primary-600/20' };
-    if (r === 3) return { text: '第三選擇', gradient: 'bg-gradient-to-r from-primary-500/15 to-secondary-500/15' };
+    if (r === 2) return { text: '第二選擇', gradient: 'bg-gradient-secondary' };
+    if (r === 3) return { text: '第三選擇', gradient: 'bg-gradient-accent' };
     return null;
   };
 
@@ -30,25 +30,25 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
   const isCurrentPlan = result.comparison.isCurrentPlan;
   const rankBadge = getRankBadge(rank);
 
-  // Determine card styling based on rank
+  // Determine card styling based on rank with Tech Innovation theme
   const getCardStyles = () => {
-    if (rank === 1) return 'border-2 border-primary-400 shadow-glow bg-gradient-to-br from-primary-50 via-secondary-50 to-transparent backdrop-blur-sm';
-    if (rank === 2) return 'border-2 border-secondary-300 shadow-card bg-gradient-to-br from-secondary-50 via-primary-50 to-transparent';
-    if (rank === 3) return 'border border-primary-200 shadow-sm bg-gradient-to-br from-primary-50/50 to-transparent';
+    if (rank === 1) return 'border-2 border-accent-400 shadow-neon bg-gradient-to-br from-primary-500/10 via-secondary-500/10 to-accent-500/10 backdrop-blur-md';
+    if (rank === 2) return 'border-2 border-secondary-400 shadow-glow-secondary bg-gradient-to-br from-secondary-500/10 to-pink-500/10';
+    if (rank === 3) return 'border border-accent-400 shadow-glow-accent bg-gradient-to-br from-accent-500/10 to-primary-500/10';
     return 'border border-gray-200 bg-white shadow-card';
   };
 
   const getRankBadgeStyles = () => {
-    if (rank === 1) return 'bg-gradient-primary text-white font-bold shadow-lg';
-    if (rank === 2) return 'bg-gradient-to-r from-secondary-600/80 to-primary-600/80 text-white font-semibold shadow-md';
-    if (rank === 3) return 'bg-gradient-to-r from-primary-500/70 to-secondary-500/70 text-white font-medium shadow-sm';
+    if (rank === 1) return 'bg-gradient-primary text-white font-bold shadow-neon';
+    if (rank === 2) return 'bg-gradient-secondary text-white font-semibold shadow-glow-secondary';
+    if (rank === 3) return 'bg-gradient-accent text-white font-medium shadow-glow-accent';
     return 'bg-gray-100 text-gray-500';
   };
 
   const getPriceSectionStyles = () => {
-    if (rank === 1) return 'bg-gradient-primary text-white shadow-glow';
-    if (rank === 2) return 'bg-gradient-to-br from-secondary-100 to-primary-100 border border-secondary-200';
-    if (rank === 3) return 'bg-gradient-to-br from-primary-50 to-secondary-50 border border-primary-200';
+    if (rank === 1) return 'bg-gradient-primary text-white shadow-neon';
+    if (rank === 2) return 'bg-gradient-secondary text-white shadow-glow-secondary';
+    if (rank === 3) return 'bg-gradient-accent text-white shadow-glow-accent';
     return 'bg-gray-50 border border-gray-200';
   };
 
@@ -57,7 +57,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: rank * 0.08 }}
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      whileHover={{ y: -6, transition: { duration: 0.2 } }}
       className="w-full"
     >
       <Card
@@ -69,15 +69,15 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
           {/* Header with rank and title */}
           <div className="flex items-start justify-between mb-5">
             <div className="flex items-center gap-4">
-              {/* Rank icon */}
+              {/* Rank icon with glow */}
               <motion.div
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: rank * 0.08 + 0.2, type: 'spring', stiffness: 200 }}
                 className={`flex items-center justify-center w-14 h-14 rounded-2xl ${
-                  rank === 1 ? 'bg-gradient-primary shadow-glow' :
-                  rank === 2 ? 'bg-gradient-to-br from-secondary-600 to-primary-600 shadow-md' :
-                  rank === 3 ? 'bg-gradient-to-br from-primary-500 to-secondary-500 shadow-sm' : 'bg-gray-100'
+                  rank === 1 ? 'bg-gradient-primary shadow-neon' :
+                  rank === 2 ? 'bg-gradient-secondary shadow-glow-secondary' :
+                  rank === 3 ? 'bg-gradient-accent shadow-glow-accent' : 'bg-gray-100'
                 }`}
               >
                 {getRankIcon(rank) || (
@@ -125,27 +125,27 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="mb-5 inline-flex items-center gap-2 px-4 py-2 bg-primary-50 backdrop-blur-sm rounded-full border border-primary-200"
+              className="mb-5 inline-flex items-center gap-2 px-4 py-2 bg-primary-50 backdrop-blur-sm rounded-full border border-primary-300"
             >
               <Zap size={14} className="text-primary-600" />
               <span className="text-sm font-semibold text-primary-700">目前使用中</span>
             </motion.div>
           )}
 
-          {/* Price display */}
+          {/* Price display with gradient */}
           <div className={`text-center py-7 rounded-2xl mb-5 ${getPriceSectionStyles()}`}>
             <div className={`text-4xl md:text-5xl font-bold tracking-tight ${
-              rank === 1 ? 'text-white' : 'text-gray-900'
+              rank <= 3 ? 'text-white' : 'text-gray-900'
             }`}>
               ${result.charges.total.toFixed(0)}
             </div>
-            <p className={`text-sm mt-2 font-medium ${rank === 1 ? 'text-white/90' : 'text-gray-600'}`}>
+            <p className={`text-sm mt-2 font-medium ${rank <= 3 ? 'text-white/90' : 'text-gray-600'}`}>
               每月預估電費
             </p>
             {result.seasonInfo && (
               <Chip
                 size="sm"
-                variant={rank === 1 ? 'solid' : 'flat'}
+                variant={rank <= 3 ? 'solid' : 'flat'}
                 color={result.seasonInfo.isSummer ? 'danger' : 'primary'}
                 className="mt-4 font-medium"
               >
@@ -258,8 +258,8 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
               transition={{ delay: 0.2, duration: 0.4 }}
               className={`mt-5 py-5 px-5 rounded-2xl text-center transition-all duration-300 ${
                 isPositive
-                  ? 'bg-success-50 border-2 border-success-200'
-                  : 'bg-danger-50 border-2 border-danger-200'
+                  ? 'bg-success-50 border-2 border-success-300'
+                  : 'bg-danger-50 border-2 border-danger-300'
               }`}
             >
               {isPositive ? (
@@ -297,7 +297,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <Card className="mt-5 bg-warning-50 border-warning-200/50 backdrop-blur-sm">
+              <Card className="mt-5 bg-warning-50/80 backdrop-blur-sm border-warning-300/50">
                 <CardBody className="p-5">
                   <p className="text-sm text-gray-700 flex items-start gap-3 leading-relaxed">
                     <Sparkles size={18} className="mt-0.5 flex-shrink-0 text-warning-600" />

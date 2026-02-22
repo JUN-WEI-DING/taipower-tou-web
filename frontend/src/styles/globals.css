@@ -6,6 +6,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Tech Innovation Theme */
+@import './tech-innovation-theme.css';
+
 @layer base {
   /* Prevent horizontal scroll on mobile */
   html, body {

@@ -11,8 +11,8 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 /**
- * UploadZone Component
- * Modern drag-and-drop file upload with clean professional design
+ * UploadZone Component - Tech Innovation Theme
+ * Modern drag-and-drop file upload with neon glow effects
  */
 export const UploadZone: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
@@ -163,10 +163,10 @@ export const UploadZone: React.FC = () => {
         transition={{ duration: 0.5 }}
       >
         <Card
-          className={`transition-all duration-300 cursor-pointer overflow-hidden backdrop-blur-sm ${
+          className={`transition-all duration-300 cursor-pointer overflow-hidden backdrop-blur-md ${
             isDragging
-              ? 'border-2 border-primary-500 shadow-glow-lg bg-gradient-to-br from-primary-50 to-secondary-50 scale-[1.01]'
-              : 'border-2 border-dashed border-gray-300 hover:border-primary-400 hover:shadow-card bg-white'
+              ? 'border-2 border-accent-400 shadow-neon scale-[1.02] bg-gradient-to-br from-primary-500/20 to-accent-500/20'
+              : 'border-2 border-dashed border-gray-300 hover:border-primary-400 hover:shadow-glow bg-white'
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -184,22 +184,25 @@ export const UploadZone: React.FC = () => {
             />
 
             <div className="space-y-8 text-center">
-              {/* Animated upload icon */}
+              {/* Animated upload icon with glow */}
               <motion.div
                 className="relative inline-flex items-center justify-center"
-                animate={isDragging ? { scale: 1.15 } : { scale: 1 }}
+                animate={isDragging ? { scale: 1.15, rotate: 5 } : { scale: 1, rotate: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                {/* Glow effect */}
+                {/* Neon glow rings */}
                 <div className={`absolute inset-0 rounded-full blur-2xl transition-colors duration-300 ${
-                  isDragging ? 'bg-primary-400/40' : 'bg-primary-400/20'
+                  isDragging ? 'bg-accent-400/50' : 'bg-primary-400/30'
+                }`} />
+                <div className={`absolute inset-4 rounded-full blur-xl transition-colors duration-300 ${
+                  isDragging ? 'bg-secondary-400/40' : 'bg-accent-400/20'
                 }`} />
 
                 {/* Icon container */}
                 <div className={`relative w-28 h-28 rounded-full flex items-center justify-center transition-all duration-300 ${
                   isDragging
-                    ? 'bg-gradient-primary shadow-glow'
-                    : 'bg-gradient-to-br from-primary-600 to-secondary-600 shadow-lg'
+                    ? 'bg-gradient-to-br from-primary-500 to-accent-500 shadow-neon'
+                    : 'bg-gradient-to-br from-primary-600 to-secondary-600 shadow-glow'
                 }`}>
                   <svg
                     className={`w-14 h-14 text-white transition-transform duration-300 ${
@@ -228,19 +231,20 @@ export const UploadZone: React.FC = () => {
                 </p>
               </div>
 
-              {/* Feature chips */}
+              {/* Feature chips with glow */}
               <div className="flex flex-wrap justify-center gap-3">
                 {[
-                  { icon: '⚡', text: 'AI 智慧識別', gradient: 'from-primary-100 to-primary-50', border: 'border-primary-200', textColor: 'text-primary-700' },
-                  { icon: '🔒', text: '資料不上傳', gradient: 'from-success-100 to-success-50', border: 'border-success-200', textColor: 'text-success-700' },
-                  { icon: '⏱️', text: '30 秒完成', gradient: 'from-secondary-100 to-secondary-50', border: 'border-secondary-200', textColor: 'text-secondary-700' },
+                  { icon: '⚡', text: 'AI 智慧識別', gradient: 'from-primary-500/10 to-accent-500/10', border: 'border-primary-300', textColor: 'text-primary-700' },
+                  { icon: '🔒', text: '本地運算', gradient: 'from-success-500/10 to-emerald-500/10', border: 'border-success-300', textColor: 'text-success-700' },
+                  { icon: '⏱️', text: '30 秒完成', gradient: 'from-secondary-500/10 to-pink-500/10', border: 'border-secondary-300', textColor: 'text-secondary-700' },
                 ].map((feature, idx) => (
                   <motion.span
                     key={idx}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 * idx }}
-                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-br ${feature.gradient} border ${feature.border} ${feature.textColor} text-sm font-semibold shadow-sm`}
+                    whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-br ${feature.gradient} border ${feature.border} ${feature.textColor} text-sm font-semibold shadow-sm hover:shadow-md`}
                   >
                     <span>{feature.icon}</span>
                     <span>{feature.text}</span>
@@ -250,18 +254,18 @@ export const UploadZone: React.FC = () => {
 
               <div className="pt-6 border-t border-gray-200">
                 <p className="text-sm text-gray-500">
-                  支援 JPG、PNG 格式，建議檔案小於 10MB
+                  支援 JPG、PNG、WebP 格式，建議檔案小於 10MB
                 </p>
               </div>
 
-              {/* Error message */}
+              {/* Error message with glow */}
               {errorMessage && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="mt-6"
                 >
-                  <Card className="bg-danger-50/80 backdrop-blur-sm border-danger-200/50">
+                  <Card className="bg-danger-50/90 backdrop-blur-sm border-2 border-danger-300 shadow-lg">
                     <CardBody className="p-5">
                       <p className="text-sm text-danger font-semibold flex items-center gap-2">
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -287,7 +291,7 @@ export const UploadZone: React.FC = () => {
         </Card>
       </motion.div>
 
-      {/* Camera button (mobile) */}
+      {/* Camera button with neon effect */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -304,10 +308,8 @@ export const UploadZone: React.FC = () => {
             className="hidden"
           />
           <Button
-            color="primary"
-            variant="bordered"
             size="lg"
-            className="w-full h-14 text-base font-semibold border-2 border-primary-300 hover:border-primary-500 hover:bg-primary-50 transition-all"
+            className="w-full h-14 text-base font-semibold bg-gradient-to-r from-primary-500 to-accent-500 text-white hover:shadow-neon transition-all border-0"
             startContent={
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
