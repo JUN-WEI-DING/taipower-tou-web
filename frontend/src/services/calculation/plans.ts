@@ -266,11 +266,16 @@ export class PlansLoader {
     }
 
     // 處理 billing_rules，確保 over_2000_kwh_surcharge 格式統一
-    let billingRules = raw.billing_rules;
-    if (raw.over_2000_kwh_surcharge !== undefined) {
-      // 如果方案層級有 over_2000_kwh_surcharge，轉換為 billing_rules 格式
+    // billing_rules.over_2000_kwh_surcharge 為主要來源，僅在缺失時從方案層級回填
+    let billingRules = raw.billing_rules || {};
+    if (!billingRules.over_2000_kwh_surcharge &&
+        raw.over_2000_kwh_surcharge !== undefined &&
+        typeof raw.over_2000_kwh_surcharge === 'number' &&
+        Number.isFinite(raw.over_2000_kwh_surcharge) &&
+        raw.over_2000_kwh_surcharge >= 0) {
+      // 只有在 billing_rules 沒有附加費規則，且方案層級值有效時才回填
       billingRules = {
-        ...raw.billing_rules,
+        ...billingRules,
         over_2000_kwh_surcharge: {
           threshold_kwh: 2000,
           cost_per_kwh: raw.over_2000_kwh_surcharge,

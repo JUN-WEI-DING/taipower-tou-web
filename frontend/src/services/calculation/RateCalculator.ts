@@ -379,6 +379,8 @@ export class RateCalculator {
     if (surchargeRule &&
         Number.isFinite(surchargeRule.threshold_kwh) &&
         Number.isFinite(surchargeRule.cost_per_kwh) &&
+        surchargeRule.threshold_kwh >= 0 &&
+        surchargeRule.cost_per_kwh >= 0 &&
         totalBillableConsumption > surchargeRule.threshold_kwh) {
       const overAmount = totalBillableConsumption - surchargeRule.threshold_kwh;
       surcharge = overAmount * surchargeRule.cost_per_kwh;
@@ -553,6 +555,8 @@ export class RateCalculator {
     if (surchargeRule &&
         Number.isFinite(surchargeRule.threshold_kwh) &&
         Number.isFinite(surchargeRule.cost_per_kwh) &&
+        surchargeRule.threshold_kwh >= 0 &&
+        surchargeRule.cost_per_kwh >= 0 &&
         totalBillableConsumption > surchargeRule.threshold_kwh) {
       const overAmount = totalBillableConsumption - surchargeRule.threshold_kwh;
       surcharge = overAmount * surchargeRule.cost_per_kwh;
