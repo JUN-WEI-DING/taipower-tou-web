@@ -11,6 +11,8 @@ import { PlanList } from './components/results/PlanList';
 import { ResultChart } from './components/results/ResultChart';
 import { ResultsSummary } from './components/results/ResultsSummary';
 import { HeroSection } from './components/landing';
+import { Header } from './components/layout/Header';
+import { StageTransition } from './components/layout/StageTransition';
 import { PlansLoader } from './services/calculation/plans';
 import { RateCalculator } from './services/calculation/RateCalculator';
 import { DataCompletenessLevel } from './types';
@@ -179,98 +181,70 @@ function App() {
         跳到主要內容
       </a>
 
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-card/50 backdrop-blur-md">
-        <div className="container">
-          <nav className="flex items-center justify-between h-16">
-            <a href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
-                <Zap size={20} className="text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold text-card-foreground leading-tight">
-                  臺電時間電價比較
-                </h1>
-                <p className="text-xs text-muted-foreground hidden sm:block">
-                  找出最省錢的電價方案
-                </p>
-              </div>
-            </a>
-
-            <div className="flex items-center gap-4">
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-              >
-                GitHub
-              </a>
-            </div>
-          </nav>
-        </div>
-      </header>
+      {/* Header Component */}
+      <Header />
 
       {/* Main Content */}
-      <main id="main-content" className="flex-1 py-8 md:py-12" role="main">
-        <div className="container">
-          {stage === 'upload' && (
-            <div className="animate-fade-in">
-              {!billType ? (
-                <HeroSection
-                  onOCRClick={() => setBillType('auto_detect')}
-                  onManualClick={() => setBillType('non_tou')}
-                />
-              ) : billType === 'auto_detect' ? (
-                <div className="max-w-2xl mx-auto space-y-8">
-                  <div className="text-center">
-                    <Button
-                      onClick={() => setBillType(null)}
-                      variant="light"
-                      color="default"
-                      size="sm"
-                      className="mb-6"
-                    >
-                      ← 返回選擇其他方式
-                    </Button>
-                    <h2 className="text-3xl md:text-4xl font-bold text-card-foreground mb-3">
-                      上傳電費單照片
-                    </h2>
-                    <p className="text-lg text-muted-foreground">
-                      系統會自動識別電費單型別和用電資訊
-                    </p>
-                  </div>
-                  <UploadZone />
-                  {uploadedImage && (
-                    <div className="mt-8">
-                      <h3 className="text-lg font-semibold text-card-foreground mb-4">
-                        已上傳的圖片
-                      </h3>
-                      <ImagePreview />
+      <main id="main-content" className="flex-1" role="main">
+        <StageTransition currentStage={stage}>
+          <div className="container py-8 md:py-12">
+            {stage === 'upload' && (
+              <>
+                {!billType ? (
+                  <HeroSection
+                    onOCRClick={() => setBillType('auto_detect')}
+                    onManualClick={() => setBillType('non_tou')}
+                  />
+                ) : billType === 'auto_detect' ? (
+                  <div className="max-w-2xl mx-auto space-y-8">
+                    <div className="text-center">
+                      <Button
+                        onClick={() => setBillType(null)}
+                        variant="light"
+                        color="default"
+                        size="sm"
+                        className="mb-6"
+                      >
+                        ← 返回選擇其他方式
+                      </Button>
+                      <h2 className="text-3xl md:text-4xl font-bold text-card-foreground mb-3">
+                        上傳電費單照片
+                      </h2>
+                      <p className="text-lg text-muted-foreground">
+                        系統會自動識別電費單型別和用電資訊
+                      </p>
                     </div>
-                  )}
-                  <OCRProgress />
-                </div>
-              ) : (
-                <div className="max-w-2xl mx-auto space-y-8">
-                  <div className="text-center">
-                    <Button
-                      onClick={() => setBillType(null)}
-                      variant="light"
-                      color="default"
-                      size="sm"
-                      className="mb-6"
-                    >
-                      ← 返回重新選擇型別
-                    </Button>
+                    <UploadZone />
+                    {uploadedImage && (
+                      <div className="mt-8">
+                        <h3 className="text-lg font-semibold text-card-foreground mb-4">
+                          已上傳的圖片
+                        </h3>
+                        <ImagePreview />
+                      </div>
+                    )}
+                    <OCRProgress />
                   </div>
-                  <BillTypeInputForm billType={billType} />
-                </div>
-              )}
-            </div>
-          )}
+                ) : (
+                  <div className="max-w-2xl mx-auto space-y-8">
+                    <div className="text-center">
+                      <Button
+                        onClick={() => setBillType(null)}
+                        variant="light"
+                        color="default"
+                        size="sm"
+                        className="mb-6"
+                      >
+                        ← 返回重新選擇型別
+                      </Button>
+                    </div>
+                    <BillTypeInputForm billType={billType} />
+                  </div>
+                )}
+              </>
+            )}
 
-          {stage === 'confirm' && billData && (
+            {stage === 'confirm' && billData && (
             <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
               <div className="text-center space-y-3">
                 <h2 className="text-3xl md:text-4xl font-bold text-card-foreground">
@@ -384,7 +358,8 @@ function App() {
               </div>
             </div>
           )}
-        </div>
+          </div>
+        </StageTransition>
       </main>
 
       {/* Footer - Enhanced */}
@@ -419,7 +394,7 @@ function App() {
               {/* Social links */}
               <div className="flex items-center gap-3">
                 {[
-                  { name: 'GitHub', url: 'https://github.com' },
+                  { name: 'GitHub', url: 'https://github.com/JUN-WEI-DING/taipower-tou-web' },
                   { name: 'Email', url: 'mailto:contact@example.com' },
                 ].map((social) => (
                   <a
