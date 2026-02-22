@@ -1,5 +1,5 @@
 import React from 'react';
-import { Zap, Clock, TrendingUp, HelpCircle } from 'lucide-react';
+import { Zap, Clock, TrendingUp, HelpCircle } from '../icons';
 
 /**
  * 電費單型別
@@ -69,10 +69,10 @@ export const BillTypeSelector: React.FC<BillTypeSelectorProps> = ({ onSelect }) 
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl font-bold text-foreground mb-2">
           請選擇您的電費單型別
         </h2>
-        <p className="text-gray-600">
+        <p className="text-default-600">
           不同型別的電費單會顯示不同的用電資訊，選擇正確的型別可以獲得準確的比較結果
         </p>
       </div>
@@ -82,20 +82,20 @@ export const BillTypeSelector: React.FC<BillTypeSelectorProps> = ({ onSelect }) 
           <button
             key={option.id}
             onClick={() => onSelect(option.id)}
-            className="ocean-card bg-white border-2 border-[#d1eae8] rounded-xl p-6 text-left transition-all hover:border-[#2d8b8b] focus:outline-none focus:ring-2 focus:ring-[#2d8b8b] focus:border-transparent"
+            className="bg-content1 border-2 border-divider rounded-xl p-6 text-left transition-all hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 text-[#2d8b8b]">
+              <div className="flex-shrink-0 text-primary">
                 {option.icon}
               </div>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-lg font-semibold text-[#1a2332]">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {option.title}
                   </h3>
                   {option.badge && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#2d8b8b]/20 text-[#2d8b8b]">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary/20 text-primary">
                       {option.badge}
                     </span>
                   )}
@@ -103,8 +103,8 @@ export const BillTypeSelector: React.FC<BillTypeSelectorProps> = ({ onSelect }) 
 
                 <ul className="space-y-1">
                   {option.description.map((line, index) => (
-                    <li key={index} className="text-sm text-[#4a5568] flex items-start gap-2">
-                      <span className="text-[#2d8b8b] mt-0.5">•</span>
+                    <li key={index} className="text-sm text-default-600 flex items-start gap-2">
+                      <span className="text-primary mt-0.5">•</span>
                       <span>{line}</span>
                     </li>
                   ))}
@@ -115,8 +115,8 @@ export const BillTypeSelector: React.FC<BillTypeSelectorProps> = ({ onSelect }) 
         ))}
       </div>
 
-      <div className="mt-8 p-4 bg-[#f1faee] border border-[#d1eae8] rounded-lg">
-        <p className="text-sm text-[#1a2332]">
+      <div className="mt-8 p-4 bg-default-100 border border-divider rounded-lg">
+        <p className="text-sm text-foreground">
           <strong>💡 提示：</strong>
           不確定您的電費單型別？可以檢視電費單上是否有「尖峰用電」「半尖峰用電」等分段資訊。
           如果有這些分段，就是時間電價；如果只有總用電度數，就是非時間電價。

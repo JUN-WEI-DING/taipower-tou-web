@@ -1,13 +1,16 @@
+import { nextui } from '@nextui-org/react'
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       colors: {
-        // Ocean Depths Theme
+        // Ocean Depths Theme - keep for backward compatibility
         ocean: {
           50: '#f1faee',  // cream
           100: '#e8f4f5',
@@ -51,5 +54,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [nextui()],
 }

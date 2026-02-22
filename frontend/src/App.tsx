@@ -13,6 +13,8 @@ import { PlansLoader } from './services/calculation/plans';
 import { RateCalculator } from './services/calculation/RateCalculator';
 import { DataCompletenessLevel } from './types';
 import type { CalculationInput } from './types';
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Divider } from '@nextui-org/react';
+import { Zap } from './components/icons';
 
 /**
  * 判斷計費期間的季節
@@ -190,86 +192,92 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen ocean-bg">
+    <div className="min-h-screen bg-background">
       {/* Skip link for keyboard navigation */}
       <a href="#main-content" className="skip-link">
         跳到主要內容
       </a>
 
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-[#d1eae8] sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <Navbar maxWidth="xl" className="bg-background/70 backdrop-blur-md border-b border-divider">
+        <NavbarBrand>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#2d8b8b] to-[#1a2332] flex items-center justify-center shadow-md">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+              <Zap className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-[#1a2332]">
+              <h1 className="text-xl font-bold text-foreground">
                 臺電時間電價比較
               </h1>
-              <p className="text-sm text-[#4a5568] mt-0.5">
+              <p className="text-xs text-foreground/70">
                 上傳電費單，找出最省錢的電價方案
               </p>
             </div>
           </div>
-        </div>
-      </header>
+        </NavbarBrand>
+      </Navbar>
 
       {/* Main Content */}
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {stage === 'upload' && (
           <div className="space-y-6">
             {!billType ? (
               <>
                 {/* 選擇輸入方式 */}
                 <div className="text-center mb-8">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h2 className="text-2xl font-bold text-foreground mb-2">
                     選擇輸入方式
                   </h2>
-                  <p className="text-gray-600">
+                  <p className="text-default-500">
                     您想如何輸入電費資訊？
                   </p>
                 </div>
 
                 {/* OCR 上傳按鈕 */}
                 <div className="flex justify-center gap-4 mb-8">
-                  <button
+                  <Button
                     onClick={() => setBillType('auto_detect')}
-                    className="ocean-btn-primary px-6 py-3 rounded-lg font-medium"
+                    color="primary"
+                    size="lg"
+                    className="h-14 px-8"
                   >
                     📸 拍照上傳電費單
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => setBillType('non_tou')}
-                    className="px-6 py-3 bg-white text-[#1a2332] border-2 border-[#2d8b8b] rounded-lg font-medium hover:bg-[#f1faee] transition-colors"
+                    color="default"
+                    size="lg"
+                    variant="bordered"
+                    className="h-14 px-8"
                   >
                     ⌨️ 手動輸入
-                  </button>
+                  </Button>
                 </div>
               </>
             ) : billType === 'auto_detect' ? (
               <>
                 {/* OCR 上傳區域 */}
                 <div className="text-center mb-4">
-                  <button
+                  <Button
                     onClick={() => setBillType(null)}
-                    className="text-sm text-gray-600 hover:text-gray-900 mb-4 inline-flex items-center gap-1"
+                    variant="light"
+                    color="default"
+                    size="sm"
+                    className="mb-4"
                   >
                     ← 返回選擇其他方式
-                  </button>
-                  <h2 className="text-xl font-semibold text-gray-900">
+                  </Button>
+                  <h2 className="text-2xl font-bold text-foreground">
                     上傳電費單照片
                   </h2>
-                  <p className="text-gray-600 mt-1">
+                  <p className="text-default-500 mt-1">
                     系統會自動識別電費單型別和用電資訊
                   </p>
                 </div>
                 <UploadZone />
                 {uploadedImage && (
                   <div className="max-w-2xl mx-auto mt-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    <h3 className="text-lg font-semibold text-foreground mb-4">
                       已上傳的圖片
                     </h3>
                     <ImagePreview />
@@ -281,12 +289,15 @@ function App() {
               <>
                 {/* 手動輸入 - 根據電費單型別顯示對應表單 */}
                 <div className="text-center mb-4">
-                  <button
+                  <Button
                     onClick={() => setBillType(null)}
-                    className="text-sm text-gray-600 hover:text-gray-900 mb-4 inline-flex items-center gap-1"
+                    variant="light"
+                    color="default"
+                    size="sm"
+                    className="mb-4"
                   >
                     ← 返回重新選擇型別
-                  </button>
+                  </Button>
                 </div>
                 <BillTypeInputForm billType={billType} />
               </>
@@ -296,7 +307,7 @@ function App() {
 
         {stage === 'confirm' && billData && (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-2xl font-bold text-foreground">
               確認電費單資訊
             </h2>
 
@@ -310,31 +321,32 @@ function App() {
 
             {/* 重新上傳按鈕 */}
             <div className="flex justify-center gap-2">
-              <button
+              <Button
                 onClick={() => useAppStore.getState().setStage('upload')}
-                className="px-4 py-2 border border-[#d1eae8] rounded-lg hover:bg-[#f1faee] text-[#1a2332]"
+                color="default"
+                variant="bordered"
               >
                 重新上傳
-              </button>
+              </Button>
 
               {/* 資料完整時可以直接計算 */}
               {billData.source.completenessLevel !== 'total_only' && (
-                <button
+                <Button
                   onClick={() => handleConfirmFromHabit()}
-                  className="ocean-btn-primary px-6 py-2 rounded-lg"
+                  color="primary"
                 >
                   開始計算
-                </button>
+                </Button>
               )}
             </div>
 
             {/* 需要估算時顯示用電習慣選擇器 */}
             {billData.source.completenessLevel === 'total_only' && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <h3 className="font-semibold text-yellow-900 mb-2">
+              <div className="bg-warning-50 border border-warning-200 rounded-lg p-4">
+                <h3 className="font-semibold text-warning mb-2">
                   ⚠️ 需要選擇用電習慣
                 </h3>
-                <p className="text-sm text-yellow-800 mb-4">
+                <p className="text-sm text-warning-700 mb-4">
                   時間電價方案需要知道您各時段的用電分配
                 </p>
                 <UsageHabitSelector
@@ -342,14 +354,17 @@ function App() {
                   onConfirm={handleConfirmFromHabit}
                 />
                 {calculationError && (
-                  <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-sm text-red-800">⚠️ {calculationError}</p>
-                    <button
+                  <div className="mt-4 p-3 bg-danger-50 border border-danger-200 rounded-lg">
+                    <p className="text-sm text-danger">⚠️ {calculationError}</p>
+                    <Button
                       onClick={() => setCalculationError(null)}
-                      className="mt-2 text-xs text-red-600 underline hover:text-red-800"
+                      size="sm"
+                      variant="light"
+                      color="danger"
+                      className="mt-2"
                     >
                       關閉
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -360,15 +375,15 @@ function App() {
         {stage === 'result' && results.length > 0 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-2xl font-bold text-foreground">
                 方案比較結果
               </h2>
               {/* 季節指示器 */}
               {billData && (
-                <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
                   determineSeason(billData.billingPeriod) === 'summer'
-                    ? 'bg-[#ff6b6b]/20 text-[#e05555] border border-[#ff6b6b]/30'
-                    : 'bg-[#4cc9f0]/20 text-[#2d8b8b] border border-[#4cc9f0]/30'
+                    ? 'bg-danger-100 text-danger border border-danger-200'
+                    : 'bg-primary-100 text-primary border border-primary-200'
                 }`}>
                   {determineSeason(billData.billingPeriod) === 'summer' ? '🌞 夏季費率 (6-9月)' : '❄️ 非夏季費率 (10-5月)'}
                 </div>
@@ -376,30 +391,33 @@ function App() {
             </div>
 
             {/* 圖表 */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-content1 rounded-xl shadow-sm p-6 border border-divider">
               <ResultChart results={results} />
             </div>
+
+            <Divider className="my-4" />
 
             {/* 方案列表 */}
             <PlanList results={results} />
 
             {/* 重新計算 */}
-            <div className="text-center">
-              <button
+            <div className="text-center pt-4">
+              <Button
                 onClick={handleReset}
-                className="ocean-btn-primary px-6 py-3 rounded-lg font-medium"
+                color="primary"
+                size="lg"
               >
                 🔄 比較其他電費單
-              </button>
+              </Button>
             </div>
           </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="bg-[#1a2332] text-[#f1faee] mt-12">
+      <footer className="bg-default-100 text-foreground-70 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-center text-sm opacity-80">
+          <p className="text-center text-sm">
             臺電時間電價比較網站 | 純前端應用，資料不上傳伺服器
           </p>
         </div>

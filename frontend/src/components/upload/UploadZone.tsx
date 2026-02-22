@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
+import { Card, CardBody, Button } from '@nextui-org/react';
 import { useAppStore } from '../../stores/useAppStore';
 import { getOCRService } from '../../services/ocr/OCRService';
 import { BillParser } from '../../services/parser/BillParser';
-import { Button } from '../ui/Button';
 import type { BillData } from '../../types';
 
 export const UploadZone: React.FC = () => {
@@ -117,51 +117,62 @@ export const UploadZone: React.FC = () => {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      <div
+      <Card
+        className={`transition-all cursor-pointer border-2 border-dashed ${
+          isDragging ? 'border-primary bg-primary-50' : 'border-default-300 hover:border-primary'
+        }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`
-          relative border-2 border-dashed rounded-lg p-12 text-center transition-colors cursor-pointer
-          ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}
-        `}
+        isPressable
+        onPress={() => {
+          const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+          input?.click();
+        }}
       >
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileSelect}
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-        />
+        <CardBody className="p-12">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileSelect}
+            className="hidden"
+          />
 
-        <div className="space-y-4">
-          <div className="text-6xl">📸</div>
+          <div className="space-y-4">
+            <div className="text-6xl">📸</div>
 
-          <div>
-            <h3 className="text-xl font-semibold text-gray-900">
-              上傳你的電費單
-            </h3>
-            <p className="text-gray-600 mt-2">
-              拖曳圖片到這裡，或點選選擇檔案
-            </p>
-          </div>
-
-          <div className="text-sm text-gray-500">
-            支援 JPG、PNG 格式，最大 10MB
-          </div>
-
-          {errorMessage && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-800">⚠️ {errorMessage}</p>
-              <button
-                onClick={() => setErrorMessage(null)}
-                className="mt-2 text-xs text-red-600 underline hover:text-red-800"
-              >
-                關閉
-              </button>
+            <div>
+              <h3 className="text-xl font-semibold text-foreground">
+                上傳你的電費單
+              </h3>
+              <p className="text-default-500 mt-2">
+                拖曳圖片到這裡，或點選選擇檔案
+              </p>
             </div>
-          )}
-        </div>
-      </div>
+
+            <div className="text-sm text-default-400">
+              支援 JPG、PNG 格式，最大 10MB
+            </div>
+
+            {errorMessage && (
+              <Card className="bg-danger-50 border-danger-200">
+                <CardBody className="p-3">
+                  <p className="text-sm text-danger">⚠️ {errorMessage}</p>
+                  <Button
+                    size="sm"
+                    variant="light"
+                    color="danger"
+                    className="mt-2"
+                    onClick={() => setErrorMessage(null)}
+                  >
+                    關閉
+                  </Button>
+                </CardBody>
+              </Card>
+            )}
+          </div>
+        </CardBody>
+      </Card>
 
       {/* 相機按鈕（行動裝置） */}
       <label className="mt-4 block">
@@ -173,8 +184,8 @@ export const UploadZone: React.FC = () => {
           className="hidden"
         />
         <Button
-          variant="outline"
-          size="md"
+          color="primary"
+          variant="bordered"
           className="w-full"
           onClick={() => (document.querySelector('input[capture="environment"]') as HTMLInputElement)?.click()}
         >

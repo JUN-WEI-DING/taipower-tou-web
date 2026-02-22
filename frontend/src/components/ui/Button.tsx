@@ -1,39 +1,38 @@
 import React from 'react';
+import { Button as NextUIButton } from '@nextui-org/react';
+import type { ButtonProps as NextUIButtonProps } from '@nextui-org/react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  children: React.ReactNode;
+interface ButtonProps extends Omit<NextUIButtonProps, 'variant'> {
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'solid' | 'flat' | 'bordered' | 'light';
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  size = 'md',
+  variant = 'solid',
   className = '',
   children,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
-
-  const variantStyles = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
-    secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
-    outline: 'border border-gray-300 bg-white hover:bg-gray-50',
-    ghost: 'hover:bg-gray-100',
-  };
-
-  const sizeStyles = {
-    sm: 'h-9 px-3 text-sm',
-    md: 'h-10 px-4',
-    lg: 'h-11 px-8',
+  const variantMap: Record<string, NextUIButtonProps['variant']> = {
+    primary: 'solid',
+    secondary: 'flat',
+    outline: 'bordered',
+    ghost: 'light',
+    solid: 'solid',
+    flat: 'flat',
+    bordered: 'bordered',
+    light: 'light',
   };
 
   return (
-    <button
-      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+    <NextUIButton
+      variant={variantMap[variant] || 'solid'}
+      radius="md"
+      className={className}
       {...props}
     >
       {children}
-    </button>
+    </NextUIButton>
   );
 };
+
+export default Button;
