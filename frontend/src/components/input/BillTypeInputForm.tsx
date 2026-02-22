@@ -331,7 +331,7 @@ const NonTouInputForm: React.FC<NonTouInputFormProps> = ({
         value={totalConsumption}
         onChange={(e) => onTotalConsumptionChange(e.target.value)}
         placeholder="例如：350"
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
       />
       <p className="text-xs text-gray-500 mt-1">
         請輸入您電費單上的「總用電度數」或「本期度數」
@@ -389,7 +389,7 @@ const TwoTierInputForm: React.FC<TwoTierInputFormProps> = ({
           value={peakConsumption}
           onChange={(e) => onPeakConsumptionChange(e.target.value)}
           placeholder="例如：120"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
         />
       </div>
       <div>
@@ -404,14 +404,14 @@ const TwoTierInputForm: React.FC<TwoTierInputFormProps> = ({
           value={offPeakConsumption}
           onChange={(e) => onOffPeakConsumptionChange(e.target.value)}
           placeholder="例如：230"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
         />
       </div>
     </div>
     {twoTierTotal > 0 && (
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
-        <p className="text-sm text-blue-900">
-          合計：<span className="font-bold">{twoTierTotal.toFixed(1)}</span> 度
+      <div className="bg-orange-50 dark:bg-orange-950/30 border-2 border-orange-200 dark:border-orange-800 rounded-xl p-4 text-center">
+        <p className="text-sm text-orange-900 dark:text-orange-100 font-semibold">
+          合計：<span className="font-bold text-lg">{twoTierTotal.toFixed(1)}</span> 度
         </p>
       </div>
     )}
@@ -468,7 +468,7 @@ const ThreeTierInputForm: React.FC<ThreeTierInputFormProps> = ({
           value={peakConsumption}
           onChange={(e) => onPeakConsumptionChange(e.target.value)}
           placeholder="例如：70"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
         />
       </div>
       <div>
@@ -482,7 +482,7 @@ const ThreeTierInputForm: React.FC<ThreeTierInputFormProps> = ({
           value={semiPeakConsumption}
           onChange={(e) => onSemiPeakConsumptionChange(e.target.value)}
           placeholder="例如：80"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
         />
       </div>
       <div>
@@ -496,14 +496,14 @@ const ThreeTierInputForm: React.FC<ThreeTierInputFormProps> = ({
           value={offPeakConsumption}
           onChange={(e) => onOffPeakConsumptionChange(e.target.value)}
           placeholder="例如：200"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
         />
       </div>
     </div>
     {threeTierTotal > 0 && (
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
-        <p className="text-sm text-blue-900">
-          合計：<span className="font-bold">{threeTierTotal.toFixed(1)}</span> 度
+      <div className="bg-orange-50 dark:bg-orange-950/30 border-2 border-orange-200 dark:border-orange-800 rounded-xl p-4 text-center">
+        <p className="text-sm text-orange-900 dark:text-orange-100 font-semibold">
+          合計：<span className="font-bold text-lg">{threeTierTotal.toFixed(1)}</span> 度
         </p>
       </div>
     )}
@@ -527,7 +527,7 @@ const DateSection: React.FC<DateSectionProps> = ({ month, year, isSummer, onMont
         <select
           value={year}
           onChange={(e) => onYearChange(parseInt(e.target.value))}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
         >
           {Array.from({ length: 3 }, (_, i) => {
             const y = new Date().getFullYear() - i;
@@ -540,7 +540,7 @@ const DateSection: React.FC<DateSectionProps> = ({ month, year, isSummer, onMont
         <select
           value={month}
           onChange={(e) => onMonthChange(parseInt(e.target.value))}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
         >
           {Array.from({ length: 12 }, (_, i) => {
             const m = i + 1;
@@ -575,7 +575,7 @@ const ContractSection: React.FC<ContractSectionProps> = ({
       <select
         value={contractCapacity}
         onChange={(e) => onContractCapacityChange(e.target.value)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
       >
         <option value="10">10 A (最常見)</option>
         <option value="15">15 A</option>
@@ -594,7 +594,7 @@ const ContractSection: React.FC<ContractSectionProps> = ({
         <select
           value={phaseType}
           onChange={(e) => onPhaseTypeChange(e.target.value as 'single' | 'three')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
         >
           <option value="single">單相</option>
           <option value="three">三相</option>
@@ -605,7 +605,7 @@ const ContractSection: React.FC<ContractSectionProps> = ({
         <select
           value={voltageType}
           onChange={(e) => onVoltageTypeChange(e.target.value as '110' | '220')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
         >
           <option value="110">110V</option>
           <option value="220">220V</option>
@@ -633,7 +633,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({ onClick, disabled, isSubmit
   <button
     onClick={onClick}
     disabled={disabled}
-    className="w-full py-3 px-4 bg-[#2d8b8b] text-white rounded-lg font-medium hover:bg-[#1b263b] transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:bg-gray-300"
+    className="w-full py-3 px-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:bg-gray-300 shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 active:scale-[0.98]"
   >
     {isSubmitting ? '處理中...' : '確認並開始比較'}
   </button>
@@ -652,8 +652,13 @@ const Tips: React.FC<TipsProps> = ({ type }) => {
   };
 
   return (
-    <div className="bg-[#f1faee] border border-[#d1eae8] rounded-lg p-3 mt-4">
-      <p className="text-xs text-[#1a2332]">{tips[type]}</p>
+    <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/20 border border-orange-200 dark:border-orange-800 rounded-xl p-4 mt-4">
+      <p className="text-sm text-orange-800 dark:text-orange-200 flex items-start gap-2">
+        <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        {tips[type]}
+      </p>
     </div>
   );
 };
