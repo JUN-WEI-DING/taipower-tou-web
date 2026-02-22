@@ -4,8 +4,7 @@ import { motion } from 'framer-motion';
 
 /**
  * Hero section for the landing page
- * Features value proposition, trust signals, and clear CTAs
- * Modern tech-inspired design with gradient effects
+ * Modern, clean design with better spacing and visual hierarchy
  */
 export const HeroSection: React.FC<{
   onOCRClick: () => void;
@@ -13,84 +12,68 @@ export const HeroSection: React.FC<{
 }> = ({ onOCRClick, onManualClick }) => {
   return (
     <div className="relative overflow-hidden">
-      {/* Modern animated background with mesh gradient */}
-      <div className="absolute inset-0 bg-gradient-mesh -z-10" />
+      {/* Clean gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-secondary-50 -z-10" />
 
-      {/* Floating gradient orbs for depth */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-tech-blue/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 animate-pulse-glow" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-tech-violet/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-tech-cyan/8 rounded-full blur-3xl animate-float" />
+      {/* Subtle decorative elements */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary-400/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
-      {/* Subtle grid pattern overlay */}
-      <div
-        className="absolute inset-0 -z-10 opacity-[0.02]"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, currentColor 1px, transparent 1px),
-            linear-gradient(to bottom, currentColor 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px'
-        }}
-      />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+      <div className="container py-16 md:py-24">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left column - Hero content */}
           <div className="space-y-8">
-            {/* Modern badge with glow effect */}
+            {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="inline-flex items-center gap-2.5 px-5 py-2.5 bg-gradient-tech text-white rounded-full shadow-tech-glow backdrop-blur-sm border border-white/10"
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2.5 px-4 py-2 bg-primary-100 text-primary-700 rounded-full border border-primary-200"
             >
-              <Sparkles size={16} className="text-tech-cyan" />
-              <span className="text-sm font-semibold tracking-wide">
+              <Sparkles size={16} />
+              <span className="text-sm font-semibold">
                 智慧電費分析工具
               </span>
             </motion.div>
 
-            {/* Main headline with gradient text */}
+            {/* Main headline */}
             <motion.h1
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ delay: 0.1, duration: 0.6 }}
               className="text-hero font-display"
             >
               找出最省錢的
-              <span className="block bg-gradient-tech-cyan bg-clip-text text-transparent mt-2">
+              <span className="block text-gradient mt-2">
                 電價方案
               </span>
             </motion.h1>
 
-            {/* Enhanced subheadline */}
+            {/* Subheadline */}
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="subtitle text-default-600 max-w-xl leading-relaxed"
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="subtitle text-gray-600 max-w-xl leading-relaxed"
             >
               上傳您的電費單，系統自動計算所有可用方案，幫您找出最省錢的選擇。
               平均每月可節省
-              <span className="font-bold text-tech-blue ml-1">10-20%</span>
+              <span className="font-bold text-primary-600 ml-1">10-20%</span>
               電費。
             </motion.p>
 
-            {/* Enhanced CTA Buttons */}
+            {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ delay: 0.3, duration: 0.6 }}
               className="flex flex-col sm:flex-row gap-4"
             >
               <Button
                 onClick={onOCRClick}
                 color="primary"
                 size="lg"
-                className="h-14 px-8 text-base font-semibold bg-gradient-tech hover:opacity-90 transition-all shadow-tech-glow hover:shadow-tech-glow-lg border-0"
-                style={{
-                  background: 'linear-gradient(135deg, #0066ff 0%, #7c3aed 100%)'
-                }}
+                className="h-14 px-8 text-base font-semibold bg-gradient-primary hover:opacity-90 transition-all shadow-lg hover:shadow-glow border-0"
                 startContent={<Zap size={20} />}
               >
                 拍照上傳電費單
@@ -99,13 +82,13 @@ export const HeroSection: React.FC<{
                 onClick={onManualClick}
                 variant="bordered"
                 size="lg"
-                className="h-14 px-8 text-base font-semibold border-2 border-default-200 hover:border-tech-blue/50 hover:bg-default-50/50 transition-all"
+                className="h-14 px-8 text-base font-semibold border-2 border-gray-200 hover:border-primary-300 hover:bg-gray-50 transition-all"
               >
                 手動輸入
               </Button>
             </motion.div>
 
-            {/* Enhanced trust indicators */}
+            {/* Trust indicators */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -113,21 +96,21 @@ export const HeroSection: React.FC<{
               className="flex flex-wrap items-center gap-8 pt-6"
             >
               {[
-                { icon: Shield, text: '資料不上傳伺服器', color: 'text-tech-emerald' },
-                { icon: Clock, text: '30秒完成分析', color: 'text-tech-cyan' },
-                { icon: TrendingUp, text: '平均省10-20%', color: 'text-tech-blue' },
+                { icon: Shield, text: '資料不上傳伺服器', color: 'text-success-600' },
+                { icon: Clock, text: '30秒完成分析', color: 'text-secondary-600' },
+                { icon: TrendingUp, text: '平均省10-20%', color: 'text-primary-600' },
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center gap-2.5">
-                  <div className={`p-2 rounded-xl bg-default-100/80 ${item.color} shadow-sm`}>
+                  <div className={`p-2 rounded-xl bg-gray-100 ${item.color} shadow-sm`}>
                     <item.icon size={16} />
                   </div>
-                  <span className="text-sm text-default-600 font-medium">{item.text}</span>
+                  <span className="text-sm text-gray-600 font-medium">{item.text}</span>
                 </div>
               ))}
             </motion.div>
           </div>
 
-          {/* Right column - Enhanced feature cards */}
+          {/* Right column - Feature cards */}
           <div className="space-y-5">
             <div className="grid sm:grid-cols-2 gap-5">
               {[
@@ -135,67 +118,67 @@ export const HeroSection: React.FC<{
                   icon: Zap,
                   title: '智慧識別',
                   description: 'AI 自動識別電費單資訊',
-                  gradient: 'from-tech-blue/20 to-tech-blue/5',
-                  borderColor: 'border-tech-blue/20',
-                  iconBg: 'bg-tech-blue',
+                  gradient: 'from-primary-100 to-primary-50',
+                  borderColor: 'border-primary-200',
+                  iconBg: 'bg-primary-600',
                 },
                 {
                   icon: TrendingUp,
                   title: '精準比較',
                   description: '比較 20+ 種電價方案',
-                  gradient: 'from-tech-violet/20 to-tech-violet/5',
-                  borderColor: 'border-tech-violet/20',
-                  iconBg: 'bg-tech-violet',
+                  gradient: 'from-secondary-100 to-secondary-50',
+                  borderColor: 'border-secondary-200',
+                  iconBg: 'bg-secondary-600',
                 },
                 {
                   icon: Shield,
                   title: '資料安全',
                   description: '純前端運算，資料不上傳',
-                  gradient: 'from-tech-emerald/20 to-tech-emerald/5',
-                  borderColor: 'border-tech-emerald/20',
-                  iconBg: 'bg-tech-emerald',
+                  gradient: 'from-success-100 to-success-50',
+                  borderColor: 'border-success-200',
+                  iconBg: 'bg-success-600',
                 },
                 {
                   icon: Clock,
                   title: '快速分析',
                   description: '30 秒內完成分析',
-                  gradient: 'from-tech-amber/20 to-tech-amber/5',
-                  borderColor: 'border-tech-amber/20',
-                  iconBg: 'bg-tech-amber',
+                  gradient: 'from-warning-100 to-warning-50',
+                  borderColor: 'border-warning-200',
+                  iconBg: 'bg-warning-600',
                 },
               ].map((feature, idx) => (
                 <motion.div
                   key={idx}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 + idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                  whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                  className={`p-6 bg-gradient-to-br ${feature.gradient} rounded-2xl border ${feature.borderColor} hover:shadow-tech-card-hover transition-all cursor-default backdrop-blur-sm group`}
+                  transition={{ duration: 0.5, delay: 0.5 + idx * 0.1 }}
+                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                  className={`p-6 bg-gradient-to-br ${feature.gradient} rounded-2xl border ${feature.borderColor} hover:shadow-card-hover transition-all cursor-default backdrop-blur-sm`}
                 >
                   <div className={`w-14 h-14 rounded-xl ${feature.iconBg} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                     <feature.icon size={26} className="text-white" />
                   </div>
-                  <h3 className="font-bold text-foreground text-base mb-2">{feature.title}</h3>
-                  <p className="text-sm text-default-500 leading-relaxed">{feature.description}</p>
+                  <h3 className="font-bold text-gray-900 text-base mb-2">{feature.title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
                 </motion.div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Enhanced How it works section */}
+        {/* How it works section */}
         <div className="mt-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6 }}
             className="text-center mb-14"
           >
-            <h2 className="text-title font-display mb-4">
+            <h2 className="text-title font-display mb-4 text-gray-900">
               簡單三步驟，開始省電費
             </h2>
-            <p className="subtitle text-default-500">
+            <p className="subtitle text-gray-600">
               不需要複雜的操作，任何人都能輕鬆使用
             </p>
           </motion.div>
@@ -207,21 +190,21 @@ export const HeroSection: React.FC<{
                 icon: '📸',
                 title: '上傳電費單',
                 description: '拍照或手動輸入您的用電資訊',
-                gradient: 'from-tech-blue to-tech-cyan',
+                gradient: 'from-primary-600 to-primary-500',
               },
               {
                 step: '2',
                 icon: '⚡',
                 title: '智慧分析',
                 description: '系統自動計算所有可用方案',
-                gradient: 'from-tech-violet to-tech-magenta',
+                gradient: 'from-secondary-600 to-secondary-500',
               },
               {
                 step: '3',
                 icon: '💰',
                 title: '獲得建議',
                 description: '檢視最省錢的方案與省金額',
-                gradient: 'from-tech-emerald to-tech-cyan',
+                gradient: 'from-success-600 to-success-500',
               },
             ].map((item, idx) => (
               <motion.div
@@ -229,19 +212,19 @@ export const HeroSection: React.FC<{
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: '-100px' }}
-                transition={{ duration: 0.5, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
                 className="relative text-center group"
               >
-                <div className={`inline-flex items-center justify-center w-24 h-24 rounded-2xl bg-gradient-to-br ${item.gradient} text-white text-4xl mb-5 shadow-tech-glow group-hover:scale-105 transition-transform duration-300`}>
+                <div className={`inline-flex items-center justify-center w-24 h-24 rounded-2xl bg-gradient-to-br ${item.gradient} text-white text-4xl mb-5 shadow-lg group-hover:scale-105 transition-transform duration-300`}>
                   {item.icon}
                 </div>
-                <div className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-tech text-white text-sm font-bold mb-3 shadow-lg">
+                <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-primary text-white text-sm font-bold mb-3 shadow-md">
                   {item.step}
                 </div>
-                <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
-                <p className="text-default-500 text-sm leading-relaxed">{item.description}</p>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
                 {idx < 2 && (
-                  <div className="hidden sm:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-tech-blue/30 via-tech-violet/30 to-transparent" />
+                  <div className="hidden sm:block absolute top-12 left-[60%] w-[80%] h-px bg-gradient-to-r from-primary-200 via-secondary-200 to-transparent" />
                 )}
               </motion.div>
             ))}

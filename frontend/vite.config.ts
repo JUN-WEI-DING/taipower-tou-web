@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -8,6 +9,13 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+
+    // Path aliases
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
+    },
 
     // GitHub Pages 部署設定 - 從環境變數讀取
     base: env.VITE_BASE_URL || '/taipower-tou-web/',

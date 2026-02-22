@@ -24,12 +24,11 @@ import { Zap } from './components/icons';
  */
 function determineSeason(billingPeriod: { start: Date; end: Date }): 'summer' | 'non_summer' {
   const month = billingPeriod.start.getMonth() + 1; // 1-12
-  // 夏季：6-9月
   return (month >= 6 && month <= 9) ? 'summer' : 'non_summer';
 }
 
 /**
- * 主應用程式
+ * 主應用程式 - 現代化設計版本
  */
 function App() {
   const [calculationError, setCalculationError] = useState<string | null>(null);
@@ -49,7 +48,6 @@ function App() {
     if (!billData) return;
 
     try {
-      // 如果有估算資料，先更新 billData
       let updatedBillData = billData;
       if (estimatedData) {
         updatedBillData = {
@@ -66,17 +64,12 @@ function App() {
             isEstimated: true,
           },
         };
-        // 更新 store 中的 billData
         setBillData(updatedBillData);
       }
 
-      // 載入費率資料
       const plans = await PlansLoader.getAll();
-
-      // 建立計算引擎
       const calculator = new RateCalculator(plans);
 
-      // 建立輸入 - 使用更新後的 billData
       const input: CalculationInput = {
         consumption: updatedBillData.consumption.usage,
         billingPeriod: updatedBillData.billingPeriod,
@@ -87,7 +80,7 @@ function App() {
               offPeak: updatedBillData.consumption.offPeak || 0,
             }
           : undefined,
-        voltageType: 'low_voltage', // 住宅使用者都是低壓 (110V 或 220V)
+        voltageType: 'low_voltage',
         voltageV: updatedBillData.voltageType ? parseInt(updatedBillData.voltageType, 10) : 110,
         phase: (updatedBillData.phaseType === 'three' ? 'three' : 'single') as 'single' | 'three',
         contractCapacity: updatedBillData.contractCapacity,
@@ -97,27 +90,18 @@ function App() {
         },
       };
 
-      // 計算所有方案
       const calculatedResults = calculator.calculateAll(input);
 
-      // 找出當前方案作為 baseline
-      // 優先使用 OCR 識別的方案名稱，如果沒有則使用預設邏輯
       let baselinePlan: typeof calculatedResults[0] | undefined;
 
       if (updatedBillData.currentPlan?.name) {
-        // 使用電費單上識別的方案名稱來匹配
         const currentPlanName = updatedBillData.currentPlan.name;
-
-        // 嘗試精確匹配方案名稱
         baselinePlan = calculatedResults.find(r => r.planName === currentPlanName);
 
-        // 如果沒找到，嘗試模糊匹配（關鍵詞匹配）
         if (!baselinePlan) {
           baselinePlan = calculatedResults.find(r => {
             const resultName = r.planName.toLowerCase();
             const searchName = currentPlanName.toLowerCase();
-
-            // 關鍵詞匹配：檢查是否包含重要的方案型別關鍵詞
             const bothHaveTwoTier = resultName.includes('二段式') && searchName.includes('二段式');
             const bothHaveThreeTier = resultName.includes('三段式') && searchName.includes('三段式');
             const bothHaveSimple = resultName.includes('簡易型') && searchName.includes('簡易型');
@@ -132,35 +116,30 @@ function App() {
         }
       }
 
-      // 如果沒有從 currentPlan 找到匹配，使用預設邏輯（非時間電價作為 baseline）
       if (!baselinePlan) {
         const knownBaselinePlanIds = [
-          'residential_non_tou',           // 表燈(住商)非時間電價-住宅用
-          'lighting_non_business_tiered', // 表燈(住商)非時間電價-住宅以外非營業用
-          'low_voltage_power',            // 低壓電力非時間電價
+          'residential_non_tou',
+          'lighting_non_business_tiered',
+          'low_voltage_power',
         ];
         baselinePlan = calculatedResults.find(r => knownBaselinePlanIds.includes(r.planId));
       }
 
-      // 標記當前方案並計算 baseline
       let actualBaselineTotal = 0;
       if (baselinePlan) {
         actualBaselineTotal = baselinePlan.charges.total;
         baselinePlan.comparison.isCurrentPlan = true;
       }
 
-      // 更新排名和比較資訊
       calculatedResults.forEach((result, index) => {
         result.comparison.rank = index + 1;
 
-        // 只有在找到 baseline 方案時才計算差異和百分比
         if (baselinePlan) {
           result.comparison.difference = result.charges.total - actualBaselineTotal;
           result.comparison.savingPercentage = actualBaselineTotal > 0
             ? ((result.charges.total - actualBaselineTotal) / actualBaselineTotal) * 100
             : 0;
         } else {
-          // 沒有 baseline 方案時，不計算差異（避免錯誤標記）
           result.comparison.difference = 0;
           result.comparison.savingPercentage = 0;
         }
@@ -194,286 +173,281 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex flex-col">
       {/* Skip link for keyboard navigation */}
       <a href="#main-content" className="skip-link">
         跳到主要內容
       </a>
 
-      {/* Enhanced Header with Tech Innovation theme */}
-      <Navbar maxWidth="xl" className="bg-background/80 backdrop-blur-xl border-b border-tech-blue/20 shadow-tech-card isBordered" isBordered>
-        <NavbarBrand className="gap-3">
-          <motion.div
-            className="w-11 h-11 rounded-xl bg-gradient-tech flex items-center justify-center shadow-tech-glow relative overflow-hidden"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.2 }}
-            aria-hidden="true"
-          >
-            {/* Animated glow effect */}
-            <div className="absolute inset-0 bg-white/20 animate-pulse" />
-            <Zap size={24} className="text-white relative z-10" />
-          </motion.div>
-          <div>
-            <h1 className="text-lg md:text-xl font-bold text-foreground tracking-tight">
-              臺電時間電價比較
-            </h1>
-            <p className="text-xs text-default-500 hidden sm:block">
-              上傳電費單，找出最省錢的電價方案
-            </p>
-          </div>
-        </NavbarBrand>
-      </Navbar>
+      {/* Modern Header */}
+      <header className="sticky top-0 z-50 glass border-b border-gray-200/50">
+        <div className="container">
+          <nav className="flex items-center justify-between h-16">
+            <a href="/" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-200">
+                <Zap size={20} className="text-white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-gray-900 leading-tight">
+                  臺電時間電價比較
+                </h1>
+                <p className="text-xs text-gray-500 hidden sm:block">
+                  找出最省錢的電價方案
+                </p>
+              </div>
+            </a>
+
+            <div className="flex items-center gap-4">
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium text-gray-600 hover:text-primary-600 transition-colors"
+              >
+                GitHub
+              </a>
+            </div>
+          </nav>
+        </div>
+      </header>
 
       {/* Main Content */}
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10" role="main">
-        {stage === 'upload' && (
-          <section aria-labelledby="upload-heading" className="space-y-8">
-            {!billType ? (
-              <HeroSection
-                onOCRClick={() => setBillType('auto_detect')}
-                onManualClick={() => setBillType('non_tou')}
-              />
-            ) : billType === 'auto_detect' ? (
-              <>
-                {/* OCR 上傳區域 */}
-                <div className="text-center mb-6">
-                  <Button
-                    onClick={() => setBillType(null)}
-                    variant="light"
-                    color="default"
-                    size="sm"
-                    className="mb-4"
-                  >
-                    ← 返回選擇其他方式
-                  </Button>
-                  <h2 id="upload-heading" className="text-2xl md:text-3xl font-bold text-foreground">
-                    上傳電費單照片
-                  </h2>
-                  <p className="text-default-500 mt-2 text-base">
-                    系統會自動識別電費單型別和用電資訊
-                  </p>
-                </div>
-                <UploadZone />
-                {uploadedImage && (
-                  <div className="max-w-2xl mx-auto mt-8">
-                    <h3 className="text-lg font-semibold text-foreground mb-4">
-                      已上傳的圖片
-                    </h3>
-                    <ImagePreview />
-                  </div>
-                )}
-                <OCRProgress />
-              </>
-            ) : (
-              <>
-                {/* 手動輸入 - 根據電費單型別顯示對應表單 */}
-                <div className="text-center mb-6">
-                  <Button
-                    onClick={() => setBillType(null)}
-                    variant="light"
-                    color="default"
-                    size="sm"
-                    className="mb-4"
-                  >
-                    ← 返回重新選擇型別
-                  </Button>
-                </div>
-                <BillTypeInputForm billType={billType} />
-              </>
-            )}
-          </section>
-        )}
-
-        {stage === 'confirm' && billData && (
-          <div className="space-y-8 max-w-4xl mx-auto">
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-                確認電費單資訊
-              </h2>
-              <p className="text-default-500">
-                請確認以下資訊是否正確，可編輯修正後再進行計算
-              </p>
-            </div>
-
-            <DataCompletenessBanner billData={billData} />
-
-            {/* 顯示已提取的資訊 - 使用可編輯的元件 */}
-            <BillDataEditor
-              billData={billData}
-              onSave={(updatedData) => setBillData(updatedData)}
-            />
-
-            {/* 重新上傳按鈕 */}
-            <div className="flex flex-col sm:flex-row justify-center gap-3">
-              <Button
-                onClick={() => useAppStore.getState().setStage('upload')}
-                color="default"
-                variant="bordered"
-                size="lg"
-                className="border-2"
-              >
-                重新上傳
-              </Button>
-
-              {/* 資料完整時可以直接計算 */}
-              {billData.source.completenessLevel !== 'total_only' && (
-                <Button
-                  onClick={() => handleConfirmFromHabit()}
-                  color="primary"
-                  size="lg"
-                  className="shadow-energy font-semibold"
-                >
-                  開始計算方案
-                </Button>
-              )}
-            </div>
-
-            {/* 需要估算時顯示用電習慣選擇器 */}
-            {billData.source.completenessLevel === 'total_only' && (
-              <div className="bg-gradient-to-br from-warning/5 to-warning/10 border-2 border-warning/200 rounded-2xl p-6">
-                <h3 className="font-bold text-warning mb-2 flex items-center gap-2">
-                  ⚠️ 需要選擇用電習慣
-                </h3>
-                <p className="text-sm text-warning-700 mb-6">
-                  時間電價方案需要知道您各時段的用電分配，請選擇最符合您用電習慣的選項
-                </p>
-                <UsageHabitSelector
-                  billData={billData}
-                  onConfirm={handleConfirmFromHabit}
+      <main id="main-content" className="flex-1 py-8 md:py-12" role="main">
+        <div className="container">
+          {stage === 'upload' && (
+            <div className="animate-fade-in">
+              {!billType ? (
+                <HeroSection
+                  onOCRClick={() => setBillType('auto_detect')}
+                  onManualClick={() => setBillType('non_tou')}
                 />
-                {calculationError && (
-                  <div className="mt-6 p-4 bg-danger-50 border border-danger-200 rounded-xl">
-                    <p className="text-sm text-danger font-medium">⚠️ {calculationError}</p>
+              ) : billType === 'auto_detect' ? (
+                <div className="max-w-2xl mx-auto space-y-8">
+                  <div className="text-center">
                     <Button
-                      onClick={() => setCalculationError(null)}
-                      size="sm"
+                      onClick={() => setBillType(null)}
                       variant="light"
-                      color="danger"
-                      className="mt-3"
+                      color="default"
+                      size="sm"
+                      className="mb-6"
                     >
-                      關閉
+                      ← 返回選擇其他方式
+                    </Button>
+                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+                      上傳電費單照片
+                    </h2>
+                    <p className="text-lg text-gray-600">
+                      系統會自動識別電費單型別和用電資訊
+                    </p>
+                  </div>
+                  <UploadZone />
+                  {uploadedImage && (
+                    <div className="mt-8">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                        已上傳的圖片
+                      </h3>
+                      <ImagePreview />
+                    </div>
+                  )}
+                  <OCRProgress />
+                </div>
+              ) : (
+                <div className="max-w-2xl mx-auto space-y-8">
+                  <div className="text-center">
+                    <Button
+                      onClick={() => setBillType(null)}
+                      variant="light"
+                      color="default"
+                      size="sm"
+                      className="mb-6"
+                    >
+                      ← 返回重新選擇型別
                     </Button>
                   </div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-        {stage === 'result' && results.length > 0 && (
-          <section aria-labelledby="results-heading" className="space-y-8 max-w-5xl mx-auto">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div>
-                <h2 id="results-heading" className="text-2xl md:text-3xl font-bold text-foreground">
-                  方案比較結果
-                </h2>
-                <p className="text-default-500 mt-1">
-                  依電費由低到高排序
-                </p>
-              </div>
-              {/* 季節指示器 */}
-              {billData && (
-                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold shadow-sm ${
-                  determineSeason(billData.billingPeriod) === 'summer'
-                    ? 'bg-gradient-to-r from-danger/10 to-danger/5 text-danger border border-danger/20'
-                    : 'bg-gradient-to-r from-energy-blue/10 to-energy-cyan/5 text-energy-blue border border-energy-blue/20'
-                }`} role="status" aria-live="polite">
-                  {determineSeason(billData.billingPeriod) === 'summer' ? '🌞 夏季費率 (6-9月)' : '❄️ 非夏季費率 (10-5月)'}
+                  <BillTypeInputForm billType={billType} />
                 </div>
               )}
             </div>
+          )}
 
-            {/* 結果摘要 */}
-            <ResultsSummary results={results} />
+          {stage === 'confirm' && billData && (
+            <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
+              <div className="text-center space-y-3">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                  確認電費單資訊
+                </h2>
+                <p className="text-lg text-gray-600">
+                  請確認以下資訊是否正確，可編輯修正後再進行計算
+                </p>
+              </div>
 
-            {/* 圖表 */}
-            <div className="bg-content1 rounded-2xl shadow-energy p-6 border border-divider" role="region" aria-label="方案比較圖表">
-              <ResultChart results={results} />
+              <DataCompletenessBanner billData={billData} />
+
+              <BillDataEditor
+                billData={billData}
+                onSave={(updatedData) => setBillData(updatedData)}
+              />
+
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Button
+                  onClick={() => useAppStore.getState().setStage('upload')}
+                  color="default"
+                  variant="bordered"
+                  size="lg"
+                  className="border-2"
+                >
+                  重新上傳
+                </Button>
+
+                {billData.source.completenessLevel !== 'total_only' && (
+                  <Button
+                    onClick={() => handleConfirmFromHabit()}
+                    color="primary"
+                    size="lg"
+                    className="shadow-lg font-semibold"
+                  >
+                    開始計算方案
+                  </Button>
+                )}
+              </div>
+
+              {billData.source.completenessLevel === 'total_only' && (
+                <div className="bg-gradient-to-br from-warning/10 to-warning/5 border-2 border-warning/200 rounded-2xl p-6">
+                  <h3 className="font-bold text-warning mb-2 flex items-center gap-2">
+                    ⚠️ 需要選擇用電習慣
+                  </h3>
+                  <p className="text-sm text-warning-700 mb-6">
+                    時間電價方案需要知道您各時段的用電分配，請選擇最符合您用電習慣的選項
+                  </p>
+                  <UsageHabitSelector
+                    billData={billData}
+                    onConfirm={handleConfirmFromHabit}
+                  />
+                  {calculationError && (
+                    <div className="mt-6 p-4 bg-danger-50 border border-danger-200 rounded-xl">
+                      <p className="text-sm text-danger font-medium">⚠️ {calculationError}</p>
+                      <Button
+                        onClick={() => setCalculationError(null)}
+                        size="sm"
+                        variant="light"
+                        color="danger"
+                        className="mt-3"
+                      >
+                        關閉
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
+          )}
 
-            <Divider className="my-6" />
+          {stage === 'result' && results.length > 0 && (
+            <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                    方案比較結果
+                  </h2>
+                  <p className="text-lg text-gray-600 mt-1">
+                    依電費由低到高排序
+                  </p>
+                </div>
+                {billData && (
+                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold shadow-sm ${
+                    determineSeason(billData.billingPeriod) === 'summer'
+                      ? 'bg-gradient-to-r from-danger/10 to-danger/5 text-danger border border-danger/20'
+                      : 'bg-gradient-to-r from-primary/10 to-secondary/5 text-primary-700 border border-primary/20'
+                  }`} role="status" aria-live="polite">
+                    {determineSeason(billData.billingPeriod) === 'summer' ? '🌞 夏季費率 (6-9月)' : '❄️ 非夏季費率 (10-5月)'}
+                  </div>
+                )}
+              </div>
 
-            {/* 方案列表 */}
-            <PlanList results={results} />
+              <ResultsSummary results={results} />
 
-            {/* 重新計算 */}
-            <div className="text-center pt-6">
-              <Button
-                onClick={handleReset}
-                color="primary"
-                size="lg"
-                className="h-14 px-8 shadow-energy font-semibold"
-              >
-                🔄 比較其他電費單
-              </Button>
+              <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200" role="region" aria-label="方案比較圖表">
+                <ResultChart results={results} />
+              </div>
+
+              <Divider className="my-6" />
+
+              <PlanList results={results} />
+
+              <div className="text-center pt-8">
+                <Button
+                  onClick={handleReset}
+                  color="primary"
+                  size="lg"
+                  className="h-14 px-8 shadow-lg font-semibold"
+                >
+                  🔄 比較其他電費單
+                </Button>
+              </div>
             </div>
-          </section>
-        )}
+          )}
+        </div>
       </main>
 
-      {/* Enhanced Footer with Tech Innovation theme */}
-      <footer className="bg-gradient-dark border-t border-tech-blue/20 mt-20 relative overflow-hidden">
-        {/* Decorative gradient elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-tech-blue/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-tech-violet/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
-          <div className="grid sm:grid-cols-3 gap-10 mb-10">
+      {/* Modern Footer */}
+      <footer className="bg-gradient-to-b from-gray-900 to-gray-950 text-white mt-auto">
+        <div className="container py-16">
+          <div className="grid md:grid-cols-3 gap-12 mb-12">
             {/* About */}
             <div>
-              <h4 className="font-bold text-foreground mb-4 text-lg flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-tech flex items-center justify-center">
-                  <Zap size={16} className="text-white" />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+                  <Zap size={20} className="text-white" />
                 </div>
-                關於本服務
-              </h4>
-              <p className="text-sm text-default-400 leading-relaxed">
-                臺電時間電價比較工具幫助您找出最省錢的電價方案，根據臺灣電力公司最新費率計算。
+                <h4 className="font-bold text-lg">臺電時間電價比較</h4>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                幫助您找出最省錢的電價方案，根據臺灣電力公司最新費率計算。
               </p>
             </div>
 
             {/* Features */}
             <div>
-              <h4 className="font-bold text-foreground mb-4 text-lg">功能特色</h4>
-              <ul className="space-y-3 text-sm text-default-400">
+              <h4 className="font-bold mb-4">功能特色</h4>
+              <ul className="space-y-3 text-sm text-gray-400">
                 <li className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded bg-tech-blue/20 flex items-center justify-center">
-                    <Zap size={12} className="text-tech-blue" />
+                  <div className="w-5 h-5 rounded bg-primary-600/20 flex items-center justify-center">
+                    <Zap size={12} className="text-primary-400" />
                   </div>
-                  <span>支援 20+ 種電價方案比較</span>
+                  支援 20+ 種電價方案比較
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded bg-tech-cyan/20 flex items-center justify-center">
-                    <Zap size={12} className="text-tech-cyan" />
+                  <div className="w-5 h-5 rounded bg-secondary-600/20 flex items-center justify-center">
+                    <Zap size={12} className="text-secondary-400" />
                   </div>
-                  <span>AI 智慧識別電費單</span>
+                  AI 智慧識別電費單
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded bg-tech-emerald/20 flex items-center justify-center">
-                    <Zap size={12} className="text-tech-emerald" />
+                  <div className="w-5 h-5 rounded bg-success-600/20 flex items-center justify-center">
+                    <Zap size={12} className="text-success-400" />
                   </div>
-                  <span>純前端運算，資料安全</span>
+                  純前端運算，資料安全
                 </li>
               </ul>
             </div>
 
             {/* Privacy */}
             <div>
-              <h4 className="font-bold text-foreground mb-4 text-lg">隱私保護</h4>
-              <p className="text-sm text-default-400 leading-relaxed">
+              <h4 className="font-bold mb-4">隱私保護</h4>
+              <p className="text-sm text-gray-400 leading-relaxed">
                 本服務為純前端應用，所有資料均在您的瀏覽器中處理，不會上傳到任何伺服器。
               </p>
             </div>
           </div>
 
-          <Divider className="mb-8 bg-default-800" />
+          <Divider className="bg-gray-800 mb-8" />
 
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-default-500">
+            <p className="text-sm text-gray-500">
               © 2025 臺電時間電價比較網站 | 資料來源：臺灣電力公司
             </p>
-            <div className="flex items-center gap-2 text-sm text-default-500 font-medium px-4 py-2 bg-default-100/50 rounded-full border border-default-200">
-              <Zap size={16} className="text-tech-blue" />
+            <div className="flex items-center gap-2 text-sm text-gray-500 bg-gray-800/50 px-4 py-2 rounded-full border border-gray-700">
+              <Zap size={16} className="text-primary-400" />
               <span>純前端應用，資料不上傳伺服器</span>
             </div>
           </div>
