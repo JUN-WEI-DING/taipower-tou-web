@@ -32,7 +32,6 @@ function determineSeason(billingPeriod: { start: Date; end: Date }): 'summer' | 
 
   // 檢查計費期間內的所有月份是否包含夏季月份 (6-9月)
   const current = new Date(startDate);
-  const hasSummerMonth = false;
 
   while (current <= endDate) {
     const month = current.getMonth() + 1; // 1-12

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, createContext, useContext } from 'react';
+import React, { useState, useCallback, createContext, useContext, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
 import { CheckCircle, XCircle, AlertTriangle, Info, X } from '../icons';
@@ -62,6 +62,13 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [timeoutIds, setTimeoutIds] = useState<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
+  // Cleanup effect to clear all pending timeouts on unmount
+  useEffect(() => {
+    return () => {
+      timeoutIds.forEach((timeoutId) => clearTimeout(timeoutId));
+    };
+  }, [timeoutIds]);
+
   const removeToast = useCallback((id: string) => {
     // Clear associated timeout
     const timeoutId = timeoutIds.get(id);
@@ -77,7 +84,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
   }, [timeoutIds]);
 
   const addToast = useCallback((toast: Omit<Toast, 'id'>) => {
-    const id = Math.random().toString(36).substring(2, 9);
+    const id = crypto.randomUUID();
     const newToast: Toast = { ...toast, id };
 
     setToasts((prev) => {

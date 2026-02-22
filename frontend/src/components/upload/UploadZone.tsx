@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { Card, CardBody, Button } from '@nextui-org/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '../../stores/useAppStore';
@@ -30,6 +30,17 @@ export const UploadZone: React.FC = () => {
   const setOcrStatus = useAppStore((state) => state.setOcrStatus);
   const setStage = useAppStore((state) => state.setStage);
 
+  // Track timeouts for cleanup
+  const timeoutsRef = useRef<Set<NodeJS.Timeout>>(new Set());
+
+  // Cleanup effect to clear all pending timeouts on unmount
+  useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach(timeout => clearTimeout(timeout));
+      timeoutsRef.current.clear();
+    };
+  }, []);
+
   const validateFile = (file: File): { valid: boolean; error?: string } => {
     if (!ALLOWED_FILE_TYPES.includes(file.type)) {
       return { valid: false, error: '不支援的圖片格式，請使用 JPG、PNG 或 WebP' };
@@ -53,7 +64,8 @@ export const UploadZone: React.FC = () => {
 
     // Show success feedback immediately
     setUploadSuccess(true);
-    setTimeout(() => setUploadSuccess(false), 2000);
+    const successTimeout = setTimeout(() => setUploadSuccess(false), 2000);
+    timeoutsRef.current.add(successTimeout);
 
     setOcrStatus('processing');
 
@@ -99,9 +111,10 @@ export const UploadZone: React.FC = () => {
       setBillData(billData);
       setOcrStatus('done');
 
-      setTimeout(() => {
+      const stageTimeout = setTimeout(() => {
         setStage('confirm');
       }, 500);
+      timeoutsRef.current.add(stageTimeout);
     } catch (error) {
       console.error('Error processing image:', error);
       setOcrStatus('error');
