@@ -274,4 +274,421 @@
   .animate-progress {
     animation: progress-fill 1s ease-out forwards;
   }
+
+  /* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+  /* Enhanced focus states for better keyboard navigation */
+  *:focus-visible {
+    outline: 3px solid #f97316;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Higher contrast focus for dark mode */
+  @media (prefers-color-scheme: dark) {
+    *:focus-visible {
+      outline-color: #fb923c;
+      outline-width: 3px;
+    }
+  }
+
+  /* Skip link enhancement */
+  .skip-link {
+    position: absolute;
+    left: 0;
+    top: -100px;
+    z-index: 100;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: white;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 0 0 8px 8px;
+    transition: top 0.3s ease;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    /* Increase border visibility */
+    .card,
+    .btn {
+      border-width: 2px;
+    }
+
+    /* Enhance focus indicators */
+    *:focus-visible {
+      outline-width: 4px;
+      outline-offset: 4px;
+    }
+
+    /* Increase text contrast for secondary text */
+    .text-muted-foreground,
+    .text-secondary {
+      color: #44403c;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .text-muted-foreground,
+      .text-secondary {
+        color: #e7e5e4;
+      }
+    }
+  }
+
+  /* Reduced motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    /* Disable shimmer effect */
+    .animate-shimmer {
+      animation: none;
+      background: linear-gradient(90deg, #ffedd5 0%, #fed7aa 100%);
+    }
+  }
+
+  /* Screen reader only class */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Not visually hidden but accessible to screen readers */
+  .sr-only-focusable:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  /* Enhanced color contrast utilities */
+  .text-high-contrast {
+    color: #1c1917;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .text-high-contrast {
+      color: #fafafa;
+    }
+  }
+
+  /* Link accessibility improvements */
+  a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  a:focus-visible {
+    border-radius: 4px;
+    outline-offset: 4px;
+  }
+
+  /* Button accessibility */
+  .btn,
+  button,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  @media (min-width: 768px) {
+    .btn,
+    button,
+    [role="button"] {
+      min-height: 40px;
+      min-width: 40px;
+    }
+  }
+
+  /* Form input accessibility */
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevent iOS zoom */
+    min-height: 44px;
+  }
+
+  @media (min-width: 768px) {
+    input,
+    textarea,
+    select {
+      min-height: 40px;
+    }
+  }
+
+  /* Error message accessibility */
+  .error-message,
+  [role="alert"],
+  [aria-live="polite"],
+  [aria-live="assertive"] {
+    color: #dc2626;
+    font-weight: 500;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .error-message,
+    [role="alert"],
+    [aria-live="polite"],
+    [aria-live="assertive"] {
+      color: #fca5a5;
+    }
+  }
+
+  /* Success message accessibility */
+  .success-message {
+    color: #16a34a;
+    font-weight: 500;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .success-message {
+      color: #86efac;
+    }
+  }
+
+  /* Warning message accessibility */
+  .warning-message {
+    color: #ea580c;
+    font-weight: 500;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .warning-message {
+      color: #fdba74;
+    }
+  }
+
+  /* Landmark accessibility */
+  [role="banner"],
+  [role="navigation"],
+  [role="main"],
+  [role="contentinfo"],
+  [role="search"],
+  [role="complementary"] {
+    position: relative;
+  }
+
+  /* Visible focus indicators for touch devices */
+  @media (hover: none) {
+    *:focus {
+      outline: 3px solid #f97316;
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+  }
+
+  /* Table accessibility */
+  table {
+    border-collapse: collapse;
+    caption-side: bottom;
+  }
+
+  th,
+  td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid;
+  }
+
+  th {
+    font-weight: 700;
+    border-bottom-width: 2px;
+  }
+
+  /* Image accessibility */
+  img:not([alt]) {
+    outline: 3px solid #ef4444;
+    outline-offset: 2px;
+  }
+
+  /* Loading spinner accessibility */
+  [role="status"][aria-live="polite"],
+  [role="status"][aria-live="assertive"] {
+    position: relative;
+  }
+
+  [role="status"][aria-live="polite"]::before,
+  [role="status"][aria-live="assertive"]::before {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  /* Touch target size improvements */
+  @media (pointer: coarse) {
+    a,
+    button,
+    input,
+    textarea,
+    select,
+    [role="button"],
+    [tabindex="0"] {
+      min-width: 44px;
+      min-height: 44px;
+    }
+  }
+
+  /* Print accessibility improvements */
+  @media print {
+    a[href^="http"]::after {
+      content: " (" attr(href) ")";
+      font-size: 0.8em;
+    }
+
+    a[href^="#"]::after {
+      content: "";
+    }
+  }
+
+  /* RTL language support */
+  [dir="rtl"] {
+    text-align: right;
+  }
+
+  [dir="rtl"] .sr-only:focus {
+    left: auto;
+    right: 0;
+    border-radius: 0 0 0 8px;
+  }
+
+  /* Dialog/Modal accessibility */
+  [role="dialog"] {
+    position: fixed;
+    z-index: 50;
+    max-height: 90vh;
+    overflow: auto;
+  }
+
+  [role="dialog"][aria-modal="true"] + * {
+    /* inert attribute for backdrop */
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Tooltip accessibility */
+  [role="tooltip"] {
+    position: absolute;
+    z-index: 100;
+    padding: 0.5rem 0.75rem;
+    background: #1c1917;
+    color: #fafafa;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    pointer-events: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [role="tooltip"] {
+      background: #fafafa;
+      color: #1c1917;
+    }
+  }
+
+  /* Progress bar accessibility */
+  [role="progressbar"] {
+    position: relative;
+    min-height: 0.5rem;
+    background: #e5e5e5;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [role="progressbar"] {
+      background: #404040;
+    }
+  }
+
+  [role="progressbar"]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #f97316, #ea580c);
+    border-radius: inherit;
+  }
+
+  /* Switch/Toggle accessibility */
+  [role="switch"][aria-checked="false"] {
+    background: #e5e5e5;
+  }
+
+  [role="switch"][aria-checked="true"] {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [role="switch"][aria-checked="false"] {
+      background: #404040;
+    }
+  }
+
+  /* Tab accessibility */
+  [role="tablist"] {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 2px solid #e5e5e5;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [role="tablist"] {
+      border-bottom-color: #404040;
+    }
+  }
+
+  [role="tab"] {
+    padding: 0.75rem 1rem;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  [role="tab"][aria-selected="true"] {
+    border-bottom-color: #f97316;
+    color: #f97316;
+    font-weight: 600;
+  }
+
+  [role="tab"]:hover:not([aria-selected="true"]) {
+    border-bottom-color: #d6d3d1;
+    color: #1c1917;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [role="tab"]:hover:not([aria-selected="true"]) {
+      border-bottom-color: #525252;
+      color: #fafafa;
+    }
+  }
 }
