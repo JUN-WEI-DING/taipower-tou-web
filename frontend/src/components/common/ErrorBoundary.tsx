@@ -1,4 +1,6 @@
 import React, { Component, type ErrorInfo, type ReactNode } from 'react';
+import { Card, CardBody, Button } from '@nextui-org/react';
+import { AlertTriangle, RefreshCw } from '../icons';
 
 interface Props {
   children: ReactNode;
@@ -24,38 +26,78 @@ export class ErrorBoundary extends Component<Props, State> {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
+  handleReset = () => {
+    this.setState({ hasError: false, error: null });
+  };
+
   render() {
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="max-w-md w-full px-4">
-              <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-                <div className="text-6xl mb-4">😢</div>
-                <h2 className="text-xl font-bold text-gray-900 mb-2">
-                  應用程式發生錯誤
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  很抱歉，應用程式遇到意外錯誤。請重新整理頁面或稍後再試。
-                </p>
+          <div className="min-h-screen flex items-center justify-center bg-default-50 p-4">
+            <Card className="max-w-md w-full shadow-xl">
+              <CardBody className="p-8 text-center space-y-6">
+                {/* Error Icon */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', duration: 0.5 }}
+                  className="w-20 h-20 mx-auto rounded-full bg-danger-100 flex items-center justify-center"
+                >
+                  <AlertTriangle size={40} className="text-danger" />
+                </motion.div>
+
+                {/* Error Message */}
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-foreground">
+                    應用程式發生錯誤
+                  </h2>
+                  <p className="text-default-600">
+                    很抱歉，應用程式遇到意外錯誤。請重新整理頁面或稍後再試。
+                  </p>
+                </div>
+
+                {/* Error Details (Expandable) */}
                 {this.state.error && (
-                  <details className="text-left text-sm text-gray-500 mt-4">
-                    <summary className="cursor-pointer hover:text-gray-700">
-                      錯誤詳情
+                  <details className="text-left">
+                    <summary className="cursor-pointer text-sm text-default-500 hover:text-default-700 transition-colors">
+                      檢視錯誤詳情
                     </summary>
-                    <pre className="mt-2 p-2 bg-gray-50 rounded text-xs overflow-auto">
-                      {this.state.error.toString()}
-                    </pre>
+                    <div className="mt-3 p-3 bg-danger-50 rounded-lg border border-danger-200">
+                      <pre className="text-xs text-danger-700 whitespace-pre-wrap break-all">
+                        {this.state.error.toString()}
+                      </pre>
+                    </div>
                   </details>
                 )}
-                <button
-                  onClick={() => window.location.reload()}
-                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  重新載入
-                </button>
-              </div>
-            </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <Button
+                    color="primary"
+                    size="lg"
+                    className="flex-1"
+                    startContent={<RefreshCw size={18} />}
+                    onClick={() => window.location.reload()}
+                  >
+                    重新載入頁面
+                  </Button>
+                  <Button
+                    color="default"
+                    size="lg"
+                    variant="bordered"
+                    onClick={this.handleReset}
+                  >
+                    重試
+                  </Button>
+                </div>
+
+                {/* Support Info */}
+                <p className="text-xs text-default-400 pt-4 border-t border-divider">
+                  如果問題持續發生，請確認您的瀏覽器是否支援 JavaScript
+                </p>
+              </CardBody>
+            </Card>
           </div>
         )
       );
@@ -64,3 +106,6 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
+
+// Import motion for animation
+import { motion } from 'framer-motion';
