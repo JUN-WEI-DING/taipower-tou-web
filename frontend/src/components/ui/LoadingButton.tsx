@@ -79,6 +79,7 @@ const LoadingButton = React.forwardRef<HTMLButtonElement, LoadingButtonProps>(
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <circle
                   className="opacity-25"
@@ -158,6 +159,7 @@ export const IconButtonLoading: React.FC<
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <circle
           className="opacity-25"
@@ -195,7 +197,7 @@ export const SuccessButton: React.FC<
   >
     {success ? (
       <span className="flex items-center gap-2">
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"

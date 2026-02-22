@@ -36,12 +36,12 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
       case 'three_tier':
         return {
           color: 'success' as ChipColor,
-          bgGradient: 'from-emerald-50 via-green-50 to-teal-50 dark:from-emerald-950/30 dark:via-green-950/20 dark:to-teal-950/30',
-          borderColor: 'border-emerald-300 dark:border-emerald-700',
-          iconBg: 'bg-gradient-to-br from-emerald-500 to-green-600 shadow-lg shadow-green-500/30',
+          bgGradient: 'from-orange-50 via-orange-100 to-amber-50 dark:from-orange-950/30 dark:via-orange-900/20 dark:to-amber-950/30',
+          borderColor: 'border-orange-300 dark:border-orange-700',
+          iconBg: 'bg-gradient-to-br from-orange-500 to-amber-600 shadow-lg shadow-orange-500/30',
           icon: <CheckCircle size={22} className="text-white" />,
-          accentColor: 'text-emerald-700 dark:text-emerald-300',
-          progressBar: 'bg-gradient-to-r from-emerald-500 to-green-500',
+          accentColor: 'text-orange-700 dark:text-orange-300',
+          progressBar: 'bg-gradient-to-r from-orange-500 to-amber-500',
         };
       case 'two_tier':
         return {
@@ -94,9 +94,9 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
         {/* Decorative gradient glow */}
         <div className={cn(
           "absolute -inset-1 bg-gradient-to-r rounded-xl blur opacity-20 pointer-events-none",
-          report.level === 'three_tier' && 'from-emerald-400 to-green-400',
-          report.level === 'two_tier' && 'from-amber-400 to-orange-400',
-          report.level === 'total_only' && 'from-red-400 to-rose-400',
+          report.level === 'three_tier' && 'from-orange-400 to-amber-400',
+          report.level === 'two_tier' && 'from-amber-400 to-orange-300',
+          report.level === 'total_only' && 'from-orange-300 to-red-400',
         )} />
 
         <CardBody className="p-6 relative">
@@ -150,9 +150,9 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
                   transition={{ delay: 0.3 }}
                   className={cn(
                     "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold",
-                    report.level === 'three_tier' && 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
+                    report.level === 'three_tier' && 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
                     report.level === 'two_tier' && 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-                    report.level === 'total_only' && 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
+                    report.level === 'total_only' && 'bg-orange-200 text-orange-800 dark:bg-orange-900/50 dark:text-orange-200',
                   )}
                 >
                   <Sparkles size={12} />
@@ -191,18 +191,18 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
                       transition={{ delay: 0.6 }}
                       className={cn(
                         "flex items-start gap-3 p-4 rounded-xl border-2 transition-all hover:scale-[1.02]",
-                        "bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950/40 dark:to-green-950/30",
-                        "border-emerald-200 dark:border-emerald-800"
+                        "bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/40 dark:to-amber-950/30",
+                        "border-orange-200 dark:border-orange-800"
                       )}
                     >
-                      <div className="p-2 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg flex-shrink-0">
-                        <CheckCircle size={18} className="text-emerald-600 dark:text-emerald-400" />
+                      <div className="p-2 bg-orange-100 dark:bg-orange-900/50 rounded-lg flex-shrink-0">
+                        <CheckCircle size={18} className="text-orange-600 dark:text-orange-400" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <span className="text-sm font-bold text-emerald-800 dark:text-emerald-200 block mb-1">
+                        <span className="text-sm font-bold text-orange-800 dark:text-orange-200 block mb-1">
                           可準確計算
                         </span>
-                        <span className="text-xs text-emerald-700 dark:text-emerald-300 font-mono">
+                        <span className="text-xs text-orange-700 dark:text-orange-300 font-mono">
                           {report.canCalculateAccurately.join('、')}
                         </span>
                       </div>
@@ -245,18 +245,18 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
                       transition={{ delay: 0.8 }}
                       className={cn(
                         "flex items-start gap-3 p-4 rounded-xl border-2 transition-all hover:scale-[1.02]",
-                        "bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-950/40 dark:to-rose-950/30",
-                        "border-red-200 dark:border-red-800"
+                        "bg-gradient-to-r from-orange-100 to-red-50 dark:from-orange-950/40 dark:to-red-950/30",
+                        "border-orange-300 dark:border-orange-700"
                       )}
                     >
-                      <div className="p-2 bg-red-100 dark:bg-red-900/50 rounded-lg flex-shrink-0">
-                        <Info size={18} className="text-red-600 dark:text-red-400" />
+                      <div className="p-2 bg-orange-200 dark:bg-orange-900/50 rounded-lg flex-shrink-0">
+                        <Info size={18} className="text-orange-700 dark:text-orange-300" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <span className="text-sm font-bold text-red-800 dark:text-red-200 block mb-1">
+                        <span className="text-sm font-bold text-orange-900 dark:text-orange-100 block mb-1">
                           需要拆分
                         </span>
-                        <span className="text-xs text-red-700 dark:text-red-300 font-mono">
+                        <span className="text-xs text-orange-800 dark:text-orange-200 font-mono">
                           {report.needsSplit.join('、')}
                         </span>
                       </div>

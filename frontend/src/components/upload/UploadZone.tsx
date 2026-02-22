@@ -214,6 +214,7 @@ export const UploadZone: React.FC = () => {
               accept="image/*"
               onChange={handleFileSelect}
               className="hidden"
+              aria-label="上傳電費單照片"
             />
 
             <div className="space-y-8 text-center relative z-10">
@@ -249,6 +250,7 @@ export const UploadZone: React.FC = () => {
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -317,7 +319,7 @@ export const UploadZone: React.FC = () => {
 
               <div className="pt-6 border-t border-border/60">
                 <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   支援 JPG、PNG、WebP 格式，建議檔案小於 10MB
@@ -376,6 +378,7 @@ export const UploadZone: React.FC = () => {
             capture="environment"
             onChange={handleFileSelect}
             className="hidden"
+            aria-label="使用相機拍照"
           />
           <Button
             color="primary"

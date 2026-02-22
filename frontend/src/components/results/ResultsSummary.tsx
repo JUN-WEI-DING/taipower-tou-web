@@ -138,14 +138,14 @@ export const ResultsSummary: React.FC<{
                       transition={{ delay: 0.5, duration: 0.6, ease: "easeInOut" }}
                       className="relative"
                     >
-                      <div className="absolute inset-0 bg-green-500/20 rounded-full blur-lg" />
-                      <TrendingUp className="text-green-600 dark:text-green-400 relative" size={32} />
+                      <div className="absolute inset-0 bg-orange-500/20 rounded-full blur-lg" />
+                      <TrendingUp className="text-orange-600 dark:text-orange-400 relative" size={32} />
                     </motion.div>
 
                     <motion.span
                       className={cn(
                         "text-5xl md:text-6xl font-black bg-clip-text text-transparent",
-                        "bg-gradient-to-br from-green-600 to-emerald-500 dark:from-green-400 dark:to-emerald-300"
+                        "bg-gradient-to-br from-orange-600 to-amber-500 dark:from-orange-400 dark:to-amber-300"
                       )}
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
@@ -160,17 +160,17 @@ export const ResultsSummary: React.FC<{
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-                    className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-50 dark:from-green-900/40 dark:to-emerald-950/30 rounded-xl border-2 border-green-400 dark:border-green-600 shadow-lg shadow-green-500/20"
+                    className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-100 to-amber-50 dark:from-orange-900/40 dark:to-amber-950/30 rounded-xl border-2 border-orange-400 dark:border-orange-600 shadow-lg shadow-orange-500/20"
                   >
                     <motion.div
                       animate={{ scale: [1, 1.1, 1] }}
                       transition={{ duration: 2, repeat: Infinity }}
                     >
-                      <CheckCircle size={22} className="text-green-600 dark:text-green-400" />
+                      <CheckCircle size={22} className="text-orange-600 dark:text-orange-400" />
                     </motion.div>
                     <div className="text-left">
-                      <p className="text-xs text-green-700 dark:text-green-300 font-medium">節省比例</p>
-                      <p className="text-xl font-black text-green-700 dark:text-green-300">{savingsPercent.toFixed(1)}%</p>
+                      <p className="text-xs text-orange-700 dark:text-orange-300 font-medium">節省比例</p>
+                      <p className="text-xl font-black text-orange-700 dark:text-orange-300">{savingsPercent.toFixed(1)}%</p>
                     </div>
                   </motion.div>
                 </motion.div>
@@ -181,9 +181,9 @@ export const ResultsSummary: React.FC<{
                   transition={{ delay: 0.4 }}
                   className="py-6"
                 >
-                  <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-50 dark:from-green-900/40 dark:to-emerald-950/30 rounded-xl border-2 border-green-400 dark:border-green-600 shadow-lg">
-                    <CheckCircle size={22} className="text-green-600 dark:text-green-400" />
-                    <p className="font-bold text-green-700 dark:text-green-300">
+                  <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-100 to-amber-50 dark:from-orange-900/40 dark:to-amber-950/30 rounded-xl border-2 border-orange-400 dark:border-orange-600 shadow-lg">
+                    <CheckCircle size={22} className="text-orange-600 dark:text-orange-400" />
+                    <p className="font-bold text-orange-700 dark:text-orange-300">
                       目前已是最佳方案
                     </p>
                   </div>

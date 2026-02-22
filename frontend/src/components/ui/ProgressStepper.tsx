@@ -82,7 +82,7 @@ export const ProgressStepper: React.FC<ProgressStepperProps> = ({
     if (isCompleted) {
       return cn(
         baseClasses,
-        'bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-md shadow-green-500/20'
+        'bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-md shadow-orange-500/20'
       );
     }
 
@@ -99,8 +99,8 @@ export const ProgressStepper: React.FC<ProgressStepperProps> = ({
       'flex-1 h-1 rounded-full transition-all duration-500',
       isCompleted
         ? variant === 'gradient'
-          ? 'bg-gradient-to-r from-green-500 to-emerald-500'
-          : 'bg-green-500'
+          ? 'bg-gradient-to-r from-orange-500 to-amber-500'
+          : 'bg-orange-500'
         : 'bg-muted'
     );
   };
@@ -117,7 +117,7 @@ export const ProgressStepper: React.FC<ProgressStepperProps> = ({
         : isActive
           ? 'text-orange-600 dark:text-orange-400 font-semibold'
           : isCompleted
-            ? 'text-green-600 dark:text-green-400'
+            ? 'text-orange-700 dark:text-orange-400'
             : 'text-muted-foreground'
     );
   };
@@ -137,7 +137,7 @@ export const ProgressStepper: React.FC<ProgressStepperProps> = ({
 
     if (step.status === 'error') {
       return (
-        <svg className={sizeClasses[size].icon} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className={sizeClasses[size].icon} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       );
@@ -168,8 +168,8 @@ export const ProgressStepper: React.FC<ProgressStepperProps> = ({
                   'absolute left-1/2 -translate-x-1/2 w-0.5 transition-all duration-500',
                   index < currentStep
                     ? variant === 'gradient'
-                      ? 'bg-gradient-to-b from-green-500 to-emerald-500'
-                      : 'bg-green-500'
+                      ? 'bg-gradient-to-b from-orange-500 to-amber-500'
+                      : 'bg-orange-500'
                     : 'bg-muted'
                 )}
                 style={{
@@ -327,7 +327,7 @@ export const MinimalStepper: React.FC<MinimalStepperProps> = ({
                 index === currentStep
                   ? 'bg-orange-500 scale-125'
                   : index < currentStep
-                    ? 'bg-green-500'
+                    ? 'bg-orange-400'
                     : 'bg-muted'
               )}
             />
@@ -337,7 +337,7 @@ export const MinimalStepper: React.FC<MinimalStepperProps> = ({
                 index === currentStep
                   ? 'text-orange-600 dark:text-orange-400'
                   : index < currentStep
-                    ? 'text-green-600 dark:text-green-400'
+                    ? 'text-orange-700 dark:text-orange-400'
                     : 'text-muted-foreground'
               )}
             >

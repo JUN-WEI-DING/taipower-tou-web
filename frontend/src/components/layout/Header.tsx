@@ -4,15 +4,9 @@ import { Zap, Menu, X, Github, ExternalLink } from '../icons';
 import { cn } from '../../lib/utils';
 import { useAppStore } from '../../stores/useAppStore';
 
-// Unified shadow colors using brand orange - using CSS variables
-const getOrangeShadow = (opacity: number) => {
-  if (typeof document !== 'undefined') {
-    const rootStyle = getComputedStyle(document.documentElement);
-    const orangeRgb = rootStyle.getPropertyValue('--orange-500-rgb').trim();
-    return `rgba(${orangeRgb}, ${opacity})`;
-  }
-  return `rgba(249, 115, 22, ${opacity})`;
-};
+// Brand orange shadow colors (249, 115, 22)
+const ORANGE_SHADOW_LIGHT = 'rgba(249, 115, 22, 0.2)';
+const ORANGE_SHADOW_MEDIUM = 'rgba(249, 115, 22, 0.3)';
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -69,8 +63,8 @@ export function Header() {
               className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center"
               animate={{
                 boxShadow: isScrolled
-                  ? `0 4px 20px -2px ${getOrangeShadow(0.3)}`
-                  : `0 4px 12px -2px ${getOrangeShadow(0.2)}`,
+                  ? `0 4px 20px -2px ${ORANGE_SHADOW_MEDIUM}`
+                  : `0 4px 12px -2px ${ORANGE_SHADOW_LIGHT}`,
               }}
               transition={{ duration: 0.3 }}
             >

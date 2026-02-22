@@ -258,7 +258,6 @@ function App() {
                     )}
                     <OCRProgress />
                   </div>
-                </div>
                 ) : (
                   <div className="max-w-2xl mx-auto space-y-8">
                     <div className="card-orange relative backdrop-blur-sm rounded-3xl p-8 md:p-10">

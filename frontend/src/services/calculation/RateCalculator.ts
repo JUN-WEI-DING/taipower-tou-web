@@ -755,15 +755,34 @@ export class RateCalculator {
 
   /**
    * 判斷季節
+   * 臺電季節定義：夏季(6/1-9/30)、非夏季(10/1-5/31)
+   * 如果計費期間的任何部分落在夏季月份，則視為夏季
+   * 支援跨年度的計費期間
    */
   private determineSeason(period: { start: Date; end: Date }): Season {
-    const month = period.start.getMonth() + 1; // 1-12
-    const isSummer = month >= 6 && month <= 9;
+    const startDate = new Date(period.start);
+    const endDate = new Date(period.end);
+
+    // 檢查計費期間內的所有月份是否包含夏季月份 (6-9月)
+    const current = new Date(startDate);
+
+    while (current <= endDate) {
+      const month = current.getMonth() + 1; // 1-12
+      if (month >= 6 && month <= 9) {
+        return {
+          name: 'summer',
+          start: '06-01',
+          end: '09-30',
+        };
+      }
+      // 移到下個月
+      current.setMonth(current.getMonth() + 1);
+    }
 
     return {
-      name: isSummer ? 'summer' : 'non_summer',
-      start: isSummer ? '06-01' : '10-01',
-      end: isSummer ? '09-30' : '05-31',
+      name: 'non_summer',
+      start: '10-01',
+      end: '05-31',
     };
   }
 

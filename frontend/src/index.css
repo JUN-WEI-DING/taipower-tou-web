@@ -675,7 +675,7 @@
   [role="tab"] {
     padding: 0.75rem 1rem;
     border-bottom: 3px solid transparent;
-    transition: all 0.2s ease;
+    transition: border-bottom-color 0.2s ease, color 0.2s ease, font-weight 0.2s ease;
   }
 
   [role="tab"][aria-selected="true"] {

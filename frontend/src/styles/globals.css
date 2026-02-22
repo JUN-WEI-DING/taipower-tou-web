@@ -163,7 +163,7 @@ h3 {
   font-size: 0.875rem;
   font-weight: 500;
   border-radius: 0 0 0.5rem 0.5rem;
-  transition: all 200ms;
+  transition: top 200ms ease;
 }
 
 .skip-link:focus {
@@ -353,7 +353,7 @@ h3 {
   border: 1px solid rgb(var(--orange-200-rgb) / 0.5);
   border-radius: var(--radius);
   box-shadow: 0 4px 16px rgb(var(--orange-500-rgb) / 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .card-orange:hover {
@@ -384,7 +384,7 @@ h3 {
   gap: 0.5rem;
   font-weight: 600;
   border-radius: 0.75rem;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   cursor: pointer;
   text-decoration: none;
 }
