@@ -60,10 +60,21 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
   maxToasts = 5,
 }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [timeoutIds, setTimeoutIds] = useState<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   const removeToast = useCallback((id: string) => {
+    // Clear associated timeout
+    const timeoutId = timeoutIds.get(id);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      setTimeoutIds((prev) => {
+        const newMap = new Map(prev);
+        newMap.delete(id);
+        return newMap;
+      });
+    }
     setToasts((prev) => prev.filter((t) => t.id !== id));
-  }, []);
+  }, [timeoutIds]);
 
   const addToast = useCallback((toast: Omit<Toast, 'id'>) => {
     const id = Math.random().toString(36).substring(2, 9);
@@ -79,14 +90,17 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
         removeToast(id);
       }, toast.duration || 5000);
 
-      // Cleanup timeout if component unmounts or toast is removed
-      return () => clearTimeout(timeoutId);
+      // Store timeout ID for cleanup
+      setTimeoutIds((prev) => new Map(prev).set(id, timeoutId));
     }
-  }, [maxToasts, removeToast]);
+  }, [maxToasts, removeToast, setTimeoutIds]);
 
   const clearToasts = useCallback(() => {
+    // Clear all timeouts
+    timeoutIds.forEach((timeoutId) => clearTimeout(timeoutId));
+    setTimeoutIds(new Map());
     setToasts([]);
-  }, []);
+  }, [timeoutIds]);
 
   const positionClasses = {
     'top-left': 'top-4 left-4',

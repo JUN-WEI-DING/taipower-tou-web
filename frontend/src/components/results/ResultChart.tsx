@@ -212,7 +212,7 @@ export const ResultChart: React.FC<ResultChartProps> = ({ results, maxCost }) =>
           <div key={`legend-${index}`} className="flex items-center gap-2">
             <div
               className="w-3 h-3 rounded-sm"
-              style={{ backgroundColor: entry.color.fill }}
+              style={{ backgroundColor: entry.color.stroke }}
             />
             <span className="text-xs text-muted-foreground">
               {index === 0 ? '推薦' : `#${index + 1}`}

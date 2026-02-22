@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, Menu, X, Github, ExternalLink } from '../icons';
 import { cn } from '../../lib/utils';
+import { useAppStore } from '../../stores/useAppStore';
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const resetApp = useAppStore((state) => state.reset);
 
   // Handle scroll effect
   useEffect(() => {
@@ -28,9 +30,11 @@ export function Header() {
     };
   }, [isMobileMenuOpen]);
 
-  const navItems = [
-    { name: '首頁', href: '/', id: 'home' },
-  ];
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    resetApp();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <header
@@ -44,9 +48,9 @@ export function Header() {
       <div className="container">
         <nav className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <motion.a
-            href="/"
-            className="flex items-center gap-3 group"
+          <motion.button
+            onClick={handleLogoClick}
+            className="flex items-center gap-3 group bg-transparent border-0 cursor-pointer"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             aria-label="臺電時間電價比較 - 回到首頁"
@@ -85,22 +89,7 @@ export function Header() {
                 找出最省錢的電價方案
               </p>
             </div>
-          </motion.a>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <motion.a
-                key={item.id}
-                href={item.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground relative group"
-                whileHover={{ y: -1 }}
-              >
-                {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300" />
-              </motion.a>
-            ))}
-          </div>
+          </motion.button>
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-4">
@@ -195,29 +184,6 @@ export function Header() {
                     <X size={24} />
                   </button>
                 </div>
-
-                {/* Navigation Items */}
-                <nav className="flex-1 overflow-y-auto p-6" aria-label="主要導航">
-                  <ul className="space-y-2">
-                    {navItems.map((item, index) => (
-                      <motion.li
-                        key={item.id}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                      >
-                        <a
-                          href={item.href}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 rounded-lg text-foreground hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:text-orange-600 dark:hover:text-orange-400 transition-all group"
-                        >
-                          <span className="w-2 h-2 rounded-full bg-orange-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                          <span className="font-medium">{item.name}</span>
-                        </a>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </nav>
 
                 {/* Footer Actions */}
                 <div className="p-6 border-t border-border space-y-3">
