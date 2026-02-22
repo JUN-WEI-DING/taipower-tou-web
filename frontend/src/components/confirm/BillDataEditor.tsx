@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Card, CardBody, Button, Input, Select, SelectItem, Chip } from '@nextui-org/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { BillData } from '../../types';
+import { cn } from '../../lib/utils';
+import { Edit3, Save, X, Calendar, Zap, Info, CheckCircle2 } from '../icons';
 
 interface BillDataEditorProps {
   billData: BillData;
@@ -11,15 +13,18 @@ interface BillDataEditorProps {
 export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState<BillData>(billData);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const handleSave = () => {
     onSave(editedData);
     setIsEditing(false);
+    setHasChanges(false);
   };
 
   const handleCancel = () => {
     setEditedData(billData);
     setIsEditing(false);
+    setHasChanges(false);
   };
 
   const formatDisplayDate = (date: Date) => {
@@ -46,82 +51,137 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
     return {
       isSummer,
       label: isSummer ? '夏季 (6-9月)' : '非夏季 (10-5月)',
+      emoji: isSummer ? '🌞' : '❄️',
     };
   };
 
   const seasonInfo = getSeasonInfo();
 
   return (
-    <Card className="shadow-md border border-divider">
-      <CardBody className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h3 className="text-lg font-bold text-foreground">
-              已識別的資訊
-            </h3>
-            <div className="flex items-center gap-2 mt-2">
-              <Chip
-                size="sm"
-                color={seasonInfo.isSummer ? 'danger' : 'primary'}
-                variant="flat"
-                className="font-semibold"
-              >
-                {seasonInfo.label}
-              </Chip>
-              {billData.source.isEstimated && (
-                <Chip size="sm" color="warning" variant="flat">
-                  估算資料
-                </Chip>
-              )}
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <Card className={cn(
+        "border-2 shadow-lg overflow-visible relative",
+        isEditing
+          ? "border-orange-400 dark:border-orange-600 shadow-orange-500/20"
+          : "border-border hover:border-orange-300 dark:hover:border-orange-700"
+      )}>
+        {/* Glow effect when editing */}
+        <AnimatePresence>
+          {isEditing && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.1 }}
+              exit={{ opacity: 0 }}
+              className="absolute -inset-4 bg-gradient-to-r from-orange-500 to-orange-400 rounded-2xl blur-xl pointer-events-none"
+            />
+          )}
+        </AnimatePresence>
+
+        <CardBody className="p-6 md:p-8 relative">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-6 border-b border-border/60">
+            <div>
+              <div className="flex items-center gap-3">
+                <motion.div
+                  animate={isEditing ? { rotate: [0, -5, 5, -5, 0] } : {}}
+                  transition={{ duration: 0.5 }}
+                  className={cn(
+                    "p-2.5 rounded-xl",
+                    isEditing
+                      ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/30"
+                      : "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400"
+                  )}
+                >
+                  {isEditing ? <Edit3 size={20} /> : <CheckCircle2 size={20} />}
+                </motion.div>
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">
+                    {isEditing ? '編輯資訊' : '已識別的資訊'}
+                  </h3>
+                  <div className="flex items-center gap-2 mt-2">
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className={cn(
+                        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-sm",
+                        seasonInfo.isSummer
+                          ? "bg-gradient-to-r from-red-100 to-orange-100 text-red-700 dark:from-red-900/40 dark:to-orange-900/40 dark:text-red-300"
+                          : "bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 dark:from-blue-900/40 dark:to-cyan-900/40 dark:text-blue-300"
+                      )}
+                    >
+                      <span>{seasonInfo.emoji}</span>
+                      {seasonInfo.label}
+                    </motion.div>
+                    {billData.source.isEstimated && (
+                      <Chip size="sm" color="warning" variant="flat" className="font-semibold">
+                        估算資料
+                      </Chip>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {/* Action Buttons */}
+            <AnimatePresence mode="wait">
+              {!isEditing ? (
+                <motion.div
+                  key="edit"
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                >
+                  <Button
+                    onClick={() => setIsEditing(true)}
+                    color="primary"
+                    variant="flat"
+                    size="md"
+                    className="font-medium shadow-md hover:shadow-lg transition-all"
+                    startContent={<Edit3 size={16} />}
+                  >
+                    編輯
+                  </Button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="actions"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  className="flex gap-2"
+                >
+                  <Button
+                    onClick={handleCancel}
+                    color="default"
+                    variant="bordered"
+                    size="md"
+                    className="font-medium"
+                    startContent={<X size={16} />}
+                  >
+                    取消
+                  </Button>
+                  <Button
+                    onClick={handleSave}
+                    color="primary"
+                    variant="solid"
+                    size="md"
+                    className={cn(
+                      "font-semibold shadow-lg",
+                      "bg-gradient-to-r from-orange-500 to-orange-600",
+                      "hover:from-orange-600 hover:to-orange-700",
+                      "shadow-orange-500/30"
+                    )}
+                    startContent={<Save size={16} />}
+                  >
+                    儲存變更
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <AnimatePresence mode="wait">
-            {!isEditing ? (
-              <motion.div
-                key="edit"
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-              >
-                <Button
-                  onClick={() => setIsEditing(true)}
-                  color="primary"
-                  variant="flat"
-                  size="sm"
-                  className="font-medium"
-                >
-                  編輯
-                </Button>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="actions"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }}
-                className="flex gap-2"
-              >
-                <Button
-                  onClick={handleCancel}
-                  color="default"
-                  variant="flat"
-                  size="sm"
-                >
-                  取消
-                </Button>
-                <Button
-                  onClick={handleSave}
-                  color="primary"
-                  variant="solid"
-                  size="sm"
-                  className="font-semibold"
-                >
-                  儲存
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
 
         <div className="space-y-5">
           {/* 計費期間 */}
