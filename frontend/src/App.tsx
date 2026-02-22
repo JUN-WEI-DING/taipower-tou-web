@@ -176,7 +176,40 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50/30 via-background to-background flex flex-col">
+    <div className="min-h-screen flex flex-col relative overflow-hidden" style={{
+      background: `
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(251, 146, 60, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 50%, rgba(249, 115, 22, 0.08), transparent),
+        linear-gradient(180deg, #fff7ed 0%, #ffffff 60%, #fafafa 100%)
+      `
+    }}>
+      {/* Animated gradient backgrounds */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] md:w-[700px] md:h-[700px] bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl" style={{
+          animation: 'float-diagonal-1 25s ease-in-out infinite',
+          transform: 'translate(-30%, -30%)'
+        }} />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-gradient-radial from-orange-300/15 to-transparent rounded-full blur-3xl" style={{
+          animation: 'float-diagonal-2 20s ease-in-out infinite',
+          transform: 'translate(30%, 30%)'
+        }} />
+        <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-gradient-radial from-amber-200/10 to-transparent rounded-full blur-3xl" style={{
+          animation: 'pulse-glow 15s ease-in-out infinite'
+        }} />
+      </div>
+
+      {/* Grid pattern overlay */}
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-40" style={{
+        backgroundImage: `
+          radial-gradient(circle, rgba(249, 115, 22, 0.15) 1px, transparent 1px),
+          radial-gradient(circle, rgba(251, 146, 60, 0.08) 1px, transparent 1px)
+        `,
+        backgroundSize: '40px 40px, 80px 80px',
+        backgroundPosition: '0 0, 20px 20px',
+        maskImage: 'radial-gradient(ellipse 70% 50% at 50% 40%, black 30%, transparent 70%)',
+        WebkitMaskImage: 'radial-gradient(ellipse 70% 50% at 50% 40%, black 30%, transparent 70%)'
+      }} />
+
       {/* Skip link for keyboard navigation */}
       <a href="#main-content" className="skip-link">
         跳到主要內容
@@ -186,12 +219,7 @@ function App() {
       <Header />
 
       {/* Main Content */}
-      <main id="main-content" className="flex-1 relative" role="main">
-        {/* Decorative background pattern */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-orange-200/30 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-orange-300/20 rounded-full blur-3xl" />
-        </div>
+      <main id="main-content" className="flex-1 relative z-10" role="main">
 
         <StageTransition key={stage} direction="forward">
           <div className="container py-8 md:py-12 relative z-10">
@@ -204,22 +232,28 @@ function App() {
                   />
                 ) : billType === 'auto_detect' ? (
                   <div className="max-w-2xl mx-auto space-y-8">
-                    <div className="text-center bg-gradient-to-b from-orange-50/50 to-transparent dark:from-orange-950/20 dark:to-transparent -mx-8 px-8 py-8 rounded-2xl">
-                      <Button
-                        onClick={() => setBillType(null)}
-                        variant="light"
-                        color="default"
-                        size="sm"
-                        className="mb-6"
-                      >
-                        ← 返回選擇其他方式
-                      </Button>
-                      <h2 className="text-3xl md:text-4xl font-bold text-card-foreground mb-3">
-                        上傳電費單照片
-                      </h2>
-                      <p className="text-lg text-muted-foreground">
-                        系統會自動識別電費單型別和用電資訊
-                      </p>
+                    <div className="relative bg-gradient-to-br from-white/80 to-orange-50/60 dark:from-gray-900/80 dark:to-orange-950/30 backdrop-blur-sm border border-orange-100/50 dark:border-orange-800/30 rounded-3xl p-8 md:p-10 shadow-xl shadow-orange-500/5">
+                      {/* Decorative gradient glow */}
+                      <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl pointer-events-none" />
+                      <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-radial from-amber-300/15 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+                      <div className="relative">
+                        <Button
+                          onClick={() => setBillType(null)}
+                          variant="light"
+                          color="default"
+                          size="sm"
+                          className="mb-6 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                        >
+                          ← 返回選擇其他方式
+                        </Button>
+                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+                          上傳電費單照片
+                        </h2>
+                        <p className="text-lg text-gray-600 dark:text-gray-400">
+                          系統會自動識別電費單型別和用電資訊
+                        </p>
+                      </div>
                     </div>
                     <UploadZone />
                     {uploadedImage && (
@@ -235,16 +269,28 @@ function App() {
                 </div>
                 ) : (
                   <div className="max-w-2xl mx-auto space-y-8">
-                    <div className="text-center bg-gradient-to-b from-orange-50/50 to-transparent dark:from-orange-950/20 dark:to-transparent -mx-8 px-8 py-8 rounded-2xl">
-                      <Button
-                        onClick={() => setBillType(null)}
-                        variant="light"
-                        color="default"
-                        size="sm"
-                        className="mb-6"
-                      >
-                        ← 返回重新選擇型別
-                      </Button>
+                    <div className="relative bg-gradient-to-br from-white/80 to-orange-50/60 dark:from-gray-900/80 dark:to-orange-950/30 backdrop-blur-sm border border-orange-100/50 dark:border-orange-800/30 rounded-3xl p-8 md:p-10 shadow-xl shadow-orange-500/5">
+                      {/* Decorative gradient glow */}
+                      <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl pointer-events-none" />
+                      <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-radial from-amber-300/15 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+                      <div className="relative">
+                        <Button
+                          onClick={() => setBillType(null)}
+                          variant="light"
+                          color="default"
+                          size="sm"
+                          className="mb-6 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                        >
+                          ← 返回重新選擇型別
+                        </Button>
+                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+                          手動輸入用電資訊
+                        </h2>
+                        <p className="text-lg text-gray-600 dark:text-gray-400">
+                          請填寫您的電費單資訊，系統會為您計算最適合的方案
+                        </p>
+                      </div>
                     </div>
                     <BillTypeInputForm billType={billType} />
                   </div>
@@ -254,13 +300,19 @@ function App() {
 
             {stage === 'confirm' && billData && (
             <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
-              <div className="text-center space-y-3 bg-gradient-to-b from-orange-50/50 to-transparent dark:from-orange-950/20 dark:to-transparent -mx-8 px-8 py-8 rounded-2xl">
-                <h2 className="text-3xl md:text-4xl font-bold text-card-foreground">
-                  確認電費單資訊
-                </h2>
-                <p className="text-lg text-muted-foreground">
-                  請確認以下資訊是否正確，可編輯修正後再進行計算
-                </p>
+              <div className="relative bg-gradient-to-br from-white/80 to-orange-50/60 dark:from-gray-900/80 dark:to-orange-950/30 backdrop-blur-sm border border-orange-100/50 dark:border-orange-800/30 rounded-3xl p-8 md:p-10 shadow-xl shadow-orange-500/5">
+                {/* Decorative gradient glow */}
+                <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-radial from-amber-300/15 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+                <div className="relative text-center space-y-3">
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">
+                    確認電費單資訊
+                  </h2>
+                  <p className="text-lg text-gray-600 dark:text-gray-400">
+                    請確認以下資訊是否正確，可編輯修正後再進行計算
+                  </p>
+                </div>
               </div>
 
               <DataCompletenessBanner billData={billData} />
@@ -324,15 +376,20 @@ function App() {
 
           {stage === 'result' && results.length > 0 && (
             <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-b from-orange-50/30 to-transparent dark:from-orange-950/10 dark:to-transparent -mx-4 px-6 py-6 rounded-2xl md:mx-0 md:px-8">
-                <div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-card-foreground">
-                    方案比較結果
-                  </h2>
-                  <p className="text-lg text-muted-foreground mt-1">
-                    依電費由低到高排序
-                  </p>
-                </div>
+              <div className="relative bg-gradient-to-br from-white/80 to-orange-50/60 dark:from-gray-900/80 dark:to-orange-950/30 backdrop-blur-sm border border-orange-100/50 dark:border-orange-800/30 rounded-3xl p-6 md:p-8 shadow-xl shadow-orange-500/5">
+                {/* Decorative gradient glow */}
+                <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-radial from-amber-300/15 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+                <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">
+                      方案比較結果
+                    </h2>
+                    <p className="text-lg text-gray-600 dark:text-gray-400 mt-1">
+                      依電費由低到高排序
+                    </p>
+                  </div>
                 {billData && (
                   <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
                     determineSeason(billData.billingPeriod) === 'summer'
@@ -342,6 +399,7 @@ function App() {
                     {determineSeason(billData.billingPeriod) === 'summer' ? '🌞 夏季費率 (6-9月)' : '❄️ 非夏季費率 (10-5月)'}
                   </div>
                 )}
+                </div>
               </div>
 
               <ResultsSummary results={results} />

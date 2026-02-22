@@ -143,6 +143,7 @@ export default {
         'gradient-primary': 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
         'gradient-hero': 'linear-gradient(135deg, #fff7ed 0%, #fed7aa 50%, #f97316 100%)',
         'gradient-subtle': 'linear-gradient(135deg, #fafafa 0%, #f4f4f5 100%)',
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       },
       borderRadius: {
         '4xl': '2rem',
