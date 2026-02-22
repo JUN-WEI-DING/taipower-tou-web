@@ -627,15 +627,15 @@
 }
 
 .dot:first-child {
-  background: #ef4444;
+  background: hsl(var(--destructive));
 }
 
 .dot:nth-child(2) {
-  background: #f59e0b;
+  background: hsl(var(--warning));
 }
 
 .dot:nth-child(3) {
-  background: #22c55e;
+  background: hsl(var(--success));
 }
 
 .previewCard:hover .dot:first-child {

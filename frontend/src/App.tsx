@@ -224,7 +224,7 @@ function App() {
                   />
                 ) : billType === 'auto_detect' ? (
                   <div className="max-w-2xl mx-auto space-y-8">
-                    <div className="relative bg-gradient-to-br from-white/80 to-orange-50/60 dark:from-gray-900/80 dark:to-orange-950/30 backdrop-blur-sm border border-orange-100/50 dark:border-orange-800/30 rounded-3xl p-8 md:p-10 shadow-xl shadow-orange-500/5">
+                    <div className="card-orange relative backdrop-blur-sm rounded-3xl p-8 md:p-10">
                       {/* Decorative gradient glow */}
                       <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl pointer-events-none" />
                       <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-radial from-amber-300/15 to-transparent rounded-full blur-3xl pointer-events-none" />
@@ -261,7 +261,7 @@ function App() {
                 </div>
                 ) : (
                   <div className="max-w-2xl mx-auto space-y-8">
-                    <div className="relative bg-gradient-to-br from-white/80 to-orange-50/60 dark:from-gray-900/80 dark:to-orange-950/30 backdrop-blur-sm border border-orange-100/50 dark:border-orange-800/30 rounded-3xl p-8 md:p-10 shadow-xl shadow-orange-500/5">
+                    <div className="card-orange relative backdrop-blur-sm rounded-3xl p-8 md:p-10">
                       {/* Decorative gradient glow */}
                       <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl pointer-events-none" />
                       <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-radial from-amber-300/15 to-transparent rounded-full blur-3xl pointer-events-none" />
@@ -292,7 +292,7 @@ function App() {
 
             {stage === 'confirm' && billData && (
             <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
-              <div className="relative bg-gradient-to-br from-white/80 to-orange-50/60 dark:from-gray-900/80 dark:to-orange-950/30 backdrop-blur-sm border border-orange-100/50 dark:border-orange-800/30 rounded-3xl p-8 md:p-10 shadow-xl shadow-orange-500/5">
+              <div className="card-orange relative backdrop-blur-sm rounded-3xl p-8 md:p-10">
                 {/* Decorative gradient glow */}
                 <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-radial from-amber-300/15 to-transparent rounded-full blur-3xl pointer-events-none" />
@@ -368,7 +368,7 @@ function App() {
 
           {stage === 'result' && results.length > 0 && (
             <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
-              <div className="relative bg-gradient-to-br from-white/80 to-orange-50/60 dark:from-gray-900/80 dark:to-orange-950/30 backdrop-blur-sm border border-orange-100/50 dark:border-orange-800/30 rounded-3xl p-6 md:p-8 shadow-xl shadow-orange-500/5">
+              <div className="card-orange relative backdrop-blur-sm rounded-3xl p-6 md:p-8">
                 {/* Decorative gradient glow */}
                 <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-radial from-amber-300/15 to-transparent rounded-full blur-3xl pointer-events-none" />

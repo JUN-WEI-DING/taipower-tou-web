@@ -75,6 +75,16 @@ html {
   --neutral-700-rgb: 68, 64, 60;
   --neutral-800-rgb: 41, 37, 36;
   --neutral-900-rgb: 28, 25, 23;
+
+  /* Semantic colors (HSL) */
+  --success: 142 76% 36%;
+  --warning: 38 92% 50%;
+  --destructive: 0 84% 60%;
+
+  /* Semantic colors (RGB) */
+  --success-rgb: 34, 197, 94;
+  --warning-rgb: 245, 158, 11;
+  --destructive-rgb: 239, 68, 68;
 }
 
 .dark {
@@ -105,6 +115,11 @@ html {
   --border: 12 6.5% 15.1%;
   --input: 12 6.5% 15.1%;
   --ring: 20.5 90.2% 48.2%;
+
+  /* Semantic colors in dark mode */
+  --success: 142 71% 45%;
+  --warning: 38 92% 60%;
+  --destructive: 0 63% 31%;
 }
 
 body {
@@ -318,12 +333,47 @@ h3 {
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
 }
 
 .card:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
   transform: translateY(-2px);
+  border-color: rgb(var(--orange-200-rgb) / 0.5);
+}
+
+/* Orange-themed card variant */
+.card-orange {
+  background:
+    linear-gradient(135deg,
+      rgb(var(--orange-50-rgb) / 0.9) 0%,
+      hsl(var(--card)) 50%,
+      hsl(var(--card)) 100%);
+  color: hsl(var(--card-foreground));
+  border: 1px solid rgb(var(--orange-200-rgb) / 0.5);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 16px rgb(var(--orange-500-rgb) / 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.card-orange:hover {
+  box-shadow: 0 8px 24px rgb(var(--orange-500-rgb) / 0.15), 0 2px 6px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  border-color: rgb(var(--orange-300-rgb) / 0.6);
+}
+
+/* Dark mode card variant */
+.dark .card-orange {
+  background:
+    linear-gradient(135deg,
+      rgb(var(--orange-900-rgb) / 0.3) 0%,
+      hsl(var(--card)) 50%,
+      hsl(var(--card)) 100%);
+  border-color: rgb(var(--orange-700-rgb) / 0.4);
+}
+
+.dark .card-orange:hover {
+  border-color: rgb(var(--orange-600-rgb) / 0.5);
 }
 
 /* Button base styles */
@@ -381,7 +431,8 @@ h3 {
   background:
     radial-gradient(ellipse 80% 50% at 50% -20%, rgb(var(--orange-400-rgb) / 0.15), transparent),
     radial-gradient(ellipse 60% 40% at 80% 50%, rgb(var(--orange-500-rgb) / 0.08), transparent),
-    linear-gradient(180deg, rgb(var(--orange-50-rgb)) 0%, hsl(var(--background)) 60%, rgb(var(--neutral-50-rgb)) 100%);
+    linear-gradient(180deg, rgb(var(--orange-50-rgb)) 0%, hsl(var(--background)) 40%, hsl(var(--background)) 100%);
+  min-height: 100vh;
 }
 
 /* Dark mode override for page background */
@@ -389,7 +440,7 @@ h3 {
   background:
     radial-gradient(ellipse 80% 50% at 50% -20%, rgb(var(--orange-400-rgb) / 0.08), transparent),
     radial-gradient(ellipse 60% 40% at 80% 50%, rgb(var(--orange-500-rgb) / 0.04), transparent),
-    linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--card)) 60%, hsl(var(--card)) 100%);
+    linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background)) 100%);
 }
 
 /* Grid pattern overlay */
