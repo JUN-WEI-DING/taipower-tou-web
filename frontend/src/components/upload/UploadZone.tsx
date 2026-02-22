@@ -6,6 +6,10 @@ import { getOCRService } from '../../services/ocr/OCRService';
 import { BillParser } from '../../services/parser/BillParser';
 import type { BillData } from '../../types';
 
+/**
+ * UploadZone Component
+ * Modern drag-and-drop file upload with tech-inspired design
+ */
 export const UploadZone: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -121,13 +125,13 @@ export const UploadZone: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       >
         <Card
-          className={`transition-all duration-300 cursor-pointer overflow-hidden ${
+          className={`transition-all duration-300 cursor-pointer overflow-hidden backdrop-blur-sm ${
             isDragging
-              ? 'border-energy-blue border-3 bg-gradient-to-br from-energy-blue/10 to-energy-cyan/10 scale-[1.02] shadow-glow'
-              : 'border-2 border-dashed border-slate-300 hover:border-energy-blue hover:shadow-energy'
+              ? 'border-2 border-tech-blue shadow-tech-glow-lg bg-gradient-to-br from-tech-blue/15 via-tech-violet/10 to-tech-cyan/15 scale-[1.01]'
+              : 'border-2 border-dashed border-default-300 hover:border-tech-blue/60 hover:shadow-tech-card bg-default-50/50'
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -146,74 +150,100 @@ export const UploadZone: React.FC = () => {
               className="hidden"
             />
 
-            <div className="space-y-6 text-center">
-              {/* Animated upload icon */}
+            <div className="space-y-8 text-center">
+              {/* Enhanced animated upload icon */}
               <motion.div
-                className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-subtle shadow-energy"
-                animate={isDragging ? { scale: 1.1, rotate: 5 } : { scale: 1, rotate: 0 }}
-                transition={{ duration: 0.2 }}
+                className="relative inline-flex items-center justify-center"
+                animate={isDragging ? { scale: 1.15, rotate: [0, -5, 5, -5, 0] } : { scale: 1, rotate: 0 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
-                <svg
-                  className="w-12 h-12 text-energy-blue"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                  />
-                </svg>
+                {/* Glow effect */}
+                <div className={`absolute inset-0 rounded-full blur-2xl transition-colors duration-300 ${
+                  isDragging ? 'bg-tech-blue/40' : 'bg-tech-blue/20'
+                }`} />
+                <div className={`absolute inset-0 rounded-full blur-xl transition-colors duration-300 ${
+                  isDragging ? 'bg-tech-cyan/30' : 'bg-tech-cyan/10'
+                }`} />
+
+                {/* Icon container */}
+                <div className={`relative w-28 h-28 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  isDragging
+                    ? 'bg-gradient-to-br from-tech-blue to-tech-violet shadow-tech-glow'
+                    : 'bg-gradient-to-br from-tech-blue/90 to-tech-violet/80 shadow-lg'
+                }`}>
+                  <svg
+                    className={`w-14 h-14 text-white transition-transform duration-300 ${
+                      isDragging ? 'scale-110' : ''
+                    }`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                    />
+                  </svg>
+                </div>
               </motion.div>
 
-              <div className="space-y-2">
-                <h3 className="text-2xl font-bold text-foreground">
+              <div className="space-y-3">
+                <h3 className="text-2xl md:text-3xl font-bold text-foreground">
                   上傳電費單照片
                 </h3>
-                <p className="text-default-500 text-base">
+                <p className="text-default-500 text-base md:text-lg">
                   拖曳圖片到這裡，或點選選擇檔案
                 </p>
               </div>
 
-              {/* Feature chips */}
-              <div className="flex flex-wrap justify-center gap-2">
+              {/* Enhanced feature chips */}
+              <div className="flex flex-wrap justify-center gap-3">
                 {[
-                  { icon: '⚡', text: 'AI 智慧識別' },
-                  { icon: '🔒', text: '資料不上傳' },
-                  { icon: '⏱️', text: '30 秒完成' },
+                  { icon: '⚡', text: 'AI 智慧識別', gradient: 'from-tech-blue/20 to-tech-blue/5', border: 'border-tech-blue/30' },
+                  { icon: '🔒', text: '資料不上傳', gradient: 'from-tech-emerald/20 to-tech-emerald/5', border: 'border-tech-emerald/30' },
+                  { icon: '⏱️', text: '30 秒完成', gradient: 'from-tech-cyan/20 to-tech-cyan/5', border: 'border-tech-cyan/30' },
                 ].map((feature, idx) => (
-                  <span
+                  <motion.span
                     key={idx}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-default-100 text-sm font-medium text-default-600"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * idx }}
+                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-br ${feature.gradient} border ${feature.border} text-sm font-semibold text-default-700 shadow-sm`}
                   >
                     <span>{feature.icon}</span>
                     <span>{feature.text}</span>
-                  </span>
+                  </motion.span>
                 ))}
               </div>
 
-              <div className="pt-4 border-t border-divider">
+              <div className="pt-6 border-t border-default-200">
                 <p className="text-sm text-default-400">
                   支援 JPG、PNG 格式，建議檔案小於 10MB
                 </p>
               </div>
 
+              {/* Error message */}
               {errorMessage && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-4"
+                  className="mt-6"
                 >
-                  <Card className="bg-danger-50 border-danger-200">
-                    <CardBody className="p-4">
-                      <p className="text-sm text-danger font-medium">⚠️ {errorMessage}</p>
+                  <Card className="bg-danger-50/80 backdrop-blur-sm border-danger-200/50">
+                    <CardBody className="p-5">
+                      <p className="text-sm text-danger font-semibold flex items-center gap-2">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        {errorMessage}
+                      </p>
                       <Button
                         size="sm"
-                        variant="light"
+                        variant="flat"
                         color="danger"
-                        className="mt-3"
+                        className="mt-4 font-medium"
                         onClick={() => setErrorMessage(null)}
                       >
                         關閉
@@ -227,12 +257,12 @@ export const UploadZone: React.FC = () => {
         </Card>
       </motion.div>
 
-      {/* 相機按鈕（行動裝置） */}
+      {/* Enhanced camera button (mobile) */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.3 }}
-        className="mt-6"
+        transition={{ delay: 0.2, duration: 0.4 }}
+        className="mt-8"
       >
         <label className="block">
           <input
@@ -246,7 +276,10 @@ export const UploadZone: React.FC = () => {
             color="primary"
             variant="bordered"
             size="lg"
-            className="w-full h-14 text-base font-semibold border-2"
+            className="w-full h-14 text-base font-semibold border-2 border-tech-blue/40 hover:border-tech-blue hover:bg-tech-blue/5 transition-all"
+            style={{
+              background: isDragging ? 'linear-gradient(135deg, #0066ff 0%, #7c3aed 100%)' : 'transparent'
+            }}
             startContent={
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />

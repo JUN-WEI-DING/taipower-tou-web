@@ -200,12 +200,19 @@ function App() {
         跳到主要內容
       </a>
 
-      {/* Header */}
-      <Navbar maxWidth="xl" className="bg-background/80 backdrop-blur-xl border-b border-divider shadow-sm" isBordered>
+      {/* Enhanced Header with Tech Innovation theme */}
+      <Navbar maxWidth="xl" className="bg-background/80 backdrop-blur-xl border-b border-tech-blue/20 shadow-tech-card isBordered" isBordered>
         <NavbarBrand className="gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gradient-energy flex items-center justify-center shadow-energy" aria-hidden="true">
-            <Zap size={24} className="text-white" />
-          </div>
+          <motion.div
+            className="w-11 h-11 rounded-xl bg-gradient-tech flex items-center justify-center shadow-tech-glow relative overflow-hidden"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+            aria-hidden="true"
+          >
+            {/* Animated glow effect */}
+            <div className="absolute inset-0 bg-white/20 animate-pulse" />
+            <Zap size={24} className="text-white relative z-10" />
+          </motion.div>
           <div>
             <h1 className="text-lg md:text-xl font-bold text-foreground tracking-tight">
               臺電時間電價比較
@@ -404,14 +411,23 @@ function App() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gradient-subtle border-t border-divider mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      {/* Enhanced Footer with Tech Innovation theme */}
+      <footer className="bg-gradient-dark border-t border-tech-blue/20 mt-20 relative overflow-hidden">
+        {/* Decorative gradient elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-tech-blue/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-tech-violet/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
           <div className="grid sm:grid-cols-3 gap-10 mb-10">
             {/* About */}
             <div>
-              <h4 className="font-bold text-foreground mb-4 text-lg">關於本服務</h4>
-              <p className="text-sm text-default-600 leading-relaxed">
+              <h4 className="font-bold text-foreground mb-4 text-lg flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-tech flex items-center justify-center">
+                  <Zap size={16} className="text-white" />
+                </div>
+                關於本服務
+              </h4>
+              <p className="text-sm text-default-400 leading-relaxed">
                 臺電時間電價比較工具幫助您找出最省錢的電價方案，根據臺灣電力公司最新費率計算。
               </p>
             </div>
@@ -419,17 +435,23 @@ function App() {
             {/* Features */}
             <div>
               <h4 className="font-bold text-foreground mb-4 text-lg">功能特色</h4>
-              <ul className="space-y-3 text-sm text-default-600">
+              <ul className="space-y-3 text-sm text-default-400">
                 <li className="flex items-center gap-2">
-                  <Zap size={16} className="text-energy-blue" />
+                  <div className="w-6 h-6 rounded bg-tech-blue/20 flex items-center justify-center">
+                    <Zap size={12} className="text-tech-blue" />
+                  </div>
                   <span>支援 20+ 種電價方案比較</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Zap size={16} className="text-energy-cyan" />
+                  <div className="w-6 h-6 rounded bg-tech-cyan/20 flex items-center justify-center">
+                    <Zap size={12} className="text-tech-cyan" />
+                  </div>
                   <span>AI 智慧識別電費單</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Zap size={16} className="text-energy-green" />
+                  <div className="w-6 h-6 rounded bg-tech-emerald/20 flex items-center justify-center">
+                    <Zap size={12} className="text-tech-emerald" />
+                  </div>
                   <span>純前端運算，資料安全</span>
                 </li>
               </ul>
@@ -438,20 +460,20 @@ function App() {
             {/* Privacy */}
             <div>
               <h4 className="font-bold text-foreground mb-4 text-lg">隱私保護</h4>
-              <p className="text-sm text-default-600 leading-relaxed">
+              <p className="text-sm text-default-400 leading-relaxed">
                 本服務為純前端應用，所有資料均在您的瀏覽器中處理，不會上傳到任何伺服器。
               </p>
             </div>
           </div>
 
-          <Divider className="mb-8" />
+          <Divider className="mb-8 bg-default-800" />
 
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-default-500">
               © 2025 臺電時間電價比較網站 | 資料來源：臺灣電力公司
             </p>
-            <div className="flex items-center gap-2 text-sm text-default-500 font-medium">
-              <Zap size={16} className="text-energy-blue" />
+            <div className="flex items-center gap-2 text-sm text-default-500 font-medium px-4 py-2 bg-default-100/50 rounded-full border border-default-200">
+              <Zap size={16} className="text-tech-blue" />
               <span>純前端應用，資料不上傳伺服器</span>
             </div>
           </div>
