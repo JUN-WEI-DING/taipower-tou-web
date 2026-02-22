@@ -12,7 +12,7 @@ import { ResultChart } from './components/results/ResultChart';
 import { ResultsSummary } from './components/results/ResultsSummary';
 import { HeroSection } from './components/landing';
 import { Header } from './components/layout/Header';
-import { StageTransition } from './components/layout/StageTransition';
+import { StageTransition } from './components/ui/StageTransition';
 import { PlansLoader } from './services/calculation/plans';
 import { RateCalculator } from './services/calculation/RateCalculator';
 import { DataCompletenessLevel } from './types';
@@ -186,7 +186,7 @@ function App() {
 
       {/* Main Content */}
       <main id="main-content" className="flex-1" role="main">
-        <StageTransition currentStage={stage}>
+        <StageTransition key={stage} direction="forward">
           <div className="container py-8 md:py-12">
             {stage === 'upload' && (
               <>
