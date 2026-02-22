@@ -356,6 +356,7 @@ export const Shimmer: React.FC<{
  */
 export const PulseRing: React.FC<{
   children: React.ReactNode;
+  /** Ring color (default: primary orange) */
   color?: string;
   className?: string;
 }> = ({ children, color = '#f97316', className }) => (

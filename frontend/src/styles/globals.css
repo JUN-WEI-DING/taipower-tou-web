@@ -376,6 +376,82 @@ h3 {
   background: linear-gradient(135deg, hsl(var(--orange-50)) 0%, hsl(var(--orange-100)) 50%, hsl(var(--primary)) 100%);
 }
 
+/* Page background gradient with animated feel */
+.bg-gradient-page {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgb(var(--orange-400-rgb) / 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 50%, rgb(var(--orange-500-rgb) / 0.08), transparent),
+    linear-gradient(180deg, rgb(var(--orange-50-rgb)) 0%, #ffffff 60%, rgb(var(--neutral-50-rgb)) 100%);
+}
+
+/* Grid pattern overlay */
+.bg-grid-pattern {
+  opacity: 0.4;
+  background-image:
+    radial-gradient(circle, rgb(var(--orange-500-rgb) / 0.15) 1px, transparent 1px),
+    radial-gradient(circle, rgb(var(--orange-400-rgb) / 0.08) 1px, transparent 1px);
+  background-size: 40px 40px, 80px 80px;
+  background-position: 0 0, 20px 20px;
+  mask-image: radial-gradient(ellipse 70% 50% at 50% 40%, black 30%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 40%, black 30%, transparent 70%);
+}
+
+/* Animated gradient background classes */
+.animate-float-diagonal-1 {
+  animation: float-diagonal-1 25s ease-in-out infinite;
+  transform: translate(-30%, -30%);
+}
+
+.animate-float-diagonal-2 {
+  animation: float-diagonal-2 20s ease-in-out infinite;
+  transform: translate(30%, 30%);
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 15s ease-in-out infinite;
+}
+
+@keyframes float-diagonal-1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  25% {
+    transform: translate(40px, -30px) scale(1.08) rotate(5deg);
+  }
+  50% {
+    transform: translate(-20px, 20px) scale(0.92) rotate(-3deg);
+  }
+  75% {
+    transform: translate(-30px, -20px) scale(1.05) rotate(3deg);
+  }
+}
+
+@keyframes float-diagonal-2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  25% {
+    transform: translate(-35px, 25px) scale(1.06) rotate(-4deg);
+  }
+  50% {
+    transform: translate(25px, -15px) scale(0.94) rotate(2deg);
+  }
+  75% {
+    transform: translate(15px, 30px) scale(1.03) rotate(-2deg);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.5;
+  }
+}
+
 /* Orange themed shadows */
 .shadow-orange {
   box-shadow: 0 4px 20px rgb(var(--orange-500-rgb) / 0.3);

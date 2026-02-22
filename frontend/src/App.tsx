@@ -192,39 +192,16 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden" style={{
-      background: `
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(251, 146, 60, 0.15), transparent),
-        radial-gradient(ellipse 60% 40% at 80% 50%, rgba(249, 115, 22, 0.08), transparent),
-        linear-gradient(180deg, #fff7ed 0%, #ffffff 60%, #fafafa 100%)
-      `
-    }}>
+    <div className="min-h-screen flex flex-col relative overflow-hidden bg-gradient-page">
       {/* Animated gradient backgrounds */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] md:w-[700px] md:h-[700px] bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl" style={{
-          animation: 'float-diagonal-1 25s ease-in-out infinite',
-          transform: 'translate(-30%, -30%)'
-        }} />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-gradient-radial from-orange-300/15 to-transparent rounded-full blur-3xl" style={{
-          animation: 'float-diagonal-2 20s ease-in-out infinite',
-          transform: 'translate(30%, 30%)'
-        }} />
-        <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-gradient-radial from-amber-200/10 to-transparent rounded-full blur-3xl" style={{
-          animation: 'pulse-glow 15s ease-in-out infinite'
-        }} />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] md:w-[700px] md:h-[700px] bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl animate-float-diagonal-1" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-gradient-radial from-orange-300/15 to-transparent rounded-full blur-3xl animate-float-diagonal-2" />
+        <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-gradient-radial from-amber-200/10 to-transparent rounded-full blur-3xl animate-pulse-glow" />
       </div>
 
       {/* Grid pattern overlay */}
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-40" style={{
-        backgroundImage: `
-          radial-gradient(circle, rgba(249, 115, 22, 0.15) 1px, transparent 1px),
-          radial-gradient(circle, rgba(251, 146, 60, 0.08) 1px, transparent 1px)
-        `,
-        backgroundSize: '40px 40px, 80px 80px',
-        backgroundPosition: '0 0, 20px 20px',
-        maskImage: 'radial-gradient(ellipse 70% 50% at 50% 40%, black 30%, transparent 70%)',
-        WebkitMaskImage: 'radial-gradient(ellipse 70% 50% at 50% 40%, black 30%, transparent 70%)'
-      }} />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-grid-pattern" />
 
       {/* Skip link for keyboard navigation */}
       <a href="#main-content" className="skip-link">
