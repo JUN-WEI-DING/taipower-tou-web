@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trophy, Medal, Award, Info, Zap, ChevronDown, ChevronUp, TrendingUp } from '../icons';
+import { Trophy, Medal, Award, Info, Zap, ChevronDown, TrendingUp } from '../icons';
 import { Card, CardBody, Chip, Button } from '@nextui-org/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { PlanCalculationResult } from '../../types';

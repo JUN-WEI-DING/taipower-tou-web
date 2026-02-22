@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, createContext, useContext } from 'react';
+import React, { useState, useCallback, createContext, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
 import { CheckCircle, XCircle, AlertTriangle, Info, X } from '../icons';
@@ -35,6 +35,7 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) {
@@ -60,6 +61,10 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
 }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
+  const removeToast = useCallback((id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
   const addToast = useCallback((toast: Omit<Toast, 'id'>) => {
     const id = Math.random().toString(36).substring(2, 9);
     const newToast: Toast = { ...toast, id };
@@ -70,15 +75,14 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
     });
 
     if (toast.duration !== 0) {
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         removeToast(id);
       }, toast.duration || 5000);
-    }
-  }, [maxToasts]);
 
-  const removeToast = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }, []);
+      // Cleanup timeout if component unmounts or toast is removed
+      return () => clearTimeout(timeoutId);
+    }
+  }, [maxToasts, removeToast]);
 
   const clearToasts = useCallback(() => {
     setToasts([]);
@@ -111,18 +115,9 @@ interface ToastItemProps {
 }
 
 const ToastItem: React.FC<ToastItemProps> = ({ toast, onRemove }) => {
-  const [isExiting, setIsExiting] = useState(false);
-
   const handleRemove = useCallback(() => {
-    setIsExiting(true);
-    setTimeout(onRemove, 300);
+    onRemove();
   }, [onRemove]);
-
-  useEffect(() => {
-    return () => {
-      // Cleanup if unmounted
-    };
-  }, []);
 
   const variantStyles = {
     success: {
@@ -251,7 +246,6 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ className }) => {
   const { toasts, removeToast } = useToast();
 
   const isTop = className?.includes('top-');
-  const stackOrder = isTop ? 0 : toasts.length - 1;
 
   return (
     <div
@@ -287,6 +281,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ className }) => {
 // CONVENIENCE HOOKS
 // ========================================
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useToastActions = () => {
   const { addToast, clearToasts } = useToast();
 

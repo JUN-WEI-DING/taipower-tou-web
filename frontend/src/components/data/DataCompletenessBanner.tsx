@@ -77,7 +77,7 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
   };
 
   const styles = getLevelStyles();
-  const { color, bgGradient, borderColor, iconBg, icon, accentColor, progressBar } = styles;
+  const { color, bgGradient, borderColor, iconBg, icon, progressBar } = styles;
   const completenessPercent = getCompletenessPercentage();
 
   return (

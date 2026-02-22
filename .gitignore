@@ -28,3 +28,8 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+# Claude & Review
+.claude/
+reviews/*.err
+*.md.bak

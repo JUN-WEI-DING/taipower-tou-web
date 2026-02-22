@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { cn } from '../../lib/utils';
 
@@ -59,12 +59,6 @@ export interface AnimatedCounterProps {
   startValue?: number;
 
   /**
-   * Easing function for the animation
-   * @default [0.25, 0.46, 0.45, 0.94]
-   */
-  easing?: [number, number, number, number];
-
-  /**
    * Additional class names
    */
   className?: string;
@@ -113,7 +107,6 @@ export const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
   prefix = '',
   suffix = '',
   startValue = 0,
-  easing = [0.25, 0.46, 0.45, 0.94],
   className,
   animateOnMount = true,
   delay = 0,

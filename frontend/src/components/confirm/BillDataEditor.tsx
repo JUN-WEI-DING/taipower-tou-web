@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardBody, Button, Input, Select, SelectItem, Chip } from '@nextui-org/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { BillData } from '../../types';
 import { cn } from '../../lib/utils';
-import { Edit3, Save, X, Calendar, Zap, Info, CheckCircle2 } from '../icons';
+import { Edit3, Save, X, CheckCircle2 } from '../icons';
 
 interface BillDataEditorProps {
   billData: BillData;
@@ -13,18 +13,20 @@ interface BillDataEditorProps {
 export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState<BillData>(billData);
-  const [hasChanges, setHasChanges] = useState(false);
+
+  // Sync editedData when billData prop changes
+  useEffect(() => {
+    setEditedData(billData);
+  }, [billData]);
 
   const handleSave = () => {
     onSave(editedData);
     setIsEditing(false);
-    setHasChanges(false);
   };
 
   const handleCancel = () => {
     setEditedData(billData);
     setIsEditing(false);
-    setHasChanges(false);
   };
 
   const formatDisplayDate = (date: Date) => {

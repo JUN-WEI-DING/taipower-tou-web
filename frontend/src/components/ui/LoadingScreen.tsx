@@ -5,7 +5,6 @@ import { cn } from '../../lib/utils';
 interface LoadingScreenProps {
   message?: string;
   progress?: number;
-  variant?: 'default' | 'OCR' | 'calculation' | 'minimal';
 }
 
 /**
@@ -15,8 +14,7 @@ interface LoadingScreenProps {
  */
 export const LoadingScreen: React.FC<LoadingScreenProps> = ({
   message = '載入中...',
-  progress,
-  variant = 'default'
+  progress
 }) => {
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-orange-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">

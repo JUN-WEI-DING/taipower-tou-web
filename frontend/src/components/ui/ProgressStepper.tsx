@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
-import { Check, ChevronRight } from '../icons';
+import { Check } from '../icons';
 
 // ========================================
 // TYPES
@@ -55,7 +55,6 @@ export const ProgressStepper: React.FC<ProgressStepperProps> = ({
     const isActive = index === currentStep;
     const isCompleted = index < currentStep;
     const hasError = steps[index]?.status === 'error';
-    const isPending = index > currentStep;
 
     const baseClasses = cn(
       'flex items-center justify-center rounded-full font-semibold transition-all duration-300 relative z-10',
@@ -396,6 +395,7 @@ export const DotStepper: React.FC<DotStepperProps> = ({
 // HOOK FOR USING STEPPER
 // ========================================
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useStepper = (steps: Omit<Step, 'status'>[]) => {
   const [currentStep, setCurrentStep] = React.useState(0);
 

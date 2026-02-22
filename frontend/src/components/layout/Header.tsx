@@ -3,11 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, Menu, X, Github, ExternalLink } from '../icons';
 import { cn } from '../../lib/utils';
 
-interface HeaderProps {
-  currentStage?: string;
-}
-
-export function Header({ currentStage }: HeaderProps) {
+export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -111,7 +107,7 @@ export function Header({ currentStage }: HeaderProps) {
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-4">
             <motion.a
-              href="https://github.com"
+              href="https://github.com/JUN-WEI-DING/taipower-tou-web"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
@@ -228,7 +224,7 @@ export function Header({ currentStage }: HeaderProps) {
                 {/* Footer Actions */}
                 <div className="p-6 border-t border-border space-y-3">
                   <a
-                    href="https://github.com"
+                    href="https://github.com/JUN-WEI-DING/taipower-tou-web"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-3 w-full px-4 py-3 rounded-lg text-foreground hover:bg-muted transition-all"

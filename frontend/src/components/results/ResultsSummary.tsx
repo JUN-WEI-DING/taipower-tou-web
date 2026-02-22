@@ -1,6 +1,6 @@
 import { Card, CardBody } from '@nextui-org/react';
-import { motion, useSpring, useMotionValue, useTransform } from 'framer-motion';
-import { TrendingUp, Zap, CheckCircle, Sparkles, Trophy, Award } from '../icons';
+import { motion } from 'framer-motion';
+import { TrendingUp, CheckCircle, Sparkles, Trophy, Award } from '../icons';
 import type { PlanCalculationResult } from '../../types';
 import { cn } from '../../lib/utils';
 
@@ -20,14 +20,6 @@ export const ResultsSummary: React.FC<{
   const savingsPercent = hasCurrentPlan && currentPlan.charges.total > 0
     ? (savings / currentPlan.charges.total) * 100
     : 0;
-
-  // Animated counter hook
-  const useAnimatedValue = (value: number, duration = 1.5) => {
-    const motionValue = useMotionValue(0);
-    const spring = useSpring(motionValue, { duration: duration * 1000 });
-    const rounded = useTransform(spring, (latest) => Math.round(latest));
-    return { value: rounded, spring };
-  };
 
   // Determine season from seasonInfo
   const isSummer = bestPlan.seasonInfo.isSummer;

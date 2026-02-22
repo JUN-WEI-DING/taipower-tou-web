@@ -1,5 +1,4 @@
 import { Button, type ButtonProps } from '@nextui-org/react';
-import { Zap } from '../icons';
 import { cn } from '../../lib/utils';
 
 /**

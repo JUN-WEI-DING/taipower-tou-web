@@ -13,6 +13,18 @@ import { motion } from 'framer-motion';
 import type { PlanCalculationResult } from '../../types';
 import { cn } from '../../lib/utils';
 
+// Types for Recharts props
+interface TooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    value: number;
+    payload?: {
+      index?: number;
+    };
+  }>;
+  label?: string;
+}
+
 interface ResultChartProps {
   results: PlanCalculationResult[];
   maxCost?: number;
@@ -48,12 +60,12 @@ const ORANGE_COLORS = [
 ];
 
 // Custom Tooltip Component
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
   if (!active || !payload || !payload.length) return null;
 
   const data = payload[0];
   const value = data.value;
-  const index = data.payload?.index || 0;
+  const index = data.payload?.index ?? 0;
 
   return (
     <motion.div
@@ -77,34 +89,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         </div>
       )}
     </motion.div>
-  );
-};
-
-// Custom Bar Component with Animation
-const AnimatedBar = (props: any) => {
-  const { x, y, width, height, fill, payload } = props;
-
-  return (
-    <g>
-      <defs>
-        <filter id={`glow-${payload?.index || 0}`} x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
-        </filter>
-      </defs>
-      <motion.rect
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        fill={fill}
-        rx={4}
-        initial={{ width: 0 }}
-        animate={{ width: width || 0 }}
-        transition={{ duration: 0.8, delay: (payload?.index || 0) * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="hover:opacity-80 transition-opacity cursor-pointer"
-        style={{ filter: `drop-shadow(0 0 4px ${ORANGE_COLORS[payload?.index || 0]?.glow || 'transparent'})` }}
-      />
-    </g>
   );
 };
 
