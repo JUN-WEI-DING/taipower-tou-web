@@ -24,9 +24,9 @@ export const OCRProgress: React.FC = () => {
       transition={{ duration: 0.4 }}
       className="w-full max-w-md mx-auto"
     >
-      <Card className="shadow-glow border-2 border-primary-300 backdrop-blur-sm bg-white/50">
+      <Card className="shadow-2xl shadow-orange-500/20 border-2 border-orange-300 backdrop-blur-sm bg-white/80 dark:bg-gray-900/80">
         {/* Animated gradient border */}
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-500/20 via-secondary-500/20 to-primary-400/20 opacity-50 animate-gradient-shift bg-[length:200%_100%]" />
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500/20 via-orange-400/20 to-orange-600/20 opacity-60" />
 
         <CardBody className="p-8 relative">
           <div className="text-center space-y-7">
@@ -37,13 +37,13 @@ export const OCRProgress: React.FC = () => {
               transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
             >
               {/* Glow effect */}
-              <div className="absolute inset-0 rounded-full bg-primary-400/30 blur-xl animate-pulse" />
+              <div className="absolute inset-0 rounded-full bg-orange-400/40 blur-2xl animate-pulse" />
 
               {/* Rotating ring */}
-              <div className="absolute inset-2 rounded-full border-2 border-transparent border-t-primary-500/50 border-r-secondary-500/50" />
+              <div className="absolute inset-2 rounded-full border-2 border-transparent border-t-orange-500 border-r-orange-400" />
 
               {/* Icon container */}
-              <div className="relative w-20 h-20 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
+              <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30">
                 <motion.div
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
@@ -56,7 +56,7 @@ export const OCRProgress: React.FC = () => {
               {[0, 120, 240].map((deg, i) => (
                 <motion.div
                   key={i}
-                  className="absolute top-1/2 left-1/2 w-2 h-2 -ml-1 -mt-1 rounded-full bg-secondary-400"
+                  className="absolute top-1/2 left-1/2 w-2.5 h-2.5 -ml-1 -mt-1 rounded-full bg-orange-400 shadow-md shadow-orange-500/50"
                   animate={{
                     rotate: 360,
                     x: [0, Math.cos((deg * Math.PI) / 180) * 50],
@@ -75,14 +75,14 @@ export const OCRProgress: React.FC = () => {
             {/* Text */}
             <div>
               <motion.h3
-                className="text-xl md:text-2xl font-bold text-gray-900 mb-2"
+                className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2"
                 animate={{ opacity: [0.7, 1, 0.7] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 正在識別電費單...
               </motion.h3>
-              <p className="text-sm text-gray-500 flex items-center justify-center gap-2">
-                <Sparkles size={14} className="text-primary-500" />
+              <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2">
+                <Sparkles size={14} className="text-orange-500" />
                 這可能需要幾秒鐘，請稍候
               </p>
             </div>
@@ -90,19 +90,19 @@ export const OCRProgress: React.FC = () => {
             {/* Progress bar */}
             <div className="space-y-3">
               <Progress
-                color="primary"
+                color="warning"
                 value={ocrProgress}
                 className="w-full"
                 size="lg"
                 showValueLabel={true}
                 classNames={{
-                  track: 'h-3 bg-gray-200 border border-gray-300 rounded-full overflow-hidden',
-                  indicator: 'bg-gradient-primary h-full shadow-glow',
-                  label: 'text-sm font-semibold text-primary-600',
+                  track: 'h-3 bg-orange-100 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-800 rounded-full overflow-hidden',
+                  indicator: 'bg-gradient-to-r from-orange-500 to-orange-600 h-full shadow-lg shadow-orange-500/30',
+                  label: 'text-sm font-semibold text-orange-600 dark:text-orange-400',
                 }}
               />
               <motion.div
-                className="flex justify-between text-xs text-gray-400"
+                className="flex justify-between text-xs text-gray-400 dark:text-gray-500"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
@@ -125,7 +125,7 @@ export const OCRProgress: React.FC = () => {
                   initial={{ opacity: 0, x: -15 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: step.delay, duration: 0.4 }}
-                  className="flex items-center gap-3 text-sm text-gray-600 bg-gray-100/50 rounded-lg px-4 py-2.5 border border-gray-200"
+                  className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300 bg-orange-50/50 dark:bg-orange-950/20 rounded-lg px-4 py-2.5 border border-orange-200 dark:border-orange-800"
                 >
                   <motion.span
                     animate={{ scale: [1, 1.2, 1] }}
@@ -140,7 +140,7 @@ export const OCRProgress: React.FC = () => {
                     animate={{ opacity: [0.3, 1, 0.3] }}
                     transition={{ duration: 1.5, repeat: Infinity, delay: idx * 0.3 }}
                   >
-                    <div className="w-2 h-2 rounded-full bg-primary-500" />
+                    <div className="w-2 h-2 rounded-full bg-orange-500 shadow-md shadow-orange-500/50" />
                   </motion.div>
                 </motion.div>
               ))}
