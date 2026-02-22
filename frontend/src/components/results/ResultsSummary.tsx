@@ -29,10 +29,8 @@ export const ResultsSummary: React.FC<{
     return { value: rounded, spring };
   };
 
-  // Determine season
-  const billingPeriod = bestPlan.billingPeriod || { start: new Date(), end: new Date() };
-  const month = billingPeriod.start.getMonth() + 1;
-  const isSummer = month >= 6 && month <= 9;
+  // Determine season from seasonInfo
+  const isSummer = bestPlan.seasonInfo.isSummer;
 
   return (
     <motion.div

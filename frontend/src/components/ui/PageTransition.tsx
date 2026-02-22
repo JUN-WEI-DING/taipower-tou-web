@@ -389,7 +389,7 @@ export const TypingText: React.FC<{
   const [displayText, setDisplayText] = React.useState('');
 
   React.useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    let timeout: ReturnType<typeof setTimeout>;
     let index = 0;
 
     const startTyping = () => {

@@ -109,7 +109,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
                 "font-medium",
                 result.label.accuracy === 'accurate' && "bg-success-100 text-success dark:bg-success-900/30 dark:text-success-400",
                 result.label.accuracy === 'estimated' && "bg-warning-100 text-warning dark:bg-warning-900/30 dark:text-warning-400",
-                result.label.accuracy === 'incomplete' && "bg-danger-100 text-danger dark:bg-danger-900/30 dark:text-danger-400"
+                result.label.accuracy === 'partial_estimated' && "bg-danger-100 text-danger dark:bg-danger-900/30 dark:text-danger-400"
               )}
             >
               {result.label.badge}

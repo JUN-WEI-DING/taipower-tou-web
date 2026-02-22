@@ -248,14 +248,11 @@ export const SavingsCounter: React.FC<{
   size?: AnimatedCounterProps['size'];
   className?: string;
 }> = ({ savings, percentage, size = 'xl', className }) => {
-  const hasSavings = savings > 0;
-
   return (
     <div className={cn('flex items-center gap-3', className)}>
       <CurrencyCounter
         value={savings}
         size={size}
-        variant={hasSavings ? 'green' : 'default'}
         ariaLabel={`Estimated savings of ${savings} dollars`}
       />
       {percentage !== undefined && (

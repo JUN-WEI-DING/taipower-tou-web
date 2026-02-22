@@ -470,5 +470,6 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
         </div>
       </CardBody>
     </Card>
+    </motion.div>
   );
 };
