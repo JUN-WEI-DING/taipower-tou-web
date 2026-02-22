@@ -373,8 +373,10 @@ export class RateCalculator {
     // 計算超過 2000 度的附加費（如適用）
     let surcharge = 0;
     const totalBillableConsumption = finalPeakKwh + finalOffPeakKwh;
-    if (plan.raw?.billing_rules?.over_2000_kwh_surcharge && totalBillableConsumption > 2000) {
-      const surchargeRule = plan.raw.billing_rules.over_2000_kwh_surcharge;
+
+    // 檢查附加費規則（已在 plans.ts 中標準化到 billing_rules）
+    const surchargeRule = plan.billingRules?.over_2000_kwh_surcharge;
+    if (surchargeRule && totalBillableConsumption > surchargeRule.threshold_kwh) {
       const overAmount = totalBillableConsumption - surchargeRule.threshold_kwh;
       surcharge = overAmount * surchargeRule.cost_per_kwh;
     }
@@ -389,10 +391,11 @@ export class RateCalculator {
     };
 
     // 如果有附加費，加入 breakdown
-    if (surcharge > 0) {
+    if (surcharge > 0 && plan.billingRules?.over_2000_kwh_surcharge) {
+      const rule = plan.billingRules.over_2000_kwh_surcharge;
       touBreakdown.push({
-        kwh: totalBillableConsumption - 2000,
-        rate: plan.raw!.billing_rules!.over_2000_kwh_surcharge!.cost_per_kwh,
+        kwh: totalBillableConsumption - rule.threshold_kwh,
+        rate: rule.cost_per_kwh,
         charge: surcharge,
         label: '超過2000度附加費',
       });
@@ -543,8 +546,8 @@ export class RateCalculator {
     // 計算超過 2000 度的附加費（如適用）
     let surcharge = 0;
     const totalBillableConsumption = finalPeakKwh + finalSemiPeakKwh + finalOffPeakKwh;
-    if (plan.raw?.billing_rules?.over_2000_kwh_surcharge && totalBillableConsumption > 2000) {
-      const surchargeRule = plan.raw.billing_rules.over_2000_kwh_surcharge;
+    const surchargeRule = plan.billingRules?.over_2000_kwh_surcharge;
+    if (surchargeRule && totalBillableConsumption > surchargeRule.threshold_kwh) {
       const overAmount = totalBillableConsumption - surchargeRule.threshold_kwh;
       surcharge = overAmount * surchargeRule.cost_per_kwh;
     }
@@ -559,10 +562,10 @@ export class RateCalculator {
     };
 
     // 如果有附加費，加入 breakdown
-    if (surcharge > 0) {
+    if (surcharge > 0 && surchargeRule) {
       touBreakdown.push({
-        kwh: totalBillableConsumption - 2000,
-        rate: plan.raw!.billing_rules!.over_2000_kwh_surcharge!.cost_per_kwh,
+        kwh: totalBillableConsumption - surchargeRule.threshold_kwh,
+        rate: surchargeRule.cost_per_kwh,
         charge: surcharge,
         label: '超過2000度附加費',
       });

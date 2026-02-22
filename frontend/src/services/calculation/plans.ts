@@ -449,12 +449,13 @@ export class PlansLoader {
 
     // 根據規則計算最低用電
     if (contractCapacity <= matchingRule.ampere_threshold!) {
+      // 未超過門檻值，使用基本費率
       return contractCapacity * matchingRule.kwh_per_ampere;
     } else {
-      // 超過門檻的部分使用不同的費率
+      // 超過門檻值：門檻內部分用基本費率，超過部分用較高費率
       const thresholdPart = matchingRule.ampere_threshold! * matchingRule.kwh_per_ampere;
-      const overPart = (contractCapacity - matchingRule.ampere_threshold!) *
-                       (matchingRule.kwh_per_ampere_over || matchingRule.kwh_per_ampere);
+      const overAmperes = contractCapacity - matchingRule.ampere_threshold!;
+      const overPart = overAmperes * (matchingRule.kwh_per_ampere_over || matchingRule.kwh_per_ampere);
       return thresholdPart + overPart;
     }
   }
