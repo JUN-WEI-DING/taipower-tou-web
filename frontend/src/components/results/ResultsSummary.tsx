@@ -23,49 +23,61 @@ export const ResultsSummary: React.FC<{
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="bg-gradient-to-br from-primary/10 to-secondary/10 border-2 border-primary">
-        <CardBody className="p-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+      <Card className="bg-gradient-energy border-2 border-energy-blue shadow-energy overflow-hidden">
+        <CardBody className="p-6 md:p-8">
+          {/* Decorative background elements */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+          <div className="relative flex flex-col md:flex-row items-center justify-between gap-8">
             {/* Left: Best plan info */}
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                  <Zap className="text-white" size={24} />
+            <div className="flex-1 space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-2xl bg-white shadow-energy flex items-center justify-center">
+                  <Zap className="text-energy-blue" size={32} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground">推薦方案</h3>
-                  <p className="text-2xl font-bold text-primary">{bestPlan.planName}</p>
+                  <h3 className="text-lg font-semibold text-white/80">推薦方案</h3>
+                  <p className="text-2xl md:text-3xl font-bold text-white">{bestPlan.planName}</p>
                 </div>
               </div>
 
               {bestPlan.label.accuracy === 'estimated' && (
-                <p className="text-sm text-default-500 mt-2">
-                  * 基於估算用電習慣，實際電費可能有所不同
-                </p>
+                <div className="inline-flex items-start gap-2 px-4 py-3 bg-white/10 rounded-xl backdrop-blur-sm">
+                  <CheckCircle size={18} className="text-white/80 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-white/90">
+                    基於估算用電習慣，實際電費可能有所不同
+                  </p>
+                </div>
               )}
             </div>
 
             {/* Right: Savings info */}
             <div className="flex-shrink-0 text-center">
-              <p className="text-sm text-default-500 mb-1">相比目前方案</p>
+              <p className="text-sm text-white/70 mb-2">相比目前方案</p>
               {savings > 0 ? (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-center gap-2">
-                    <TrendingUp className="text-success" size={20} />
-                    <span className="text-4xl font-bold text-success">
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.3, type: 'spring' }}
+                  className="space-y-4"
+                >
+                  <div className="flex items-center justify-center gap-3">
+                    <TrendingUp className="text-white" size={28} />
+                    <span className="text-5xl md:text-6xl font-bold text-white">
                       ${savings.toFixed(0)}
                     </span>
                   </div>
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-success/20 rounded-full">
-                    <CheckCircle size={16} className="text-success" />
-                    <span className="text-success font-semibold">
+                  <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/20 rounded-full backdrop-blur-sm">
+                    <CheckCircle size={20} className="text-white" />
+                    <span className="text-xl font-bold text-white">
                       節省 {savingsPercent.toFixed(1)}%
                     </span>
                   </div>
-                </div>
+                </motion.div>
               ) : (
-                <div className="text-center">
-                  <p className="text-lg text-default-500">
+                <div className="text-center py-4">
+                  <p className="text-xl text-white/90 font-medium">
                     目前已是最佳方案
                   </p>
                 </div>
