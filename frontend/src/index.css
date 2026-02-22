@@ -285,7 +285,7 @@
 
   /* Enhanced focus states for better keyboard navigation */
   *:focus-visible {
-    outline: 3px solid #f97316;
+    outline: 3px solid hsl(var(--primary));
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -293,7 +293,7 @@
   /* Higher contrast focus for dark mode */
   @media (prefers-color-scheme: dark) {
     *:focus-visible {
-      outline-color: #fb923c;
+      outline-color: hsl(var(--primary));
       outline-width: 3px;
     }
   }
@@ -305,13 +305,13 @@
     top: -100px;
     z-index: 100;
     padding: 1rem 1.5rem;
-    background: linear-gradient(135deg, #f97316, #ea580c);
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(20.5 90.2% 48.2%));
     color: white;
     font-weight: 700;
     text-decoration: none;
     border-radius: 0 0 8px 8px;
     transition: top 0.3s ease;
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+    box-shadow: 0 4px 12px rgb(var(--orange-500-rgb) / 0.3);
   }
 
   .skip-link:focus {
@@ -481,13 +481,13 @@
 
   /* Warning message accessibility */
   .warning-message {
-    color: #ea580c;
+    color: hsl(var(--primary));
     font-weight: 500;
   }
 
   @media (prefers-color-scheme: dark) {
     .warning-message {
-      color: #fdba74;
+      color: hsl(var(--primary));
     }
   }
 
@@ -504,7 +504,7 @@
   /* Visible focus indicators for touch devices */
   @media (hover: none) {
     *:focus {
-      outline: 3px solid #f97316;
+      outline: 3px solid hsl(var(--primary));
       outline-offset: 3px;
       border-radius: 4px;
     }
@@ -640,7 +640,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, #f97316, #ea580c);
+    background: linear-gradient(90deg, hsl(var(--primary)), hsl(20.5 90.2% 48.2%));
     border-radius: inherit;
   }
 
@@ -650,7 +650,7 @@
   }
 
   [role="switch"][aria-checked="true"] {
-    background: linear-gradient(135deg, #f97316, #ea580c);
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(20.5 90.2% 48.2%));
   }
 
   @media (prefers-color-scheme: dark) {
@@ -679,14 +679,14 @@
   }
 
   [role="tab"][aria-selected="true"] {
-    border-bottom-color: #f97316;
-    color: #f97316;
+    border-bottom-color: hsl(var(--primary));
+    color: hsl(var(--primary));
     font-weight: 600;
   }
 
   [role="tab"]:hover:not([aria-selected="true"]) {
-    border-bottom-color: #d6d3d1;
-    color: #1c1917;
+    border-bottom-color: hsl(var(--neutral-300));
+    color: hsl(var(--foreground));
   }
 
   @media (prefers-color-scheme: dark) {

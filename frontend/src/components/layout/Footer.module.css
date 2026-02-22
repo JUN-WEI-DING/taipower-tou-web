@@ -1,7 +1,7 @@
 /* Footer Component Styles */
 .footer {
-  background: var(--neutral-0);
-  border-top: 1px solid var(--neutral-200);
+  background: hsl(var(--background));
+  border-top: 1px solid hsl(var(--border));
   margin-top: auto;
   padding: 48px 0 24px;
 }
@@ -36,7 +36,7 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(20.5 90.2% 48.2%) 100%);
   color: white;
   border-radius: var(--radius, 0.75rem);
 }
@@ -48,12 +48,12 @@
 .footer-brand-text {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--neutral-900);
+  color: hsl(var(--foreground));
 }
 
 .footer-description {
   font-size: 0.875rem;
-  color: var(--neutral-600);
+  color: hsl(var(--muted-foreground));
   line-height: 1.6;
   margin: 0;
 }
@@ -67,7 +67,7 @@
 .footer-section h4 {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--neutral-900);
+  color: hsl(var(--foreground));
   margin: 0 0 12px 0;
 }
 
@@ -83,13 +83,13 @@
 
 .footer-list a {
   font-size: 0.875rem;
-  color: var(--neutral-600);
+  color: hsl(var(--muted-foreground));
   text-decoration: none;
   transition: color 150ms ease;
 }
 
 .footer-list a:hover {
-  color: var(--primary-600);
+  color: hsl(var(--primary));
 }
 
 .footer-bottom {
@@ -97,7 +97,7 @@
   flex-direction: column;
   gap: 8px;
   padding-top: 24px;
-  border-top: 1px solid var(--neutral-200);
+  border-top: 1px solid hsl(var(--border));
 }
 
 @media (min-width: 640px) {
@@ -111,6 +111,6 @@
 .footer-copyright,
 .footer-note {
   font-size: 0.75rem;
-  color: var(--neutral-500);
+  color: hsl(var(--muted-foreground));
   margin: 0;
 }
