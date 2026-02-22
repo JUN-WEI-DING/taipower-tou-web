@@ -200,7 +200,7 @@ export const HeroSection: React.FC<{
           ].map((feature, idx) => (
             <motion.div
               key={idx}
-              className="p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-orange-100 hover:shadow-xl hover:border-orange-200 transition-shadow duration-300 transition-border-color duration-300 group"
+              className="p-6 bg-white/60 dark:bg-gray-900/60 backdrop-blur-md rounded-xl border border-orange-100/80 dark:border-orange-900/50 hover:shadow-xl hover:border-orange-200 dark:hover:border-orange-700/50 transition-shadow duration-300 transition-border-color duration-300 group"
               whileHover={{ y: -8 }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -287,7 +287,7 @@ export const HeroSection: React.FC<{
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-3xl p-8 md:p-12 border border-orange-100 relative z-10"
+          className="bg-gradient-to-br from-orange-50/80 via-amber-50/60 to-orange-50/40 dark:from-orange-950/40 dark:via-amber-950/30 dark:to-orange-950/20 rounded-3xl p-8 md:p-12 border border-orange-200/50 dark:border-orange-800/50 relative z-10 backdrop-blur-sm"
         >
           <div className="grid sm:grid-cols-3 gap-8 text-center">
             {[

@@ -429,20 +429,34 @@ h3 {
 /* Page background gradient with animated feel */
 .bg-gradient-page {
   background:
-    radial-gradient(ellipse 100% 60% at 50% -15%, rgb(var(--orange-400-rgb) / 0.12), transparent 70%),
-    radial-gradient(ellipse 70% 50% at 85% 40%, rgb(var(--orange-500-rgb) / 0.08), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 15% 70%, rgb(var(--orange-300-rgb) / 0.06), transparent 50%),
-    linear-gradient(180deg, rgb(var(--orange-50-rgb) / 0.4) 0%, rgb(var(--orange-50-rgb) / 0.2) 30%, hsl(var(--background)) 60%, hsl(var(--background)) 100%);
+    radial-gradient(ellipse 100% 60% at 50% -15%, rgb(var(--orange-400-rgb) / 0.15), transparent 70%),
+    radial-gradient(ellipse 80% 50% at 85% 30%, rgb(var(--orange-500-rgb) / 0.1), transparent 60%),
+    radial-gradient(ellipse 70% 40% at 15% 60%, rgb(var(--orange-300-rgb) / 0.08), transparent 50%),
+    radial-gradient(ellipse 120% 80% at 50% 80%, rgb(var(--orange-50-rgb) / 0.5), transparent 70%),
+    linear-gradient(180deg,
+      rgb(var(--orange-50-rgb) / 0.5) 0%,
+      rgb(var(--orange-50-rgb) / 0.3) 30%,
+      rgb(var(--orange-50-rgb) / 0.2) 50%,
+      rgb(var(--orange-50-rgb) / 0.15) 70%,
+      hsl(var(--background)) 100%);
   min-height: 100vh;
+  background-attachment: fixed;
 }
 
 /* Dark mode override for page background */
 .dark .bg-gradient-page {
   background:
-    radial-gradient(ellipse 100% 60% at 50% -15%, rgb(var(--orange-400-rgb) / 0.08), transparent 70%),
-    radial-gradient(ellipse 70% 50% at 85% 40%, rgb(var(--orange-500-rgb) / 0.05), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 15% 70%, rgb(var(--orange-300-rgb) / 0.04), transparent 50%),
-    linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background)) 100%);
+    radial-gradient(ellipse 100% 60% at 50% -15%, rgb(var(--orange-400-rgb) / 0.1), transparent 70%),
+    radial-gradient(ellipse 80% 50% at 85% 30%, rgb(var(--orange-500-rgb) / 0.06), transparent 60%),
+    radial-gradient(ellipse 70% 40% at 15% 60%, rgb(var(--orange-300-rgb) / 0.05), transparent 50%),
+    radial-gradient(ellipse 120% 80% at 50% 80%, rgb(var(--orange-900-rgb) / 0.15), transparent 70%),
+    linear-gradient(180deg,
+      hsl(var(--background)) 0%,
+      rgb(var(--orange-950-rgb) / 0.1) 30%,
+      hsl(var(--background)) 50%,
+      rgb(var(--orange-950-rgb) / 0.05) 70%,
+      hsl(var(--background)) 100%);
+  background-attachment: fixed;
 }
 
 /* Grid pattern overlay */
@@ -706,6 +720,53 @@ h3 {
   .heroDescription {
     color: #333 !important;
   }
+}
+
+/* ========================================
+   SECTION BACKGROUND STYLES
+   ======================================== */
+
+/* Subtle gradient background for content sections */
+.bg-section {
+  background: linear-gradient(180deg,
+    rgb(var(--orange-50-rgb) / 0.4) 0%,
+    rgb(var(--orange-50-rgb) / 0.2) 50%,
+    rgb(var(--orange-50-rgb) / 0.1) 100%);
+  position: relative;
+}
+
+.dark .bg-section {
+  background: linear-gradient(180deg,
+    rgb(var(--orange-950-rgb) / 0.3) 0%,
+    rgb(var(--orange-950-rgb) / 0.2) 50%,
+    rgb(var(--orange-950-rgb) / 0.1) 100%);
+}
+
+/* Glass morphism card effect */
+.card-glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(251, 146, 60, 0.15);
+}
+
+.dark .card-glass {
+  background: rgba(17, 24, 39, 0.85);
+  border-color: rgba(251, 146, 60, 0.2);
+}
+
+/* Content wrapper with subtle gradient */
+.content-gradient-wrapper {
+  position: relative;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgb(var(--orange-100-rgb) / 0.3), transparent 60%),
+    linear-gradient(180deg, rgb(var(--orange-50-rgb) / 0.2) 0%, transparent 100%);
+}
+
+.dark .content-gradient-wrapper {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgb(var(--orange-900-rgb) / 0.2), transparent 60%),
+    linear-gradient(180deg, rgb(var(--orange-950-rgb) / 0.15) 0%, transparent 100%);
 }
 
 /* Reduced motion support for accessibility */
