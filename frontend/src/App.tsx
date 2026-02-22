@@ -9,6 +9,7 @@ import { BillDataEditor } from './components/confirm/BillDataEditor';
 import { BillTypeInputForm } from './components/input';
 import { PlanList } from './components/results/PlanList';
 import { ResultChart } from './components/results/ResultChart';
+import { ResultsSummary } from './components/results/ResultsSummary';
 import { HeroSection } from './components/landing';
 import { PlansLoader } from './services/calculation/plans';
 import { RateCalculator } from './services/calculation/RateCalculator';
@@ -362,6 +363,9 @@ function App() {
                 </div>
               )}
             </div>
+
+            {/* 結果摘要 */}
+            <ResultsSummary results={results} />
 
             {/* 圖表 */}
             <div className="bg-content1 rounded-xl shadow-sm p-6 border border-divider">
