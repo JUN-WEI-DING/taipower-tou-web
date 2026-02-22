@@ -9,114 +9,233 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
+import { motion } from 'framer-motion';
 import type { PlanCalculationResult } from '../../types';
+import { cn } from '../../lib/utils';
 
 interface ResultChartProps {
   results: PlanCalculationResult[];
   maxCost?: number;
 }
 
-// Ocean Depths Theme Colors - aligned with ocean-theme.css
-const OCEAN_COLORS = [
-  '#2d8b8b', // teal (primary) - rank 1
-  '#4cc9f0', // aqua - rank 2
-  '#a8dadc', // seafoam - rank 3
-  '#1b263b', // ocean - rank 4
-  '#ff6b6b', // coral (highlight) - rank 5
+// Orange Theme Colors - aligned with brand
+const ORANGE_COLORS = [
+  {
+    fill: 'url(#gradient-rank1)',
+    stroke: '#ea580c',
+    glow: 'rgba(234, 88, 12, 0.3)',
+  },
+  {
+    fill: 'url(#gradient-rank2)',
+    stroke: '#f97316',
+    glow: 'rgba(249, 115, 22, 0.2)',
+  },
+  {
+    fill: 'url(#gradient-rank3)',
+    stroke: '#fb923c',
+    glow: 'rgba(251, 146, 60, 0.15)',
+  },
+  {
+    fill: '#94a3b8',
+    stroke: '#64748b',
+    glow: 'rgba(100, 116, 139, 0.1)',
+  },
+  {
+    fill: '#cbd5e1',
+    stroke: '#94a3b8',
+    glow: 'rgba(148, 163, 184, 0.1)',
+  },
 ];
 
+// Custom Tooltip Component
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload || !payload.length) return null;
+
+  const data = payload[0];
+  const value = data.value;
+  const index = data.payload?.index || 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-orange-200 dark:border-orange-800 p-4 min-w-[180px]"
+    >
+      <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">{label}</p>
+      <div className="flex items-center justify-between gap-4">
+        <span className="text-xs text-gray-500 dark:text-gray-400">每月電費</span>
+        <span className={cn(
+          "text-lg font-bold",
+          index === 0 ? "text-green-600 dark:text-green-400" : "text-orange-600 dark:text-orange-400"
+        )}>
+          ${Math.round(value).toLocaleString()}
+        </span>
+      </div>
+      {index === 0 && (
+        <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+          <span className="text-xs font-medium text-green-600 dark:text-green-400">🏆 推薦方案</span>
+        </div>
+      )}
+    </motion.div>
+  );
+};
+
+// Custom Bar Component with Animation
+const AnimatedBar = (props: any) => {
+  const { x, y, width, height, fill, payload } = props;
+
+  return (
+    <g>
+      <defs>
+        <filter id={`glow-${payload?.index || 0}`} x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+        </filter>
+      </defs>
+      <motion.rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        fill={fill}
+        rx={4}
+        initial={{ width: 0 }}
+        animate={{ width: width || 0 }}
+        transition={{ duration: 0.8, delay: (payload?.index || 0) * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="hover:opacity-80 transition-opacity cursor-pointer"
+        style={{ filter: `drop-shadow(0 0 4px ${ORANGE_COLORS[payload?.index || 0]?.glow || 'transparent'})` }}
+      />
+    </g>
+  );
+};
+
 export const ResultChart: React.FC<ResultChartProps> = ({ results, maxCost }) => {
-  // 空狀態處理
+  // Empty state handling
   if (!results || results.length === 0) {
     return (
-      <div className="w-full h-80 flex items-center justify-center">
-        <div className="text-center text-gray-500">
-          <p className="text-lg">尚無計算結果</p>
+      <div className="w-full h-80 flex items-center justify-center" role="img" aria-label="尚無計算結果圖表">
+        <div className="text-center text-muted-foreground">
+          <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <p className="text-lg font-medium">尚無計算結果</p>
           <p className="text-sm mt-1">請先上傳電費單並進行計算</p>
         </div>
       </div>
     );
   }
 
-  // 驗證結果有效性
+  // Validate results
   const validResults = results.filter(r => r && r.charges && typeof r.charges.total === 'number' && r.charges.total >= 0);
 
   if (validResults.length === 0) {
     return (
-      <div className="w-full h-80 flex items-center justify-center">
-        <div className="text-center text-gray-500">
-          <p className="text-lg">計算結果無效</p>
+      <div className="w-full h-80 flex items-center justify-center" role="img" aria-label="計算結果無效圖表">
+        <div className="text-center text-muted-foreground">
+          <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <p className="text-lg font-medium">計算結果無效</p>
           <p className="text-sm mt-1">請重新輸入資料並計算</p>
         </div>
       </div>
     );
   }
 
-  // 取得前 5 名
+  // Get top 5
   const topResults = validResults.slice(0, 5);
 
-  // 設定 Y 軸最大值（取最高的電費的 1.1 倍，確保有足夠空間顯示）
+  // Set Y axis max
   const maxTotal = Math.max(...topResults.map(r => r.charges.total));
   const yAxisMax = maxCost || (maxTotal * 1.1);
 
   const data = topResults.map((result, index) => ({
-    name: result.planName?.length > 10
-      ? result.planName.substring(0, 10) + '...'
+    name: result.planName?.length > 12
+      ? result.planName.substring(0, 12) + '...'
       : (result.planName || `方案 ${index + 1}`),
     cost: result.charges.total || 0,
-    fill: OCEAN_COLORS[index % OCEAN_COLORS.length],
+    color: ORANGE_COLORS[index % ORANGE_COLORS.length],
     planId: result.planId || `plan-${index}`,
+    index,
   }));
 
   return (
-    <div className="w-full" style={{ height: '320px' }}>
-      <ResponsiveContainer width="100%" height={320}>
-        <BarChart data={data} layout="vertical" barCategoryGap={8}>
+    <div className="w-full" style={{ height: '360px' }} role="img" aria-label="電費方案比較圖表">
+      {/* SVG Gradients Definition */}
+      <svg width="0" height="0" className="absolute">
+        <defs>
+          <linearGradient id="gradient-rank1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#ea580c" />
+            <stop offset="100%" stopColor="#f97316" />
+          </linearGradient>
+          <linearGradient id="gradient-rank2" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#f97316" />
+            <stop offset="100%" stopColor="#fb923c" />
+          </linearGradient>
+          <linearGradient id="gradient-rank3" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#fb923c" />
+            <stop offset="100%" stopColor="#fdba74" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <ResponsiveContainer width="100%" height={360}>
+        <BarChart
+          data={data}
+          layout="vertical"
+          barCategoryGap={12}
+          margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+        >
           <CartesianGrid
-            strokeDasharray="3 3"
-            stroke="#d1eae8"
-            strokeOpacity={0.5}
+            strokeDasharray="4 4"
+            stroke="#e2e8f0"
+            strokeOpacity={0.6}
+            horizontal={true}
+            vertical={false}
           />
           <XAxis
             type="number"
             dataKey="cost"
             domain={[0, yAxisMax]}
             tickFormatter={(value) => `$${Math.round(value)}`}
-            tick={{ fontSize: 12 }}
+            tick={{ fontSize: 12, fill: '#64748b' }}
             tickLine={false}
-            axisLine={false}
+            axisLine={{ stroke: '#e2e8f0', strokeWidth: 1 }}
           />
           <YAxis
             type="category"
             dataKey="name"
-            tick={{ fontSize: 12 }}
+            tick={{ fontSize: 13, fill: '#475569', fontWeight: 500 }}
             tickLine={false}
             axisLine={false}
-            width={120}
+            width={130}
           />
-          <Tooltip
-            formatter={(value: number | undefined) => {
-              if (typeof value === 'number' && !isNaN(value)) {
-                return `$${value.toFixed(0)}`;
-              }
-              return '$0';
-            }}
-            contentStyle={{
-              backgroundColor: '#1a2332',
-              color: '#f1faee',
-              borderRadius: '8px',
-              padding: '12px',
-              border: '1px solid #2d8b8b',
-              fontFamily: 'inherit',
-            }}
-          />
-          <Bar dataKey="cost" radius={[0, 4, 4, 0]}>
+          <Tooltip content={<CustomTooltip />} cursor={false} />
+          <Bar
+            dataKey="cost"
+            radius={[0, 6, 6, 0]}
+            className="outline-none focus:outline-none"
+          >
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.fill} />
+              <Cell key={`cell-${index}`} fill={entry.color.fill} />
             ))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
+
+      {/* Legend */}
+      <div className="flex justify-center gap-6 mt-4 flex-wrap">
+        {data.map((entry, index) => (
+          <div key={`legend-${index}`} className="flex items-center gap-2">
+            <div
+              className="w-3 h-3 rounded-sm"
+              style={{ backgroundColor: entry.color.fill }}
+            />
+            <span className="text-xs text-muted-foreground">
+              {index === 0 ? '推薦' : `#${index + 1}`}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
