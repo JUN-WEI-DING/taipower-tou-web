@@ -96,7 +96,7 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
           你的電費單沒有時段用電資料，我們需要估算各時段的用電分配
         </p>
         <div className={`inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full text-sm font-bold shadow-sm ${
-          season === 'summer' ? 'bg-danger-100 text-danger border-2 border-danger-200' : 'bg-energy-blue/10 text-energy-blue border-2 border-energy-blue/20'
+          season === 'summer' ? 'bg-orange-100 text-orange-700 border-2 border-orange-300' : 'bg-blue-100 text-blue-700 border-2 border-blue-300'
         }`}>
           {season === 'summer' ? '🌞 夏季費率 (6-9月)' : '❄️ 非夏季費率 (10-5月)'}
         </div>
@@ -116,8 +116,8 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
               isPressable
               className={`transition-all duration-300 cursor-pointer ${
                 selectedHabit === habit.mode
-                  ? 'border-2 border-energy-blue shadow-energy bg-gradient-to-br from-energy-blue/5 to-transparent'
-                  : 'border-2 border-divider hover:border-energy-blue/50 hover:shadow-md'
+                  ? 'border-2 border-orange-500 shadow-lg shadow-orange-500/20 bg-gradient-to-br from-orange-50 to-transparent dark:from-orange-950/20'
+                  : 'border-2 border-divider hover:border-orange-300 dark:hover:border-orange-700 hover:shadow-md'
               }`}
               onPress={() => setSelectedHabit(habit.mode)}
             >
@@ -139,7 +139,7 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
                       <ul className="space-y-2">
                         {UsageEstimator.getTypicalDay(habit.mode).map((line, i) => (
                           <li key={i} className="text-sm text-default-600 flex items-start gap-2">
-                            <span className="text-energy-blue mt-0.5 font-bold">•</span>
+                            <span className="text-orange-600 dark:text-orange-400 mt-0.5 font-bold">•</span>
                             <span>{line}</span>
                           </li>
                         ))}
@@ -307,7 +307,7 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
           isDisabled={!estimatedBreakdown}
           color="primary"
           size="lg"
-          className="h-14 text-base font-semibold shadow-energy hover:shadow-energy-lg transition-all"
+          className="h-14 text-base font-semibold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transition-all"
         >
           使用此估算結果繼續
         </Button>
