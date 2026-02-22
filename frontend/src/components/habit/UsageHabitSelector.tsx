@@ -82,63 +82,64 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
   const isValidCustom = percentSum === 100;
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-6">
+    <div className="w-full max-w-4xl mx-auto space-y-8">
       {/* 標題 */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center space-y-2"
+        className="text-center space-y-3"
       >
-        <h3 className="text-xl font-bold text-foreground">
+        <h3 className="text-2xl font-bold text-foreground">
           選擇最像你家的用電習慣
         </h3>
-        <p className="text-default-500">
+        <p className="text-default-600 text-base">
           你的電費單沒有時段用電資料，我們需要估算各時段的用電分配
         </p>
-        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
-          season === 'summer' ? 'bg-danger-100 text-danger border border-danger-200' : 'bg-primary-100 text-primary border border-primary-200'
+        <div className={`inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full text-sm font-bold shadow-sm ${
+          season === 'summer' ? 'bg-danger-100 text-danger border-2 border-danger-200' : 'bg-energy-blue/10 text-energy-blue border-2 border-energy-blue/20'
         }`}>
           {season === 'summer' ? '🌞 夏季費率 (6-9月)' : '❄️ 非夏季費率 (10-5月)'}
         </div>
       </motion.div>
 
       {/* 用電習慣選項 */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2">
         {habits.map((habit, index) => (
           <motion.div
             key={habit.mode}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.05 }}
+            whileHover={{ y: -2 }}
           >
             <Card
               isPressable
-              className={`transition-all duration-300 cursor-pointer hover:shadow-lg ${
+              className={`transition-all duration-300 cursor-pointer ${
                 selectedHabit === habit.mode
-                  ? 'border-2 border-primary bg-primary/50 shadow-md'
-                  : 'border-2 border-divider hover:border-primary/50'
+                  ? 'border-2 border-energy-blue shadow-energy bg-gradient-to-br from-energy-blue/5 to-transparent'
+                  : 'border-2 border-divider hover:border-energy-blue/50 hover:shadow-md'
               }`}
               onPress={() => setSelectedHabit(habit.mode)}
             >
-              <CardBody className="p-4">
+              <CardBody className="p-5">
                 {/* Emoji + 標題 */}
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-4xl">{habit.emoji}</span>
+                <div className="flex items-center gap-4 mb-4">
+                  <span className="text-5xl">{habit.emoji}</span>
                   <div>
-                    <h4 className="font-bold text-lg text-foreground">{habit.description}</h4>
-                    <p className="text-sm text-default-500">{habit.whoIsItFor}</p>
+                    <h4 className="font-bold text-xl text-foreground">{habit.description}</h4>
+                    <p className="text-sm text-default-500 mt-1">{habit.whoIsItFor}</p>
                   </div>
                 </div>
 
                 {/* 典型的一天 */}
-                <Card className="bg-default-50 mb-3">
-                  <CardBody className="p-3">
-                    <p className="font-medium text-foreground text-sm mb-2">典型的一天：</p>
+                <Card className={`mb-4 ${selectedHabit === habit.mode ? 'bg-default-100' : 'bg-default-50'}`}>
+                  <CardBody className="p-4">
+                    <p className="font-semibold text-foreground text-sm mb-3">典型的一天：</p>
                     {selectedHabit === habit.mode ? (
-                      <ul className="space-y-1">
+                      <ul className="space-y-2">
                         {UsageEstimator.getTypicalDay(habit.mode).map((line, i) => (
-                          <li key={i} className="text-sm text-default-500 flex items-start gap-2">
-                            <span className="text-primary mt-0.5">•</span>
+                          <li key={i} className="text-sm text-default-600 flex items-start gap-2">
+                            <span className="text-energy-blue mt-0.5 font-bold">•</span>
                             <span>{line}</span>
                           </li>
                         ))}
@@ -158,9 +159,9 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
                   >
                     {habit.mode === 'custom' ? (
                       /* 自訂比例輸入 */
-                      <div className="space-y-3">
-                        <p className="font-medium text-foreground text-sm">設定你的用電比例：</p>
-                        <div className="grid grid-cols-3 gap-2">
+                      <div className="space-y-4">
+                        <p className="font-semibold text-foreground">設定你的用電比例：</p>
+                        <div className="grid grid-cols-3 gap-3">
                           <Input
                             type="number"
                             label="傍晚晚間"
@@ -173,8 +174,8 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
                               setCustomPercents({ ...customPercents, peakOnPeak: Math.min(100, Math.max(0, val)) });
                             }}
                             classNames={{
-                              input: 'text-center font-bold text-danger',
-                              label: 'text-xs text-danger',
+                              input: 'text-center font-bold text-danger text-lg',
+                              label: 'text-xs text-danger font-semibold',
                             }}
                           />
                           <Input
@@ -189,8 +190,8 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
                               setCustomPercents({ ...customPercents, semiPeak: Math.min(100, Math.max(0, val)) });
                             }}
                             classNames={{
-                              input: 'text-center font-bold text-warning',
-                              label: 'text-xs text-warning',
+                              input: 'text-center font-bold text-warning text-lg',
+                              label: 'text-xs text-warning font-semibold',
                             }}
                           />
                           <Input
@@ -205,31 +206,38 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
                               setCustomPercents({ ...customPercents, offPeak: Math.min(100, Math.max(0, val)) });
                             }}
                             classNames={{
-                              input: 'text-center font-bold text-success',
-                              label: 'text-xs text-success',
+                              input: 'text-center font-bold text-success text-lg',
+                              label: 'text-xs text-success font-semibold',
                             }}
                           />
                         </div>
                         {!isValidCustom && (
-                          <div className="flex items-center gap-2 p-2 bg-warning-50 rounded-lg">
-                            <Info size={16} className="text-warning flex-shrink-0" />
-                            <p className="text-warning text-xs font-medium">
+                          <motion.div
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex items-center gap-2 p-3 bg-warning-50 rounded-xl border border-warning-200"
+                          >
+                            <Info size={18} className="text-warning flex-shrink-0" />
+                            <p className="text-warning text-sm font-semibold">
                               比例總和必須是 100%（目前：{percentSum}%）
                             </p>
-                          </div>
+                          </motion.div>
                         )}
                         {isValidCustom && estimatedBreakdown && (
                           <div className="text-sm">
-                            <p className="font-medium text-foreground mb-2">預估度數：</p>
-                            <div className="grid grid-cols-3 gap-2">
-                              <div className="text-center p-2 bg-danger/10 rounded-lg">
-                                <div className="text-danger font-bold">{estimatedBreakdown.peakOnPeak} 度</div>
+                            <p className="font-semibold text-foreground mb-3">預估度數：</p>
+                            <div className="grid grid-cols-3 gap-3">
+                              <div className="text-center p-3 bg-danger/10 rounded-xl border border-danger/20">
+                                <div className="text-danger font-bold text-lg">{estimatedBreakdown.peakOnPeak}</div>
+                                <div className="text-default-500 text-xs mt-1">度</div>
                               </div>
-                              <div className="text-center p-2 bg-warning/10 rounded-lg">
-                                <div className="text-warning font-bold">{estimatedBreakdown.semiPeak} 度</div>
+                              <div className="text-center p-3 bg-warning/10 rounded-xl border border-warning/20">
+                                <div className="text-warning font-bold text-lg">{estimatedBreakdown.semiPeak}</div>
+                                <div className="text-default-500 text-xs mt-1">度</div>
                               </div>
-                              <div className="text-center p-2 bg-success/10 rounded-lg">
-                                <div className="text-success font-bold">{estimatedBreakdown.offPeak} 度</div>
+                              <div className="text-center p-3 bg-success/10 rounded-xl border border-success/20">
+                                <div className="text-success font-bold text-lg">{estimatedBreakdown.offPeak}</div>
+                                <div className="text-default-500 text-xs mt-1">度</div>
                               </div>
                             </div>
                           </div>
@@ -237,45 +245,45 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
                       </div>
                     ) : estimatedBreakdown ? (
                       /* 預設模式的預估分配顯示 */
-                      <div className="text-sm space-y-2">
-                        <p className="font-medium text-foreground">預估分配：</p>
-                        <div className="grid grid-cols-3 gap-2">
-                          <div className="text-center p-2 bg-danger/10 rounded-lg">
-                            <div className="text-danger font-bold text-lg">{estimatedBreakdown.peakOnPeak}</div>
-                            <div className="text-default-500 text-xs">度</div>
-                            <div className="text-default-400 text-xs mt-1">傍晚晚間</div>
+                      <div className="text-sm space-y-3">
+                        <p className="font-semibold text-foreground">預估分配：</p>
+                        <div className="grid grid-cols-3 gap-3">
+                          <div className="text-center p-4 bg-danger/5 rounded-xl border-2 border-danger/20 hover:border-danger/30 transition-colors">
+                            <div className="text-danger font-bold text-xl">{estimatedBreakdown.peakOnPeak}</div>
+                            <div className="text-default-500 text-xs mt-1">度</div>
+                            <div className="text-default-400 text-xs mt-2">傍晚晚間</div>
                           </div>
-                          <div className="text-center p-2 bg-warning/10 rounded-lg">
-                            <div className="text-warning font-bold text-lg">{estimatedBreakdown.semiPeak}</div>
-                            <div className="text-default-500 text-xs">度</div>
-                            <div className="text-default-400 text-xs mt-1">部分時段</div>
+                          <div className="text-center p-4 bg-warning/5 rounded-xl border-2 border-warning/20 hover:border-warning/30 transition-colors">
+                            <div className="text-warning font-bold text-xl">{estimatedBreakdown.semiPeak}</div>
+                            <div className="text-default-500 text-xs mt-1">度</div>
+                            <div className="text-default-400 text-xs mt-2">部分時段</div>
                           </div>
-                          <div className="text-center p-2 bg-success/10 rounded-lg">
-                            <div className="text-success font-bold text-lg">{estimatedBreakdown.offPeak}</div>
-                            <div className="text-default-500 text-xs">度</div>
-                            <div className="text-default-400 text-xs mt-1">深夜凌晨</div>
+                          <div className="text-center p-4 bg-success/5 rounded-xl border-2 border-success/20 hover:border-success/30 transition-colors">
+                            <div className="text-success font-bold text-xl">{estimatedBreakdown.offPeak}</div>
+                            <div className="text-default-500 text-xs mt-1">度</div>
+                            <div className="text-default-400 text-xs mt-2">深夜凌晨</div>
                           </div>
                         </div>
 
                         {/* 視覺化長條圖 */}
-                        <div className="h-3 rounded-full overflow-hidden flex mt-3">
+                        <div className="h-4 rounded-full overflow-hidden flex shadow-sm mt-4">
                           <motion.div
-                            className="bg-danger-500"
+                            className="bg-danger"
                             initial={{ width: 0 }}
                             animate={{ width: `${(estimatedBreakdown.peakOnPeak / totalConsumption) * 100}%` }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
+                            transition={{ duration: 0.6, delay: 0.1 }}
                           />
                           <motion.div
-                            className="bg-warning-500"
+                            className="bg-warning"
                             initial={{ width: 0 }}
                             animate={{ width: `${(estimatedBreakdown.semiPeak / totalConsumption) * 100}%` }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
                           />
                           <motion.div
-                            className="bg-success-500"
+                            className="bg-success"
                             initial={{ width: 0 }}
                             animate={{ width: `${(estimatedBreakdown.offPeak / totalConsumption) * 100}%` }}
-                            transition={{ duration: 0.5, delay: 0.3 }}
+                            transition={{ duration: 0.6, delay: 0.3 }}
                           />
                         </div>
                       </div>
@@ -299,17 +307,17 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
           isDisabled={!estimatedBreakdown}
           color="primary"
           size="lg"
-          className="w-full"
+          className="h-14 text-base font-semibold shadow-energy hover:shadow-energy-lg transition-all"
         >
           使用此估算結果繼續
         </Button>
       </motion.div>
 
       {/* 免責宣告 */}
-      <Card className="bg-warning-50 border-warning-200">
-        <CardBody className="p-3">
-          <p className="text-xs text-warning flex items-center gap-2">
-            <Info size={14} />
+      <Card className="bg-gradient-subtle border border-default-200">
+        <CardBody className="p-4">
+          <p className="text-sm text-default-600 flex items-center gap-3">
+            <Info size={20} className="text-warning flex-shrink-0" />
             <span>這只是估算喔！實際電費會根據你真正的用電時間有所不同。</span>
           </p>
         </CardBody>
