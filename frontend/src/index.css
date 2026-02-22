@@ -264,6 +264,20 @@
     animation: spin-slow 3s linear infinite;
   }
 
+  /* Pulse slow for subtle breathing effect */
+  @keyframes pulse-slow {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 3s ease-in-out infinite;
+  }
+
   /* Progress bar animation */
   @keyframes progress-fill {
     from {
