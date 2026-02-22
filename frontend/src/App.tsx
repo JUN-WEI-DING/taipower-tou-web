@@ -15,7 +15,7 @@ import { PlansLoader } from './services/calculation/plans';
 import { RateCalculator } from './services/calculation/RateCalculator';
 import { DataCompletenessLevel } from './types';
 import type { CalculationInput } from './types';
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Divider } from '@nextui-org/react';
+import { Button, Divider } from '@nextui-org/react';
 import { Zap } from './components/icons';
 
 /**

@@ -1,10 +1,14 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { Card, CardBody, Button } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { useAppStore } from '../../stores/useAppStore';
 import { getOCRService } from '../../services/ocr/OCRService';
 import { BillParser } from '../../services/parser/BillParser';
 import type { BillData } from '../../types';
+
+// File validation constants
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 /**
  * UploadZone Component
@@ -14,12 +18,37 @@ export const UploadZone: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // Use refs for file inputs to avoid querySelector issues
+  const mainInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+
   const setUploadedImage = useAppStore((state) => state.setUploadedImage);
   const setBillData = useAppStore((state) => state.setBillData);
   const setOcrStatus = useAppStore((state) => state.setOcrStatus);
   const setStage = useAppStore((state) => state.setStage);
 
+  const validateFile = (file: File): { valid: boolean; error?: string } => {
+    // Check file type
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+      return { valid: false, error: '不支援的圖片格式，請使用 JPG、PNG 或 WebP' };
+    }
+
+    // Check file size
+    if (file.size > MAX_FILE_SIZE) {
+      return { valid: false, error: '圖片檔案太大，請使用小於 10MB 的圖片' };
+    }
+
+    return { valid: true };
+  };
+
   const processImage = useCallback(async (file: File) => {
+    // Validate file before processing
+    const validation = validateFile(file);
+    if (!validation.valid) {
+      setErrorMessage(validation.error || '圖片處理失敗');
+      return;
+    }
+
     setOcrStatus('processing');
 
     try {
@@ -118,6 +147,14 @@ export const UploadZone: React.FC = () => {
     }
   }, [processImage]);
 
+  const handleMainInputClick = useCallback(() => {
+    mainInputRef.current?.click();
+  }, []);
+
+  const handleCameraInputClick = useCallback(() => {
+    cameraInputRef.current?.click();
+  }, []);
+
   return (
     <div className="w-full max-w-3xl mx-auto">
       <motion.div
@@ -135,13 +172,11 @@ export const UploadZone: React.FC = () => {
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           isPressable
-          onPress={() => {
-            const input = document.querySelector('input[type="file"]') as HTMLInputElement;
-            input?.click();
-          }}
+          onPress={handleMainInputClick}
         >
           <CardBody className="p-10 md:p-16">
             <input
+              ref={mainInputRef}
               type="file"
               accept="image/*"
               onChange={handleFileSelect}
@@ -259,8 +294,9 @@ export const UploadZone: React.FC = () => {
         transition={{ delay: 0.2 }}
         className="mt-8"
       >
-        <label className="block">
+        <label>
           <input
+            ref={cameraInputRef}
             type="file"
             accept="image/*"
             capture="environment"
@@ -278,7 +314,7 @@ export const UploadZone: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             }
-            onPress={() => (document.querySelector('input[capture="environment"]') as HTMLInputElement)?.click()}
+            onPress={handleCameraInputClick}
           >
             使用相機拍照
           </Button>

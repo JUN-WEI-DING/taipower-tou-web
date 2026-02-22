@@ -5,6 +5,9 @@ import type { BillData } from '../../types';
 import { motion } from 'framer-motion';
 import { CheckCircle, Info, AlertTriangle } from '../icons';
 
+// Define valid chip color types
+type ChipColor = 'success' | 'warning' | 'danger' | 'default';
+
 interface DataCompletenessBannerProps {
   billData: BillData;
 }
@@ -21,35 +24,35 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
     switch (report.level) {
       case 'three_tier':
         return {
-          color: 'success',
-          bgGradient: 'from-success/5 to-success/10',
-          borderColor: 'success/200',
-          iconBg: 'success/10',
-          icon: <CheckCircle size={20} className="text-success" />,
+          color: 'success' as ChipColor,
+          bgGradient: 'from-success-50 to-success-100',
+          borderColor: 'border-success-200',
+          iconBg: 'bg-success-100',
+          icon: <CheckCircle size={20} className="text-success-600" />,
         };
       case 'two_tier':
         return {
-          color: 'warning',
-          bgGradient: 'from-warning/5 to-warning/10',
-          borderColor: 'warning/200',
-          iconBg: 'warning/10',
-          icon: <AlertTriangle size={20} className="text-warning" />,
+          color: 'warning' as ChipColor,
+          bgGradient: 'from-warning-50 to-warning-100',
+          borderColor: 'border-warning-200',
+          iconBg: 'bg-warning-100',
+          icon: <AlertTriangle size={20} className="text-warning-600" />,
         };
       case 'total_only':
         return {
-          color: 'danger',
-          bgGradient: 'from-danger/5 to-danger/10',
-          borderColor: 'danger/200',
-          iconBg: 'danger/10',
-          icon: <Info size={20} className="text-danger" />,
+          color: 'danger' as ChipColor,
+          bgGradient: 'from-danger-50 to-danger-100',
+          borderColor: 'border-danger-200',
+          iconBg: 'bg-danger-100',
+          icon: <Info size={20} className="text-danger-600" />,
         };
       default:
         return {
-          color: 'default',
-          bgGradient: 'from-default-50 to-default-100',
-          borderColor: 'default-200',
-          iconBg: 'default-100',
-          icon: <Info size={20} className="text-default-500" />,
+          color: 'default' as ChipColor,
+          bgGradient: 'from-gray-50 to-gray-100',
+          borderColor: 'border-gray-200',
+          iconBg: 'bg-gray-100',
+          icon: <Info size={20} className="text-gray-500" />,
         };
     }
   };
@@ -63,7 +66,7 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className={`bg-gradient-to-br ${bgGradient} border-2 border-${borderColor} shadow-sm`}>
+      <Card className={`bg-gradient-to-br ${bgGradient} border-2 ${borderColor} shadow-sm`}>
         <CardBody className="p-5">
           <div className="flex items-start gap-4">
             {/* Icon */}
@@ -74,12 +77,12 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
             {/* Content */}
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-3 mb-2">
-                <h4 className="text-lg font-bold text-foreground">
+                <h4 className="text-lg font-bold text-gray-900">
                   資料完整度分析
                 </h4>
                 <Chip
                   size="sm"
-                  color={color as any}
+                  color={color}
                   variant="flat"
                   className="font-medium"
                 >
@@ -87,7 +90,7 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
                 </Chip>
               </div>
 
-              <p className="text-sm text-default-600 mb-4 leading-relaxed">
+              <p className="text-sm text-gray-600 mb-4 leading-relaxed">
                 {levelDescription}
               </p>
 
@@ -95,9 +98,9 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
               <div className="space-y-2">
                 {report.canCalculateAccurately.length > 0 && (
                   <div className="flex items-start gap-3 p-3 bg-success-50/80 rounded-xl border border-success-100">
-                    <CheckCircle size={18} className="text-success flex-shrink-0 mt-0.5" />
+                    <CheckCircle size={18} className="text-success-600 flex-shrink-0 mt-0.5" />
                     <div className="min-w-0 flex-1">
-                      <span className="text-sm font-semibold text-success block mb-1">
+                      <span className="text-sm font-semibold text-success-700 block mb-1">
                         可準確計算
                       </span>
                       <span className="text-xs text-success-700 font-mono">
@@ -109,9 +112,9 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
 
                 {report.needsEstimation.length > 0 && (
                   <div className="flex items-start gap-3 p-3 bg-warning-50/80 rounded-xl border border-warning-100">
-                    <AlertTriangle size={18} className="text-warning flex-shrink-0 mt-0.5" />
+                    <AlertTriangle size={18} className="text-warning-600 flex-shrink-0 mt-0.5" />
                     <div className="min-w-0 flex-1">
-                      <span className="text-sm font-semibold text-warning block mb-1">
+                      <span className="text-sm font-semibold text-warning-700 block mb-1">
                         需要估算
                       </span>
                       <span className="text-xs text-warning-700 font-mono">
@@ -123,9 +126,9 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
 
                 {report.needsSplit.length > 0 && (
                   <div className="flex items-start gap-3 p-3 bg-danger-50/80 rounded-xl border border-danger-100">
-                    <Info size={18} className="text-danger flex-shrink-0 mt-0.5" />
+                    <Info size={18} className="text-danger-600 flex-shrink-0 mt-0.5" />
                     <div className="min-w-0 flex-1">
-                      <span className="text-sm font-semibold text-danger block mb-1">
+                      <span className="text-sm font-semibold text-danger-700 block mb-1">
                         需要拆分
                       </span>
                       <span className="text-xs text-danger-700 font-mono">

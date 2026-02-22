@@ -26,6 +26,20 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
     return date.toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
   };
 
+  // Helper function to format date for input type="date" in local time
+  const formatDateForInput = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Helper function to parse date from input type="date" (local time)
+  const parseDateFromInput = (value: string): Date => {
+    const [year, month, day] = value.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  };
+
   const getSeasonInfo = () => {
     const month = billData.billingPeriod.start.getMonth() + 1;
     const isSummer = month >= 6 && month <= 9;
@@ -117,9 +131,9 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
               {isEditing ? (
                 <Input
                   type="date"
-                  value={editedData.billingPeriod.start.toISOString().split('T')[0]}
+                  value={formatDateForInput(editedData.billingPeriod.start)}
                   onChange={(e) => {
-                    const newStart = new Date(e.target.value);
+                    const newStart = parseDateFromInput(e.target.value);
                     const days = editedData.billingPeriod.days;
                     const newEnd = new Date(newStart);
                     newEnd.setDate(newEnd.getDate() + days - 1);

@@ -16,7 +16,7 @@ export const ResultsSummary: React.FC<{
   const bestPlan = results[0];
   const currentPlan = results.find(r => r.comparison.isCurrentPlan) || results[results.length - 1];
   const savings = currentPlan.charges.total - bestPlan.charges.total;
-  const savingsPercent = (savings / currentPlan.charges.total) * 100;
+  const savingsPercent = currentPlan.charges.total > 0 ? (savings / currentPlan.charges.total) * 100 : 0;
 
   return (
     <motion.div

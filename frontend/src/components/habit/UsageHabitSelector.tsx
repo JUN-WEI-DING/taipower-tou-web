@@ -270,19 +270,19 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
                           <motion.div
                             className="bg-danger"
                             initial={{ width: 0 }}
-                            animate={{ width: `${(estimatedBreakdown.peakOnPeak / totalConsumption) * 100}%` }}
+                            animate={{ width: `${totalConsumption > 0 ? (estimatedBreakdown.peakOnPeak / totalConsumption) * 100 : 0}%` }}
                             transition={{ duration: 0.6, delay: 0.1 }}
                           />
                           <motion.div
                             className="bg-warning"
                             initial={{ width: 0 }}
-                            animate={{ width: `${(estimatedBreakdown.semiPeak / totalConsumption) * 100}%` }}
+                            animate={{ width: `${totalConsumption > 0 ? (estimatedBreakdown.semiPeak / totalConsumption) * 100 : 0}%` }}
                             transition={{ duration: 0.6, delay: 0.2 }}
                           />
                           <motion.div
                             className="bg-success"
                             initial={{ width: 0 }}
-                            animate={{ width: `${(estimatedBreakdown.offPeak / totalConsumption) * 100}%` }}
+                            animate={{ width: `${totalConsumption > 0 ? (estimatedBreakdown.offPeak / totalConsumption) * 100 : 0}%` }}
                             transition={{ duration: 0.6, delay: 0.3 }}
                           />
                         </div>

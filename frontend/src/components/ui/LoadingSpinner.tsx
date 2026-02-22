@@ -1,4 +1,3 @@
-import { Spinner } from '@nextui-org/react';
 import { Zap } from '../icons';
 
 /**
