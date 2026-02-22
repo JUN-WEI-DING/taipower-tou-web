@@ -6,7 +6,7 @@ import type { PlanCalculationResult } from '../../types';
 /**
  * Results Summary Component
  * Shows the best recommendation and key insights
- * Modern tech-inspired design with gradient effects
+ * Modern clean design with gradient effects
  */
 export const ResultsSummary: React.FC<{
   results: PlanCalculationResult[];
@@ -22,16 +22,16 @@ export const ResultsSummary: React.FC<{
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.6 }}
     >
-      <Card className="border-2 border-tech-blue/30 shadow-tech-glow-lg overflow-hidden bg-gradient-to-br from-tech-blue via-tech-violet/80 to-tech-cyan/70 backdrop-blur-sm">
+      <Card className="border-2 border-primary-300 shadow-glow-lg overflow-hidden bg-gradient-to-br from-primary-600 via-secondary-600 to-primary-500 backdrop-blur-sm">
         {/* Animated gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent animate-gradient-shift bg-[length:200%_100%]" />
 
         {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-tech-cyan/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-tech-violet/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary-400/10 rounded-full blur-3xl" />
 
         <CardBody className="p-6 md:p-10 relative">
           <div className="relative flex flex-col lg:flex-row items-center justify-between gap-10">
@@ -44,7 +44,7 @@ export const ResultsSummary: React.FC<{
                 transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30"
               >
-                <Sparkles size={16} className="text-tech-cyan" />
+                <Sparkles size={16} className="text-primary-200" />
                 <span className="text-sm font-bold text-white tracking-wide">推薦方案</span>
               </motion.div>
 
@@ -53,8 +53,8 @@ export const ResultsSummary: React.FC<{
                 <motion.div
                   initial={{ rotate: -10 }}
                   animate={{ rotate: 0 }}
-                  transition={{ delay: 0.3, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md shadow-tech-glow flex items-center justify-center border border-white/30"
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                  className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md shadow-glow flex items-center justify-center border border-white/30"
                 >
                   <Zap className="text-white" size={36} />
                 </motion.div>
@@ -72,7 +72,7 @@ export const ResultsSummary: React.FC<{
                   transition={{ delay: 0.4 }}
                   className="inline-flex items-start gap-3 px-5 py-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20"
                 >
-                  <CheckCircle size={20} className="text-tech-cyan flex-shrink-0 mt-0.5" />
+                  <CheckCircle size={20} className="text-primary-200 flex-shrink-0 mt-0.5" />
                   <p className="text-sm text-white/90 leading-relaxed">
                     基於估算用電習慣，實際電費可能有所不同
                   </p>
@@ -98,7 +98,7 @@ export const ResultsSummary: React.FC<{
                         animate={{ rotate: [0, -10, 10, -10, 0] }}
                         transition={{ delay: 0.8, duration: 0.5 }}
                       >
-                        <TrendingUp className="text-tech-cyan" size={32} />
+                        <TrendingUp className="text-primary-200" size={32} />
                       </motion.div>
                       <span className="text-5xl md:text-7xl font-bold text-white tracking-tight">
                         ${savings.toFixed(0)}
@@ -113,7 +113,7 @@ export const ResultsSummary: React.FC<{
                     transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
                     className="inline-flex items-center gap-3 px-8 py-4 bg-white/20 backdrop-blur-md rounded-full border border-white/30 shadow-lg"
                   >
-                    <CheckCircle size={24} className="text-tech-cyan" />
+                    <CheckCircle size={24} className="text-primary-200" />
                     <span className="text-2xl font-bold text-white">
                       節省 {savingsPercent.toFixed(1)}%
                     </span>
@@ -127,7 +127,7 @@ export const ResultsSummary: React.FC<{
                   className="text-center py-6"
                 >
                   <div className="inline-flex items-center gap-3 px-6 py-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
-                    <CheckCircle size={24} className="text-tech-emerald" />
+                    <CheckCircle size={24} className="text-success-400" />
                     <p className="text-xl text-white/90 font-medium">
                       目前已是最佳方案
                     </p>
