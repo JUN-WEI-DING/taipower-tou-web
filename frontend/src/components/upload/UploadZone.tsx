@@ -276,8 +276,8 @@ export const UploadZone: React.FC = () => {
               <div className="flex flex-wrap justify-center gap-3">
                 {[
                   { icon: '⚡', text: 'AI 智慧識別', color: 'from-orange-100 to-orange-50 dark:from-orange-900/30 dark:to-orange-950/20' },
-                  { icon: '🔒', text: '本地運算', color: 'from-green-100 to-green-50 dark:from-green-900/30 dark:to-green-950/20' },
-                  { icon: '⏱️', text: '30 秒完成', color: 'from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-950/20' },
+                  { icon: '🔒', text: '本地運算', color: 'from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/20' },
+                  { icon: '⏱️', text: '30 秒完成', color: 'from-amber-50 to-orange-100 dark:from-amber-950/30 dark:to-orange-900/20' },
                 ].map((feature, idx) => (
                   <motion.span
                     key={idx}
@@ -285,10 +285,10 @@ export const UploadZone: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 * idx }}
                     className={cn(
-                      "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border shadow-sm",
+                      "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border border-orange-200 dark:border-orange-800 shadow-sm",
                       isDragging
                         ? 'bg-white dark:bg-gray-800 border-orange-300 dark:border-orange-700'
-                        : `bg-gradient-to-r ${feature.color} border-${idx === 0 ? 'orange' : idx === 1 ? 'green' : 'blue'}-200 dark:border-${idx === 0 ? 'orange' : idx === 1 ? 'green' : 'blue'}-800`
+                        : `bg-gradient-to-r ${feature.color}`
                     )}
                   >
                     <span className="text-lg">{feature.icon}</span>

@@ -48,7 +48,7 @@ export const ResultsSummary: React.FC<{
               "px-4 py-1.5 rounded-full shadow-lg text-sm font-bold flex items-center gap-2",
               isSummer
                 ? "bg-gradient-to-r from-red-500 to-orange-500 text-white"
-                : "bg-gradient-to-r from-blue-500 to-cyan-500 text-white"
+                : "bg-gradient-to-r from-orange-400 to-amber-400 text-white"
             )}
           >
             {isSummer ? '🌞 夏季' : '❄️ 非夏季'}
@@ -110,10 +110,10 @@ export const ResultsSummary: React.FC<{
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="inline-flex items-start gap-3 px-4 py-3 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/20 rounded-xl border border-amber-200 dark:border-amber-800"
+                  className="inline-flex items-start gap-3 px-4 py-3 bg-gradient-to-r from-orange-50 to-orange-100/50 dark:from-orange-950/30 dark:to-orange-900/20 rounded-xl border border-orange-200 dark:border-orange-800"
                 >
-                  <CheckCircle size={18} className="text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                  <CheckCircle size={18} className="text-orange-600 dark:text-orange-400 mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-orange-800 dark:text-orange-200">
                     基於估算用電習慣，實際電費可能有所不同
                   </p>
                 </motion.div>

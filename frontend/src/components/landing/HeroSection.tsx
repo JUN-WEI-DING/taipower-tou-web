@@ -190,19 +190,19 @@ export const HeroSection: React.FC<{
               icon: TrendingUp,
               title: '精準方案比較',
               desc: '20+ 種電價方案，找出最省錢選擇',
-              color: 'from-amber-500 to-yellow-500',
+              color: 'from-orange-500 to-orange-600',
             },
             {
               icon: Shield,
               title: '資料絕對安全',
               desc: '純前端運算，資料不上傳任何伺服器',
-              color: 'from-yellow-500 to-lime-500',
+              color: 'from-orange-600 to-orange-700',
             },
             {
               icon: Clock,
               title: '秒級快速分析',
               desc: '上傳後立即計算，無需等待',
-              color: 'from-lime-500 to-green-500',
+              color: 'from-orange-700 to-orange-800',
             },
           ].map((feature, idx) => (
             <motion.div
@@ -217,8 +217,8 @@ export const HeroSection: React.FC<{
               <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                 <feature.icon size={28} className="text-white" />
               </div>
-              <h3 className="text-lg font-bold text-neutral-900 mb-2">{feature.title}</h3>
-              <p className="text-sm text-neutral-600 leading-relaxed">{feature.desc}</p>
+              <h3 className="text-lg font-bold text-foreground mb-2">{feature.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -281,8 +281,8 @@ export const HeroSection: React.FC<{
                   {item.step}
                 </div>
                 <div className="text-5xl mb-4">{item.icon}</div>
-                <h3 className="text-xl font-bold text-neutral-900 mb-2">{item.title}</h3>
-                <p className="text-neutral-600 leading-relaxed">{item.desc}</p>
+                <h3 className="text-xl font-bold text-foreground mb-2">{item.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -312,7 +312,7 @@ export const HeroSection: React.FC<{
                 <div className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500 mb-2">
                   {stat.value}
                 </div>
-                <div className="text-neutral-600 font-medium">{stat.label}</div>
+                <div className="text-muted-foreground font-medium">{stat.label}</div>
               </motion.div>
             ))}
           </div>
