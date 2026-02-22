@@ -139,15 +139,19 @@ export const BillTypeInputForm: React.FC<BillTypeInputFormProps> = ({ billType }
   if (billType === 'non_tou') {
     return (
       <div className="w-full max-w-md mx-auto">
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl shadow-orange-500/10 border border-orange-200 dark:border-orange-800 p-6">
-          <div className="text-center mb-6">
+        <div className="relative bg-gradient-to-br from-white/80 to-orange-50/60 dark:from-gray-900/80 dark:to-orange-950/30 backdrop-blur-sm border border-orange-100/50 dark:border-orange-800/30 rounded-3xl shadow-xl shadow-orange-500/5 p-6">
+          {/* Decorative gradient glow */}
+          <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-radial from-amber-300/15 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative text-center mb-6">
             <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30">
               <span className="text-3xl">⚡</span>
             </div>
-            <h3 className="text-lg font-bold text-foreground">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
               非時間電價 - 基本資訊輸入
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               最常見的住家用電型別，只有總用電度數
             </p>
           </div>
@@ -186,15 +190,19 @@ export const BillTypeInputForm: React.FC<BillTypeInputFormProps> = ({ billType }
   if (billType === 'tou_2_tier') {
     return (
       <div className="w-full max-w-md mx-auto">
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl shadow-orange-500/10 border border-orange-200 dark:border-orange-800 p-6">
-          <div className="text-center mb-6">
+        <div className="relative bg-gradient-to-br from-white/80 to-orange-50/60 dark:from-gray-900/80 dark:to-orange-950/30 backdrop-blur-sm border border-orange-100/50 dark:border-orange-800/30 rounded-3xl shadow-xl shadow-orange-500/5 p-6">
+          {/* Decorative gradient glow */}
+          <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-radial from-amber-300/15 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative text-center mb-6">
             <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30">
               <span className="text-3xl">📈</span>
             </div>
-            <h3 className="text-lg font-bold text-foreground">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
               二段式時間電價 - 用電資訊輸入
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               電費單上有「尖峰用電」和「離峰用電」
             </p>
           </div>
@@ -236,15 +244,19 @@ export const BillTypeInputForm: React.FC<BillTypeInputFormProps> = ({ billType }
   if (billType === 'tou_3_tier') {
     return (
       <div className="w-full max-w-md mx-auto">
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl shadow-orange-500/10 border border-orange-200 dark:border-orange-800 p-6">
-          <div className="text-center mb-6">
+        <div className="relative bg-gradient-to-br from-white/80 to-orange-50/60 dark:from-gray-900/80 dark:to-orange-950/30 backdrop-blur-sm border border-orange-100/50 dark:border-orange-800/30 rounded-3xl shadow-xl shadow-orange-500/5 p-6">
+          {/* Decorative gradient glow */}
+          <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-radial from-orange-400/20 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-radial from-amber-300/15 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative text-center mb-6">
             <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30">
               <span className="text-3xl">📊</span>
             </div>
-            <h3 className="text-lg font-bold text-foreground">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
               三段式時間電價 - 用電資訊輸入
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               電費單上有「尖峰」「半尖峰」「離峰」
             </p>
           </div>
@@ -331,7 +343,7 @@ const NonTouInputForm: React.FC<NonTouInputFormProps> = ({
         value={totalConsumption}
         onChange={(e) => onTotalConsumptionChange(e.target.value)}
         placeholder="例如：350"
-        className="w-full px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-background"
+        className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
       />
       <p className="text-xs text-muted-foreground mt-1">
         請輸入您電費單上的「總用電度數」或「本期度數」
@@ -389,7 +401,7 @@ const TwoTierInputForm: React.FC<TwoTierInputFormProps> = ({
           value={peakConsumption}
           onChange={(e) => onPeakConsumptionChange(e.target.value)}
           placeholder="例如：120"
-          className="w-full px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-background"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         />
       </div>
       <div>
@@ -404,7 +416,7 @@ const TwoTierInputForm: React.FC<TwoTierInputFormProps> = ({
           value={offPeakConsumption}
           onChange={(e) => onOffPeakConsumptionChange(e.target.value)}
           placeholder="例如：230"
-          className="w-full px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-background"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         />
       </div>
     </div>
@@ -468,7 +480,7 @@ const ThreeTierInputForm: React.FC<ThreeTierInputFormProps> = ({
           value={peakConsumption}
           onChange={(e) => onPeakConsumptionChange(e.target.value)}
           placeholder="例如：70"
-          className="w-full px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-background"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         />
       </div>
       <div>
@@ -482,7 +494,7 @@ const ThreeTierInputForm: React.FC<ThreeTierInputFormProps> = ({
           value={semiPeakConsumption}
           onChange={(e) => onSemiPeakConsumptionChange(e.target.value)}
           placeholder="例如：80"
-          className="w-full px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-background"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         />
       </div>
       <div>
@@ -496,7 +508,7 @@ const ThreeTierInputForm: React.FC<ThreeTierInputFormProps> = ({
           value={offPeakConsumption}
           onChange={(e) => onOffPeakConsumptionChange(e.target.value)}
           placeholder="例如：200"
-          className="w-full px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-background"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         />
       </div>
     </div>
@@ -527,7 +539,7 @@ const DateSection: React.FC<DateSectionProps> = ({ month, year, isSummer, onMont
         <select
           value={year}
           onChange={(e) => onYearChange(parseInt(e.target.value))}
-          className="w-full px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-background"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         >
           {Array.from({ length: 3 }, (_, i) => {
             const y = new Date().getFullYear() - i;
@@ -540,7 +552,7 @@ const DateSection: React.FC<DateSectionProps> = ({ month, year, isSummer, onMont
         <select
           value={month}
           onChange={(e) => onMonthChange(parseInt(e.target.value))}
-          className="w-full px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-background"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         >
           {Array.from({ length: 12 }, (_, i) => {
             const m = i + 1;
@@ -575,7 +587,7 @@ const ContractSection: React.FC<ContractSectionProps> = ({
       <select
         value={contractCapacity}
         onChange={(e) => onContractCapacityChange(e.target.value)}
-        className="w-full px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-background"
+        className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
       >
         <option value="10">10 A (最常見)</option>
         <option value="15">15 A</option>
@@ -594,7 +606,7 @@ const ContractSection: React.FC<ContractSectionProps> = ({
         <select
           value={phaseType}
           onChange={(e) => onPhaseTypeChange(e.target.value as 'single' | 'three')}
-          className="w-full px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-background"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         >
           <option value="single">單相</option>
           <option value="three">三相</option>
@@ -605,7 +617,7 @@ const ContractSection: React.FC<ContractSectionProps> = ({
         <select
           value={voltageType}
           onChange={(e) => onVoltageTypeChange(e.target.value as '110' | '220')}
-          className="w-full px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-background"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         >
           <option value="110">110V</option>
           <option value="220">220V</option>
@@ -652,9 +664,9 @@ const Tips: React.FC<TipsProps> = ({ type }) => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-orange-50 to-orange-100/50 dark:from-orange-950/30 dark:to-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl p-4 mt-4">
-      <p className="text-sm text-orange-800 dark:text-orange-200 flex items-start gap-2">
-        <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div className="relative bg-gradient-to-br from-orange-50/80 to-amber-50/60 dark:from-orange-950/30 dark:to-amber-950/20 border border-orange-200/50 dark:border-orange-700/50 rounded-2xl p-4 mt-4 shadow-sm">
+      <p className="text-sm text-gray-800 dark:text-gray-200 flex items-start gap-2">
+        <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-orange-600 dark:text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         {tips[type]}
