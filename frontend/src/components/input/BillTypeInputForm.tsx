@@ -139,13 +139,15 @@ export const BillTypeInputForm: React.FC<BillTypeInputFormProps> = ({ billType }
   if (billType === 'non_tou') {
     return (
       <div className="w-full max-w-md mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl shadow-orange-500/10 border border-orange-200 dark:border-orange-800 p-6">
           <div className="text-center mb-6">
-            <div className="text-4xl mb-2">⚡</div>
-            <h3 className="text-lg font-bold text-gray-900">
+            <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30">
+              <span className="text-3xl">⚡</span>
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
               非時間電價 - 基本資訊輸入
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               最常見的住家用電型別，只有總用電度數
             </p>
           </div>
@@ -184,13 +186,15 @@ export const BillTypeInputForm: React.FC<BillTypeInputFormProps> = ({ billType }
   if (billType === 'tou_2_tier') {
     return (
       <div className="w-full max-w-md mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl shadow-orange-500/10 border border-orange-200 dark:border-orange-800 p-6">
           <div className="text-center mb-6">
-            <div className="text-4xl mb-2">📈</div>
-            <h3 className="text-lg font-bold text-gray-900">
+            <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30">
+              <span className="text-3xl">📈</span>
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
               二段式時間電價 - 用電資訊輸入
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               電費單上有「尖峰用電」和「離峰用電」
             </p>
           </div>
@@ -232,13 +236,15 @@ export const BillTypeInputForm: React.FC<BillTypeInputFormProps> = ({ billType }
   if (billType === 'tou_3_tier') {
     return (
       <div className="w-full max-w-md mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl shadow-orange-500/10 border border-orange-200 dark:border-orange-800 p-6">
           <div className="text-center mb-6">
-            <div className="text-4xl mb-2">📊</div>
-            <h3 className="text-lg font-bold text-gray-900">
+            <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30">
+              <span className="text-3xl">📊</span>
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
               三段式時間電價 - 用電資訊輸入
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               電費單上有「尖峰」「半尖峰」「離峰」
             </p>
           </div>
