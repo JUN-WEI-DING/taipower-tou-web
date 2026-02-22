@@ -9,7 +9,17 @@
   background:
     radial-gradient(ellipse 80% 50% at 50% -20%, rgb(var(--orange-400-rgb) / 0.15), transparent),
     radial-gradient(ellipse 60% 40% at 80% 50%, rgb(var(--orange-500-rgb) / 0.08), transparent),
-    linear-gradient(180deg, rgb(var(--orange-50-rgb)) 0%, #ffffff 60%, rgb(var(--neutral-50-rgb)) 100%);
+    linear-gradient(180deg, rgb(var(--orange-50-rgb)) 0%, hsl(var(--background)) 60%, rgb(var(--neutral-50-rgb)) 100%);
+}
+
+/* Dark mode override */
+@media (prefers-color-scheme: dark) {
+  .hero {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgb(var(--orange-400-rgb) / 0.08), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 50%, rgb(var(--orange-500-rgb) / 0.04), transparent),
+      linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--card)) 60%, hsl(var(--card)) 100%);
+  }
 }
 
 .heroBackground {
@@ -173,7 +183,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+  background: linear-gradient(135deg, transparent 0%, hsl(var(--background) / 0.3) 50%, transparent 100%);
   opacity: 0;
   transition: opacity 0.35s ease;
 }
@@ -328,7 +338,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%);
+  background: linear-gradient(135deg, transparent 0%, hsl(var(--primary-foreground) / 0.2) 50%, transparent 100%);
   background-size: 200% 100%;
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -412,30 +422,29 @@
 
 /* Secondary Button - Enhanced */
 .btnSecondary {
-  background:
-    linear-gradient(180deg, #ffffff 0%, rgb(var(--neutral-50-rgb)) 100%);
-  color: rgb(var(--neutral-600-rgb));
-  border: 2px solid rgb(var(--neutral-200-rgb));
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border: 2px solid hsl(var(--border));
   box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.05),
-    0 0 0 1px rgba(0, 0, 0, 0.02) inset;
+    0 1px 3px rgb(var(--neutral-900-rgb) / 0.05),
+    0 0 0 1px hsl(var(--border) / 0.5) inset;
   position: relative;
 }
 
 .btnSecondary:hover {
-  background:
-    linear-gradient(180deg, rgb(var(--neutral-50-rgb)) 0%, rgb(var(--neutral-100-rgb)) 100%);
-  border-color: rgb(var(--neutral-300-rgb));
+  background: hsl(var(--accent));
+  border-color: hsl(var(--border));
   box-shadow:
-    0 4px 15px rgba(0, 0, 0, 0.08),
+    0 4px 15px rgb(var(--neutral-900-rgb) / 0.08),
     0 0 0 1px rgb(var(--orange-500-rgb) / 0.05) inset;
   transform: translateY(-2px);
+  color: hsl(var(--accent-foreground));
 }
 
 .btnSecondary:active {
   transform: translateY(0);
   box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.05);
+    0 1px 3px rgb(var(--neutral-900-rgb) / 0.05);
 }
 
 /* Icon animation on hover */
@@ -550,17 +559,23 @@
 }
 
 .previewCard {
-  background:
-    linear-gradient(180deg, #ffffff 0%, rgb(var(--neutral-50-rgb)) 100%);
-  border: 1px solid rgb(var(--neutral-200-rgb) / 0.8);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 24px;
   box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.12),
+    0 25px 50px -12px rgb(var(--neutral-900-rgb) / 0.12),
     0 0 0 1px rgb(var(--orange-500-rgb) / 0.03) inset,
     0 0 80px rgb(var(--orange-500-rgb) / 0.05);
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
+}
+
+/* Dark mode for previewCard */
+@media (prefers-color-scheme: dark) {
+  .previewCard {
+    background: hsl(var(--card) / 0.8);
+  }
 }
 
 .previewCard::before {
@@ -647,7 +662,14 @@
 .previewBody {
   padding: 32px;
   min-height: 360px;
-  background: linear-gradient(180deg, #ffffff 0%, rgb(var(--neutral-50-rgb)) 100%);
+  background: hsl(var(--card));
+}
+
+/* Dark mode for previewBody */
+@media (prefers-color-scheme: dark) {
+  .previewBody {
+    background: hsl(var(--card) / 0.6);
+  }
 }
 
 .previewPlaceholder {
@@ -736,19 +758,23 @@
 /* Enhanced card base class */
 .featureCardEnhanced {
   position: relative;
-  background:
-    linear-gradient(135deg,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(255, 255, 255, 0.9) 100%);
+  background: hsl(var(--card) / 0.95);
   border: 1px solid rgb(var(--orange-100-rgb) / 0.6);
   border-radius: 20px;
   padding: 24px;
   box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.04),
-    0 0 0 1px rgba(255, 255, 255, 0.5) inset,
-    0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    0 4px 16px rgb(var(--neutral-900-rgb) / 0.04),
+    0 0 0 1px hsl(var(--border) / 0.5) inset,
+    0 1px 0 hsl(var(--card) / 0.8) inset;
   transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   overflow: hidden;
+}
+
+/* Dark mode for featureCardEnhanced */
+@media (prefers-color-scheme: dark) {
+  .featureCardEnhanced {
+    background: hsl(var(--card) / 0.8);
+  }
 }
 
 /* Glass-morphism overlay */
