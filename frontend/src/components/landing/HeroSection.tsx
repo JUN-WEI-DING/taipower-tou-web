@@ -1,5 +1,6 @@
 import { Button } from '@nextui-org/react';
 import { Zap, TrendingUp, Shield, Clock } from '../icons';
+import { motion } from 'framer-motion';
 
 /**
  * Hero section for the landing page
@@ -108,16 +109,20 @@ export const HeroSection: React.FC<{
                   color: 'bg-warning/10 text-warning',
                 },
               ].map((feature, idx) => (
-                <div
+                <motion.div
                   key={idx}
-                  className="p-5 bg-content1 rounded-2xl border border-divider hover:shadow-lg transition-shadow"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: idx * 0.1 }}
+                  whileHover={{ y: -4 }}
+                  className="p-5 bg-content1 rounded-2xl border border-divider hover:shadow-lg transition-shadow cursor-default"
                 >
                   <div className={`w-10 h-10 rounded-xl ${feature.color} flex items-center justify-center mb-3`}>
                     <feature.icon size={20} />
                   </div>
                   <h3 className="font-semibold text-foreground mb-1">{feature.title}</h3>
                   <p className="text-sm text-default-500">{feature.description}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -152,7 +157,14 @@ export const HeroSection: React.FC<{
                 description: '檢視最省錢的方案與省金額',
               },
             ].map((item, idx) => (
-              <div key={idx} className="relative text-center">
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+                className="relative text-center"
+              >
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-white text-2xl font-bold mb-4 shadow-lg">
                   {item.step}
                 </div>
@@ -161,7 +173,7 @@ export const HeroSection: React.FC<{
                 {idx < 2 && (
                   <div className="hidden sm:block absolute top-8 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/50 to-transparent" />
                 )}
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
