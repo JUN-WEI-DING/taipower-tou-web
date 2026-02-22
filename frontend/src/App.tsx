@@ -176,7 +176,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50/30 via-background to-background flex flex-col">
       {/* Skip link for keyboard navigation */}
       <a href="#main-content" className="skip-link">
         跳到主要內容
@@ -186,9 +186,15 @@ function App() {
       <Header />
 
       {/* Main Content */}
-      <main id="main-content" className="flex-1" role="main">
+      <main id="main-content" className="flex-1 relative" role="main">
+        {/* Decorative background pattern */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-orange-200/30 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-orange-300/20 rounded-full blur-3xl" />
+        </div>
+
         <StageTransition key={stage} direction="forward">
-          <div className="container py-8 md:py-12">
+          <div className="container py-8 md:py-12 relative z-10">
             {stage === 'upload' && (
               <>
                 {!billType ? (
