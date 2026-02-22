@@ -62,6 +62,11 @@ export const UploadZone: React.FC = () => {
       reader.onload = (e) => {
         setUploadedImage(e.target?.result as string);
       };
+      reader.onerror = () => {
+        setOcrStatus('error');
+        setErrorMessage('圖片讀取失敗，請重試或選擇其他圖片');
+        setUploadSuccess(false);
+      };
       reader.readAsDataURL(file);
 
       const ocrService = await getOCRService();

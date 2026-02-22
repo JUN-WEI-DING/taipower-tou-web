@@ -19,15 +19,21 @@ import { RateCalculator } from './services/calculation/RateCalculator';
 import { DataCompletenessLevel } from './types';
 import type { CalculationInput } from './types';
 import { Button, Divider } from '@nextui-org/react';
-import { Zap } from './components/icons';
 
 /**
  * 判斷計費期間的季節
  * 臺電季節定義：夏季(6/1-9/30)、非夏季(10/1-5/31)
+ * 如果計費期間的任何部分落在夏季月份，則視為夏季
  */
 function determineSeason(billingPeriod: { start: Date; end: Date }): 'summer' | 'non_summer' {
-  const month = billingPeriod.start.getMonth() + 1; // 1-12
-  return (month >= 6 && month <= 9) ? 'summer' : 'non_summer';
+  const startMonth = billingPeriod.start.getMonth() + 1; // 1-12
+  const endMonth = billingPeriod.end.getMonth() + 1; // 1-12
+
+  // 檢查計費期間是否跨越夏季月份 (6-9月)
+  // 如果開始月到結束月之間包含任何夏季月份，則視為夏季
+  const hasSummerMonth = (startMonth <= 9 && endMonth >= 6);
+
+  return hasSummerMonth ? 'summer' : 'non_summer';
 }
 
 /**

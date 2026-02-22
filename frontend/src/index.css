@@ -26,12 +26,6 @@
     @apply bg-primary-200 text-primary-900;
   }
 
-  /* Focus visible */
-  *:focus-visible {
-    @apply outline-2 outline-offset-2 outline-primary-500;
-    outline-radius: 4px;
-  }
-
   /* Scrollbar */
   ::-webkit-scrollbar {
     @apply w-2 h-2;
@@ -62,13 +56,9 @@
 }
 
 @layer components {
-  /* Skip link */
+  /* Skip link - consolidated definition (enhanced version in utilities layer) */
   .skip-link {
     @apply sr-only focus:not-sr-only;
-    @apply absolute left-0 top-0 z-50;
-    @apply px-4 py-2 bg-primary-600 text-white;
-    @apply text-sm font-semibold rounded-br-lg;
-    @apply transition-all duration-150;
   }
 
   /* Card component */
