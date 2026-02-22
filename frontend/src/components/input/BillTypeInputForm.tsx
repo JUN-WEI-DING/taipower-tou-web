@@ -617,8 +617,8 @@ const ContractSection: React.FC<ContractSectionProps> = ({
 
 // 共享元件：錯誤訊息
 const ErrorMessage: React.FC<{ message: string }> = ({ message }) => (
-  <div className="bg-[#ff6b6b]/10 border border-[#ff6b6b]/30 rounded-lg p-3">
-    <p className="text-sm text-[#e05555]">⚠️ {message}</p>
+  <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-3">
+    <p className="text-sm text-destructive">⚠️ {message}</p>
   </div>
 );
 
