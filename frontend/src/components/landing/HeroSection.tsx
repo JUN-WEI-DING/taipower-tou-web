@@ -1,174 +1,322 @@
 import { Button } from '@nextui-org/react';
-import { Zap, TrendingUp, Shield, Clock, ArrowRight } from '../icons';
+import { Zap, TrendingUp, Shield, Clock, ArrowRight, Sparkles, CheckCircle } from '../icons';
 import { motion } from 'framer-motion';
+import styles from './HeroSection.module.css';
 
 /**
- * Hero Section - Clean Minimal Design
- * Inspired by shadcn-landing-page template
- * Simple, clean, focused on content
+ * Hero Section - Orange Theme shadcn/ui Design
+ * Professional, modern landing page with animated gradients and smooth interactions
  */
 export const HeroSection: React.FC<{
   onOCRClick: () => void;
   onManualClick: () => void;
 }> = ({ onOCRClick, onManualClick }) => {
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+    },
+  };
+
   return (
-    <section className="container w-full">
-      <div className="grid place-items-center lg:max-w-screen-xl gap-8 mx-auto py-20 md:py-32">
-        <div className="text-center space-y-8">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-border shadow-sm"
-          >
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-sm font-medium text-muted-foreground">
-              智慧電費分析工具
-            </span>
-          </motion.div>
-
-          {/* Main headline */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.6 }}
-            className="max-w-screen-md mx-auto text-center text-4xl md:text-6xl font-bold"
-          >
-            <h1>
-              找出最省錢的
-              <span className="text-transparent px-2 bg-gradient-to-r from-primary to-orange-600 bg-clip-text">
-                電價方案
-              </span>
-            </h1>
-          </motion.div>
-
-          {/* Subheadline */}
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="max-w-screen-sm mx-auto text-xl text-muted-foreground leading-relaxed"
-          >
-            上傳您的電費單，系統自動計算所有可用方案，幫您找出最省錢的選擇。
-            平均每月可節省
-            <span className="font-bold text-primary ml-1">10-20%</span>
-            電費。
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <Button
-              onClick={onOCRClick}
-              color="primary"
-              size="lg"
-              className="font-semibold shadow-md hover:shadow-lg transition-all group"
-              endContent={<ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />}
-            >
-              拍照上傳電費單
-            </Button>
-            <Button
-              onClick={onManualClick}
-              variant="bordered"
-              size="lg"
-              className="font-semibold border-2 hover:bg-secondary"
-            >
-              手動輸入
-            </Button>
-          </motion.div>
-
-          {/* Trust indicators */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="flex flex-wrap items-center justify-center gap-8 pt-6"
-          >
-            {[
-              { icon: Shield, text: '資料不上傳' },
-              { icon: Clock, text: '30秒完成' },
-              { icon: TrendingUp, text: '平均省10-20%' },
-            ].map((item, idx) => (
-              <div key={idx} className="flex items-center gap-2 text-muted-foreground">
-                <item.icon size={18} className="text-primary" />
-                <span className="text-sm font-medium">{item.text}</span>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Feature preview cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-14"
-        >
-          {[
-            { icon: Zap, title: 'AI 識別', desc: '智慧電費單識別' },
-            { icon: TrendingUp, title: '精準比較', desc: '20+ 方案分析' },
-            { icon: Shield, title: '資料安全', desc: '本地運算不上傳' },
-            { icon: Clock, title: '快速分析', desc: '秒級完成計算' },
-          ].map((feature, idx) => (
-            <div
-              key={idx}
-              className="p-6 bg-card rounded-xl border border-border hover:shadow-md transition-all"
-            >
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                <feature.icon size={24} className="text-primary" />
-              </div>
-              <h3 className="font-bold text-card-foreground mb-2">{feature.title}</h3>
-              <p className="text-sm text-muted-foreground">{feature.desc}</p>
-            </div>
-          ))}
-        </motion.div>
+    <section className={styles.hero}>
+      {/* Animated gradient backgrounds */}
+      <div className={styles.heroBackground}>
+        <div className={styles.heroGradient1} />
+        <div className={styles.heroGradient2} />
+        <div className={styles.heroGradient3} />
       </div>
 
-      {/* How it works section */}
-      <div className="container py-20">
+      <div className="container w-full relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className={styles.heroContent}
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          <h2 className="text-title font-display mb-4 text-card-foreground">
-            簡單三步驟，開始省電費
-          </h2>
-          <p className="subtitle text-muted-foreground">
-            不需要複雜的操作，任何人都能輕鬆使用
-          </p>
+          {/* Left Column - Content */}
+          <motion.div variants={containerVariants}>
+            {/* Badge */}
+            <motion.div variants={itemVariants}>
+              <div className={styles.heroBadge}>
+                <Sparkles size={18} />
+                <span>智慧電費分析工具 v2.0</span>
+              </div>
+            </motion.div>
+
+            {/* Main headline */}
+            <motion.div variants={itemVariants}>
+              <h1 className={styles.heroTitle}>
+                找出最省錢的
+                <span className={styles.heroTitleGradient}>
+                  電價方案
+                </span>
+              </h1>
+            </motion.div>
+
+            {/* Subheadline */}
+            <motion.p variants={itemVariants} className={styles.heroDescription}>
+              上傳您的電費單，系統自動計算所有可用方案，幫您找出最省錢的選擇。
+              平均每月可節省 <strong>10-20%</strong> 電費，一年最高省下 <strong>$6,000</strong>。
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div variants={itemVariants} className={styles.heroActions}>
+              <Button
+                onClick={onOCRClick}
+                color="primary"
+                size="lg"
+                className={`${styles.btn} ${styles.btnPrimary}`}
+                endContent={
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                  >
+                    <ArrowRight size={20} />
+                  </motion.div>
+                }
+              >
+                <Zap size={20} />
+                拍照上傳電費單
+              </Button>
+              <Button
+                onClick={onManualClick}
+                variant="bordered"
+                size="lg"
+                className={`${styles.btn} ${styles.btnSecondary}`}
+              >
+                手動輸入用電資訊
+              </Button>
+            </motion.div>
+
+            {/* Trust indicators */}
+            <motion.div variants={itemVariants} className={styles.heroFeatures}>
+              {[
+                { icon: Shield, text: '資料不上傳伺服器' },
+                { icon: Clock, text: '30秒完成分析' },
+                { icon: TrendingUp, text: '平均省10-20%' },
+              ].map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  className={styles.feature}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: 'spring', stiffness: 400 }}
+                >
+                  <div className={styles.featureIcon}>
+                    <item.icon size={20} />
+                  </div>
+                  <span className={styles.featureText}>{item.text}</span>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* Right Column - Preview Card */}
+          <motion.div
+            className={styles.heroPreview}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.4, 0.25, 1] }}
+          >
+            <div className={styles.previewCard}>
+              <div className={styles.previewHeader}>
+                <div className={styles.previewDots}>
+                  <span className={styles.dot} />
+                  <span className={styles.dot} />
+                  <span className={styles.dot} />
+                </div>
+                <span className={styles.previewTitle}>taipower-tou-comparison.app</span>
+              </div>
+              <div className={styles.previewBody}>
+                <div className={styles.previewPlaceholder}>
+                  <motion.div
+                    animate={{
+                      scale: [1, 1.1, 1],
+                      rotate: [0, 5, -5, 0],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                  >
+                    <Zap size={64} />
+                  </motion.div>
+                  <p>AI 智慧分析您的電費單</p>
+                  <motion.div
+                    className="flex items-center gap-2 mt-4 text-primary text-sm font-medium"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1, duration: 0.5 }}
+                  >
+                    <CheckCircle size={16} />
+                    <span>支援 20+ 種電價方案</span>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </motion.div>
 
-        <div className="grid sm:grid-cols-3 gap-10 max-w-4xl mx-auto">
+        {/* Feature showcase cards section */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-20 relative z-10"
+        >
           {[
-            { step: '1', icon: '📸', title: '上傳電費單', desc: '拍照或手動輸入您的用電資訊' },
-            { step: '2', icon: '⚡', title: '智慧分析', desc: '系統自動計算所有可用方案' },
-            { step: '3', icon: '💰', title: '獲得建議', desc: '檢視最省錢的方案與省金額' },
-          ].map((item, idx) => (
+            {
+              icon: Zap,
+              title: 'AI 智慧識別',
+              desc: '上傳電費單照片，自動辨識用電資訊',
+              color: 'from-orange-500 to-amber-500',
+            },
+            {
+              icon: TrendingUp,
+              title: '精準方案比較',
+              desc: '20+ 種電價方案，找出最省錢選擇',
+              color: 'from-amber-500 to-yellow-500',
+            },
+            {
+              icon: Shield,
+              title: '資料絕對安全',
+              desc: '純前端運算，資料不上傳任何伺服器',
+              color: 'from-yellow-500 to-lime-500',
+            },
+            {
+              icon: Clock,
+              title: '秒級快速分析',
+              desc: '上傳後立即計算，無需等待',
+              color: 'from-lime-500 to-green-500',
+            },
+          ].map((feature, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: '-100px' }}
+              className="p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-orange-100 hover:shadow-xl hover:border-orange-200 transition-all duration-300 group"
+              whileHover={{ y: -8 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="text-center"
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary text-white text-2xl font-bold mb-4 shadow-md">
-                {item.step}
+              <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                <feature.icon size={28} className="text-white" />
               </div>
-              <div className="text-4xl mb-4">{item.icon}</div>
-              <h3 className="text-lg font-bold text-card-foreground mb-2">{item.title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
+              <h3 className="text-lg font-bold text-neutral-900 mb-2">{feature.title}</h3>
+              <p className="text-sm text-neutral-600 leading-relaxed">{feature.desc}</p>
             </motion.div>
           ))}
+        </motion.div>
+
+        {/* How it works section */}
+        <div className="py-24 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-50 rounded-full border border-orange-100 mb-6">
+              <Zap size={16} className="text-orange-500" />
+              <span className="text-sm font-semibold text-orange-700">簡單三步驟</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-neutral-900 mb-4">
+              開始省電費，<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500">超簡單</span>
+            </h2>
+            <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
+              不需要複雜的操作，任何人都能輕鬆使用
+            </p>
+          </motion.div>
+
+          <div className="grid sm:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {[
+              {
+                step: '1',
+                icon: '📸',
+                title: '上傳電費單',
+                desc: '拍照或手動輸入您的用電資訊',
+                gradient: 'from-orange-400 to-orange-500',
+              },
+              {
+                step: '2',
+                icon: '⚡',
+                title: '智慧分析',
+                desc: '系統自動計算所有可用方案',
+                gradient: 'from-amber-400 to-amber-500',
+              },
+              {
+                step: '3',
+                icon: '💰',
+                title: '獲得建議',
+                desc: '檢視最省錢的方案與省金額',
+                gradient: 'from-yellow-400 to-yellow-500',
+              },
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                className="text-center"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: '-100px' }}
+                transition={{ duration: 0.5, delay: idx * 0.15 }}
+                whileHover={{ y: -10 }}
+              >
+                <div className={`inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br ${item.gradient} text-white text-2xl font-bold mb-6 shadow-xl shadow-orange-200`}>
+                  {item.step}
+                </div>
+                <div className="text-5xl mb-4">{item.icon}</div>
+                <h3 className="text-xl font-bold text-neutral-900 mb-2">{item.title}</h3>
+                <p className="text-neutral-600 leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
+
+        {/* Stats section */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-3xl p-8 md:p-12 border border-orange-100 relative z-10"
+        >
+          <div className="grid sm:grid-cols-3 gap-8 text-center">
+            {[
+              { value: '20+', label: '電價方案' },
+              { value: '30秒', label: '分析時間' },
+              { value: '10-20%', label: '平均省費' },
+            ].map((stat, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+              >
+                <div className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500 mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-neutral-600 font-medium">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
