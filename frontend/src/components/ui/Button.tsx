@@ -26,7 +26,7 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <NextUIButton
       variant={variantMap[variant] || 'solid'}
-      radius="md"
+      radius="lg"
       className={className}
       {...props}
     >

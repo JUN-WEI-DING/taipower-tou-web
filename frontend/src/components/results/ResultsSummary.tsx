@@ -32,7 +32,7 @@ export const ResultsSummary: React.FC<{
       className="relative"
     >
       {/* Glow effect for best plan */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500 rounded-2xl blur opacity-20" />
+      <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500 rounded-xl blur opacity-20" />
 
       <Card className="border-2 border-orange-400 dark:border-orange-600 shadow-xl shadow-orange-500/20 bg-card overflow-visible relative">
         {/* Gradient overlay */}
@@ -84,8 +84,8 @@ export const ResultsSummary: React.FC<{
                   className="relative"
                 >
                   {/* Glow behind icon */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl blur-lg opacity-50" />
-                  <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-xl shadow-orange-500/40">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl blur-lg opacity-50" />
+                  <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-xl shadow-orange-500/40">
                     <Trophy className="text-white" size={32} />
                   </div>
                   {/* Number 1 badge */}
@@ -160,7 +160,7 @@ export const ResultsSummary: React.FC<{
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-                    className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-50 dark:from-green-900/40 dark:to-emerald-950/30 rounded-2xl border-2 border-green-400 dark:border-green-600 shadow-lg shadow-green-500/20"
+                    className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-50 dark:from-green-900/40 dark:to-emerald-950/30 rounded-xl border-2 border-green-400 dark:border-green-600 shadow-lg shadow-green-500/20"
                   >
                     <motion.div
                       animate={{ scale: [1, 1.1, 1] }}
@@ -181,7 +181,7 @@ export const ResultsSummary: React.FC<{
                   transition={{ delay: 0.4 }}
                   className="py-6"
                 >
-                  <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-50 dark:from-green-900/40 dark:to-emerald-950/30 rounded-2xl border-2 border-green-400 dark:border-green-600 shadow-lg">
+                  <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-50 dark:from-green-900/40 dark:to-emerald-950/30 rounded-xl border-2 border-green-400 dark:border-green-600 shadow-lg">
                     <CheckCircle size={22} className="text-green-600 dark:text-green-400" />
                     <p className="font-bold text-green-700 dark:text-green-300">
                       目前已是最佳方案

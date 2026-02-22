@@ -207,7 +207,7 @@ export const HeroSection: React.FC<{
           ].map((feature, idx) => (
             <motion.div
               key={idx}
-              className="p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-orange-100 hover:shadow-xl hover:border-orange-200 transition-all duration-300 group"
+              className="p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-orange-100 hover:shadow-xl hover:border-orange-200 transition-all duration-300 group"
               whileHover={{ y: -8 }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -277,7 +277,7 @@ export const HeroSection: React.FC<{
                 transition={{ duration: 0.5, delay: idx * 0.15 }}
                 whileHover={{ y: -10 }}
               >
-                <div className={`inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br ${item.gradient} text-white text-2xl font-bold mb-6 shadow-xl shadow-orange-200`}>
+                <div className={`inline-flex items-center justify-center w-20 h-20 rounded-xl bg-gradient-to-br ${item.gradient} text-white text-2xl font-bold mb-6 shadow-xl shadow-orange-200`}>
                   {item.step}
                 </div>
                 <div className="text-5xl mb-4">{item.icon}</div>
