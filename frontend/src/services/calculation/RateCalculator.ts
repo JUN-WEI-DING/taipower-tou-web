@@ -376,7 +376,10 @@ export class RateCalculator {
 
     // 檢查附加費規則（已在 plans.ts 中標準化到 billing_rules）
     const surchargeRule = plan.billingRules?.over_2000_kwh_surcharge;
-    if (surchargeRule && totalBillableConsumption > surchargeRule.threshold_kwh) {
+    if (surchargeRule &&
+        Number.isFinite(surchargeRule.threshold_kwh) &&
+        Number.isFinite(surchargeRule.cost_per_kwh) &&
+        totalBillableConsumption > surchargeRule.threshold_kwh) {
       const overAmount = totalBillableConsumption - surchargeRule.threshold_kwh;
       surcharge = overAmount * surchargeRule.cost_per_kwh;
     }
@@ -397,7 +400,7 @@ export class RateCalculator {
         kwh: totalBillableConsumption - rule.threshold_kwh,
         rate: rule.cost_per_kwh,
         charge: surcharge,
-        label: '超過2000度附加費',
+        label: `超過${rule.threshold_kwh}度附加費`,
       });
     }
 
@@ -547,7 +550,10 @@ export class RateCalculator {
     let surcharge = 0;
     const totalBillableConsumption = finalPeakKwh + finalSemiPeakKwh + finalOffPeakKwh;
     const surchargeRule = plan.billingRules?.over_2000_kwh_surcharge;
-    if (surchargeRule && totalBillableConsumption > surchargeRule.threshold_kwh) {
+    if (surchargeRule &&
+        Number.isFinite(surchargeRule.threshold_kwh) &&
+        Number.isFinite(surchargeRule.cost_per_kwh) &&
+        totalBillableConsumption > surchargeRule.threshold_kwh) {
       const overAmount = totalBillableConsumption - surchargeRule.threshold_kwh;
       surcharge = overAmount * surchargeRule.cost_per_kwh;
     }
@@ -567,7 +573,7 @@ export class RateCalculator {
         kwh: totalBillableConsumption - surchargeRule.threshold_kwh,
         rate: surchargeRule.cost_per_kwh,
         charge: surcharge,
-        label: '超過2000度附加費',
+        label: `超過${surchargeRule.threshold_kwh}度附加費`,
       });
     }
 
