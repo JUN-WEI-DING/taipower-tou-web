@@ -92,11 +92,11 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
         <h3 className="text-2xl font-bold text-foreground">
           選擇最像你家的用電習慣
         </h3>
-        <p className="text-default-600 text-base">
+        <p className="text-muted-foreground text-base">
           你的電費單沒有時段用電資料，我們需要估算各時段的用電分配
         </p>
         <div className={`inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full text-sm font-bold shadow-sm ${
-          season === 'summer' ? 'bg-orange-100 text-orange-700 border-2 border-orange-300' : 'bg-blue-100 text-blue-700 border-2 border-blue-300'
+          season === 'summer' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 border-2 border-orange-300 dark:border-orange-700' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 border-2 border-amber-300 dark:border-amber-700'
         }`}>
           {season === 'summer' ? '🌞 夏季費率 (6-9月)' : '❄️ 非夏季費率 (10-5月)'}
         </div>
@@ -127,7 +127,7 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
                   <span className="text-5xl">{habit.emoji}</span>
                   <div>
                     <h4 className="font-bold text-xl text-foreground">{habit.description}</h4>
-                    <p className="text-sm text-default-500 mt-1">{habit.whoIsItFor}</p>
+                    <p className="text-sm text-muted-foreground mt-1">{habit.whoIsItFor}</p>
                   </div>
                 </div>
 
@@ -138,14 +138,14 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
                     {selectedHabit === habit.mode ? (
                       <ul className="space-y-2">
                         {UsageEstimator.getTypicalDay(habit.mode).map((line, i) => (
-                          <li key={i} className="text-sm text-default-600 flex items-start gap-2">
+                          <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
                             <span className="text-orange-600 dark:text-orange-400 mt-0.5 font-bold">•</span>
                             <span>{line}</span>
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-sm text-default-400">點選檢視說明</p>
+                      <p className="text-sm text-muted-foreground">點選檢視說明</p>
                     )}
                   </CardBody>
                 </Card>
@@ -229,15 +229,15 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
                             <div className="grid grid-cols-3 gap-3">
                               <div className="text-center p-3 bg-danger/10 rounded-xl border border-danger/20">
                                 <div className="text-danger font-bold text-lg">{estimatedBreakdown.peakOnPeak}</div>
-                                <div className="text-default-500 text-xs mt-1">度</div>
+                                <div className="text-muted-foreground text-xs mt-1">度</div>
                               </div>
                               <div className="text-center p-3 bg-warning/10 rounded-xl border border-warning/20">
                                 <div className="text-warning font-bold text-lg">{estimatedBreakdown.semiPeak}</div>
-                                <div className="text-default-500 text-xs mt-1">度</div>
+                                <div className="text-muted-foreground text-xs mt-1">度</div>
                               </div>
                               <div className="text-center p-3 bg-success/10 rounded-xl border border-success/20">
                                 <div className="text-success font-bold text-lg">{estimatedBreakdown.offPeak}</div>
-                                <div className="text-default-500 text-xs mt-1">度</div>
+                                <div className="text-muted-foreground text-xs mt-1">度</div>
                               </div>
                             </div>
                           </div>
@@ -250,18 +250,18 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
                         <div className="grid grid-cols-3 gap-3">
                           <div className="text-center p-4 bg-danger/5 rounded-xl border-2 border-danger/20 hover:border-danger/30 transition-colors">
                             <div className="text-danger font-bold text-xl">{estimatedBreakdown.peakOnPeak}</div>
-                            <div className="text-default-500 text-xs mt-1">度</div>
-                            <div className="text-default-400 text-xs mt-2">傍晚晚間</div>
+                            <div className="text-muted-foreground text-xs mt-1">度</div>
+                            <div className="text-muted-foreground text-xs mt-2">傍晚晚間</div>
                           </div>
                           <div className="text-center p-4 bg-warning/5 rounded-xl border-2 border-warning/20 hover:border-warning/30 transition-colors">
                             <div className="text-warning font-bold text-xl">{estimatedBreakdown.semiPeak}</div>
-                            <div className="text-default-500 text-xs mt-1">度</div>
-                            <div className="text-default-400 text-xs mt-2">部分時段</div>
+                            <div className="text-muted-foreground text-xs mt-1">度</div>
+                            <div className="text-muted-foreground text-xs mt-2">部分時段</div>
                           </div>
                           <div className="text-center p-4 bg-success/5 rounded-xl border-2 border-success/20 hover:border-success/30 transition-colors">
                             <div className="text-success font-bold text-xl">{estimatedBreakdown.offPeak}</div>
-                            <div className="text-default-500 text-xs mt-1">度</div>
-                            <div className="text-default-400 text-xs mt-2">深夜凌晨</div>
+                            <div className="text-muted-foreground text-xs mt-1">度</div>
+                            <div className="text-muted-foreground text-xs mt-2">深夜凌晨</div>
                           </div>
                         </div>
 
@@ -316,7 +316,7 @@ export const UsageHabitSelector: React.FC<UsageHabitSelectorProps> = ({
       {/* 免責宣告 */}
       <Card className="bg-gradient-subtle border border-default-200">
         <CardBody className="p-4">
-          <p className="text-sm text-default-600 flex items-center gap-3">
+          <p className="text-sm text-muted-foreground flex items-center gap-3">
             <Info size={20} className="text-warning flex-shrink-0" />
             <span>這只是估算喔！實際電費會根據你真正的用電時間有所不同。</span>
           </p>
