@@ -24,16 +24,26 @@ import { Button, Divider } from '@nextui-org/react';
  * 判斷計費期間的季節
  * 臺電季節定義：夏季(6/1-9/30)、非夏季(10/1-5/31)
  * 如果計費期間的任何部分落在夏季月份，則視為夏季
+ * 支援跨年度的計費期間
  */
 function determineSeason(billingPeriod: { start: Date; end: Date }): 'summer' | 'non_summer' {
-  const startMonth = billingPeriod.start.getMonth() + 1; // 1-12
-  const endMonth = billingPeriod.end.getMonth() + 1; // 1-12
+  const startDate = new Date(billingPeriod.start);
+  const endDate = new Date(billingPeriod.end);
 
-  // 檢查計費期間是否跨越夏季月份 (6-9月)
-  // 如果開始月到結束月之間包含任何夏季月份，則視為夏季
-  const hasSummerMonth = (startMonth <= 9 && endMonth >= 6);
+  // 檢查計費期間內的所有月份是否包含夏季月份 (6-9月)
+  const current = new Date(startDate);
+  const hasSummerMonth = false;
 
-  return hasSummerMonth ? 'summer' : 'non_summer';
+  while (current <= endDate) {
+    const month = current.getMonth() + 1; // 1-12
+    if (month >= 6 && month <= 9) {
+      return 'summer'; // 發現夏季月份，立即返回
+    }
+    // 移到下個月
+    current.setMonth(current.getMonth() + 1);
+  }
+
+  return 'non_summer';
 }
 
 /**

@@ -60,12 +60,12 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         icon: 'text-foreground',
       },
       info: {
-        container: 'bg-blue-50 border-blue-200 text-blue-900 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-100',
-        icon: 'text-blue-500',
+        container: 'bg-amber-50 border-amber-200 text-amber-900 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-100',
+        icon: 'text-amber-500',
       },
       success: {
-        container: 'bg-green-50 border-green-200 text-green-900 dark:bg-green-900/20 dark:border-green-800 dark:text-green-100',
-        icon: 'text-green-500',
+        container: 'bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-100',
+        icon: 'text-emerald-500',
       },
       warning: {
         container: 'bg-orange-50 border-orange-200 text-orange-900 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-100',

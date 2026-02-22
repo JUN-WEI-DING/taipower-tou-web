@@ -110,8 +110,8 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
                       className={cn(
                         "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-sm",
                         seasonInfo.isSummer
-                          ? "bg-gradient-to-r from-red-100 to-orange-100 text-red-700 dark:from-red-900/40 dark:to-orange-900/40 dark:text-red-300"
-                          : "bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 dark:from-blue-900/40 dark:to-cyan-900/40 dark:text-blue-300"
+                          ? "bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 dark:from-orange-900/40 dark:to-amber-900/40 dark:text-orange-300"
+                          : "bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 dark:from-orange-950/30 dark:to-amber-950/30 dark:text-orange-300"
                       )}
                     >
                       <span>{seasonInfo.emoji}</span>
@@ -439,7 +439,7 @@ export const BillDataEditor: React.FC<BillDataEditorProps> = ({ billData, onSave
               </div>
               {isEditing && (
                 <div className="flex items-start gap-2 p-3 bg-default-50 rounded-xl border border-default-200">
-                  <span className="text-energy-blue">💡</span>
+                  <span className="text-orange-600 dark:text-orange-400">💡</span>
                   <p className="text-xs text-default-600">
                     提示：尖峰 + 半尖峰 + 離峰 應該接近總用電度數
                   </p>
