@@ -47,7 +47,7 @@ export const ResultsSummary: React.FC<{
             className={cn(
               "px-4 py-1.5 rounded-full shadow-lg text-sm font-bold flex items-center gap-2",
               isSummer
-                ? "bg-gradient-to-r from-red-500 to-orange-500 text-white"
+                ? "bg-gradient-to-r from-orange-600 to-orange-500 text-white"
                 : "bg-gradient-to-r from-orange-400 to-amber-400 text-white"
             )}
           >

@@ -181,7 +181,7 @@ export const UploadZone: React.FC = () => {
       >
         <Card
           className={cn(
-            "transition-all duration-300 cursor-pointer relative overflow-hidden group",
+            "transition-background-color duration-300 transition-transform duration-300 transition-border-color duration-300 cursor-pointer relative overflow-hidden group",
             isDragging
               ? 'border-2 border-orange-500 shadow-lg shadow-orange-500/30 bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-950/30 dark:to-orange-900/20'
               : 'border-2 border-dashed border-muted-foreground/25 hover:border-orange-400 hover:shadow-md bg-card'
@@ -237,7 +237,7 @@ export const UploadZone: React.FC = () => {
                   )}
                 </AnimatePresence>
                 <div className={cn(
-                  "w-24 h-24 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-lg relative",
+                  "w-24 h-24 rounded-2xl flex items-center justify-center transition-transform duration-300 shadow-lg relative",
                   isDragging
                     ? 'bg-gradient-to-br from-orange-500 to-orange-600 shadow-orange-500/50'
                     : 'bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/20 shadow-orange-200 dark:shadow-orange-900/20'
@@ -268,7 +268,7 @@ export const UploadZone: React.FC = () => {
                       initial={{ scale: 0, rotate: -180 }}
                       animate={{ scale: 1, rotate: 0 }}
                       exit={{ scale: 0, rotate: 180 }}
-                      className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
+                      className="absolute -top-2 -right-2 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center shadow-lg"
                     >
                       <CheckCircle size={18} className="text-white" />
                     </motion.div>
@@ -385,7 +385,7 @@ export const UploadZone: React.FC = () => {
             variant="bordered"
             size="lg"
             className={cn(
-              "w-full font-medium transition-all duration-300",
+              "w-full font-medium transition-colors duration-300 transition-transform duration-300 transition-shadow duration-300",
               "hover:from-orange-500 hover:to-orange-600",
               "hover:shadow-lg hover:shadow-orange-500/30",
               "hover:-translate-y-0.5 active:translate-y-0"

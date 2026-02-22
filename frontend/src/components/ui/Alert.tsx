@@ -64,8 +64,8 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         icon: 'text-amber-500',
       },
       success: {
-        container: 'bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-100',
-        icon: 'text-emerald-500',
+        container: 'bg-orange-50 border-orange-200 text-orange-900 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-100',
+        icon: 'text-orange-500',
       },
       warning: {
         container: 'bg-orange-50 border-orange-200 text-orange-900 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-100',
@@ -154,7 +154,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
             onClick={onDismiss}
             className={cn(
               'flex-shrink-0 rounded-lg p-1',
-              'transition-all duration-200',
+              'transition-colors duration-200',
               'hover:bg-black/5 dark:hover:bg-white/10',
               'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
               sizeStyles.dismiss

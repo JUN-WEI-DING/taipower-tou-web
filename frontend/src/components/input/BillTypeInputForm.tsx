@@ -337,13 +337,16 @@ const NonTouInputForm: React.FC<NonTouInputFormProps> = ({
       </label>
       <input
         id="total-consumption"
+        name="totalConsumption"
         type="number"
+        inputMode="numeric"
         min="1"
         max="10000"
         value={totalConsumption}
         onChange={(e) => onTotalConsumptionChange(e.target.value)}
         placeholder="例如：350"
-        className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
+        autoComplete="off"
+        className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-border-color duration-200 transition-box-shadow duration-200 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
       />
       <p className="text-xs text-muted-foreground mt-1">
         請輸入您電費單上的「總用電度數」或「本期度數」
@@ -395,13 +398,16 @@ const TwoTierInputForm: React.FC<TwoTierInputFormProps> = ({
         </label>
         <input
           id="peak-consumption"
+          name="peakConsumption"
           type="number"
+          inputMode="numeric"
           min="0"
           max="10000"
           value={peakConsumption}
           onChange={(e) => onPeakConsumptionChange(e.target.value)}
           placeholder="例如：120"
-          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
+          autoComplete="off"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-border-color duration-200 transition-box-shadow duration-200 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         />
       </div>
       <div>
@@ -410,13 +416,16 @@ const TwoTierInputForm: React.FC<TwoTierInputFormProps> = ({
         </label>
         <input
           id="off-peak-consumption"
+          name="offPeakConsumption"
           type="number"
+          inputMode="numeric"
           min="0"
           max="10000"
           value={offPeakConsumption}
           onChange={(e) => onOffPeakConsumptionChange(e.target.value)}
           placeholder="例如：230"
-          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
+          autoComplete="off"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-border-color duration-200 transition-box-shadow duration-200 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         />
       </div>
     </div>
@@ -470,45 +479,57 @@ const ThreeTierInputForm: React.FC<ThreeTierInputFormProps> = ({
     />
     <div className="space-y-3">
       <div>
-        <label className="block text-sm font-medium text-foreground mb-1">
+        <label htmlFor="peak-consumption" className="block text-sm font-medium text-foreground mb-1">
           尖峰用電
         </label>
         <input
+          id="peak-consumption"
+          name="peakConsumption"
           type="number"
+          inputMode="numeric"
           min="0"
           max="10000"
           value={peakConsumption}
           onChange={(e) => onPeakConsumptionChange(e.target.value)}
           placeholder="例如：70"
-          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
+          autoComplete="off"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-border-color duration-200 transition-box-shadow duration-200 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-foreground mb-1">
+        <label htmlFor="semi-peak-consumption" className="block text-sm font-medium text-foreground mb-1">
           半尖峰用電
         </label>
         <input
+          id="semi-peak-consumption"
+          name="semiPeakConsumption"
           type="number"
+          inputMode="numeric"
           min="0"
           max="10000"
           value={semiPeakConsumption}
           onChange={(e) => onSemiPeakConsumptionChange(e.target.value)}
           placeholder="例如：80"
-          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
+          autoComplete="off"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-border-color duration-200 transition-box-shadow duration-200 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-foreground mb-1">
+        <label htmlFor="off-peak-consumption" className="block text-sm font-medium text-foreground mb-1">
           離峰用電
         </label>
         <input
+          id="off-peak-consumption"
+          name="offPeakConsumption"
           type="number"
+          inputMode="numeric"
           min="0"
           max="10000"
           value={offPeakConsumption}
           onChange={(e) => onOffPeakConsumptionChange(e.target.value)}
           placeholder="例如：200"
-          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
+          autoComplete="off"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-border-color duration-200 transition-box-shadow duration-200 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         />
       </div>
     </div>
@@ -535,11 +556,13 @@ const DateSection: React.FC<DateSectionProps> = ({ month, year, isSummer, onMont
   <>
     <div className="grid grid-cols-2 gap-4">
       <div>
-        <label className="block text-sm font-medium text-foreground mb-1">年份</label>
+        <label htmlFor="billing-year" className="block text-sm font-medium text-foreground mb-1">年份</label>
         <select
+          id="billing-year"
+          name="billingYear"
           value={year}
           onChange={(e) => onYearChange(parseInt(e.target.value))}
-          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-border-color duration-200 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         >
           {Array.from({ length: 3 }, (_, i) => {
             const y = new Date().getFullYear() - i;
@@ -548,11 +571,13 @@ const DateSection: React.FC<DateSectionProps> = ({ month, year, isSummer, onMont
         </select>
       </div>
       <div>
-        <label className="block text-sm font-medium text-foreground mb-1">月份</label>
+        <label htmlFor="billing-month" className="block text-sm font-medium text-foreground mb-1">月份</label>
         <select
+          id="billing-month"
+          name="billingMonth"
           value={month}
           onChange={(e) => onMonthChange(parseInt(e.target.value))}
-          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
+          className="w-full px-3 py-2 border border-orange-200 dark:border-orange-700 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-border-color duration-200 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
         >
           {Array.from({ length: 12 }, (_, i) => {
             const m = i + 1;

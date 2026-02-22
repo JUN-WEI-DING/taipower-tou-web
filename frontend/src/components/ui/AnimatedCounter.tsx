@@ -128,8 +128,8 @@ export const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
   const variantClasses = {
     default: 'text-foreground',
     orange: 'text-orange-600 dark:text-orange-400',
-    green: 'text-green-600 dark:text-green-400',
-    blue: 'text-blue-600 dark:text-blue-400',
+    green: 'text-orange-500 dark:text-orange-400',
+    blue: 'text-amber-600 dark:text-amber-400',
   };
 
   // Transform the motion value to the formatted string
@@ -206,7 +206,7 @@ export const CurrencyCounter: React.FC<
       value={absoluteValue}
       currency
       currencySymbol="$"
-      variant={isNegative ? 'default' : 'green'}
+      variant={isNegative ? 'default' : 'orange'}
       prefix={isNegative ? '-' : ''}
     />
   );
@@ -227,7 +227,7 @@ export const PercentageCounter: React.FC<
       value={Math.abs(value)}
       decimals={decimals}
       suffix="%"
-      variant={isPositive ? 'green' : isNegative ? 'default' : 'orange'}
+      variant={isPositive ? 'orange' : isNegative ? 'default' : 'orange'}
     />
   );
 };
@@ -336,7 +336,7 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
   const getVariant = () => {
     if (timeLeft <= 5) return 'default'; // red/warning when low
     if (timeLeft <= 10) return 'orange';
-    return 'blue';
+    return 'orange';
   };
 
   return (
@@ -402,7 +402,7 @@ export const StatCardCounter: React.FC<StatCardCounterProps> = ({
         <div className="flex items-center gap-2 text-sm">
           <span className={cn(
             'font-medium',
-            trend.isPositive ? 'text-green-600 dark:text-green-400' : 'text-destructive'
+            trend.isPositive ? 'text-orange-600 dark:text-orange-400' : 'text-destructive'
           )}>
             {trend.isPositive ? '+' : ''}{trend.value}%
           </span>

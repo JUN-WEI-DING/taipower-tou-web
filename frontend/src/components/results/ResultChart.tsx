@@ -59,14 +59,14 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
         <span className="text-xs text-gray-500 dark:text-gray-400">每月電費</span>
         <span className={cn(
           "text-lg font-bold",
-          index === 0 ? "text-green-600 dark:text-green-400" : "text-orange-600 dark:text-orange-400"
+          index === 0 ? "text-orange-500 dark:text-orange-400" : "text-orange-600 dark:text-orange-400"
         )}>
           ${Math.round(value).toLocaleString()}
         </span>
       </div>
       {index === 0 && (
         <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-          <span className="text-xs font-medium text-green-600 dark:text-green-400">🏆 推薦方案</span>
+          <span className="text-xs font-medium text-orange-600 dark:text-orange-400">🏆 推薦方案</span>
         </div>
       )}
     </motion.div>
@@ -178,7 +178,7 @@ export const ResultChart: React.FC<ResultChartProps> = ({ results, maxCost }) =>
           <Bar
             dataKey="cost"
             radius={[0, 6, 6, 0]}
-            className="outline-none focus:outline-none"
+            className="focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2"
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color.fill} />

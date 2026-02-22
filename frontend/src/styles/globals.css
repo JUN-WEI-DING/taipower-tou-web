@@ -707,3 +707,41 @@ h3 {
     color: #333 !important;
   }
 }
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable specific animations */
+  .animate-fade-in,
+  .animate-fade-in-up,
+  .animate-slide-in-left,
+  .animate-slide-in-right,
+  .animate-scale-in,
+  .animate-float-diagonal-1,
+  .animate-float-diagonal-2,
+  .animate-pulse-glow {
+    animation: none !important;
+  }
+
+  /* Card hover effects */
+  .card:hover,
+  .card-orange:hover {
+    transform: none !important;
+  }
+
+  /* Button hover effects */
+  .btn:hover {
+    transform: none !important;
+  }
+}

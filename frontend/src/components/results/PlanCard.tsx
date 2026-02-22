@@ -107,7 +107,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
               variant="flat"
               className={cn(
                 "font-medium",
-                result.label.accuracy === 'accurate' && "bg-success-100 text-success dark:bg-success-900/30 dark:text-success-400",
+                result.label.accuracy === 'accurate' && "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400",
                 result.label.accuracy === 'estimated' && "bg-warning-100 text-warning dark:bg-warning-900/30 dark:text-warning-400",
                 result.label.accuracy === 'partial_estimated' && "bg-danger-100 text-danger dark:bg-danger-900/30 dark:text-danger-400"
               )}
@@ -189,7 +189,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.05 }}
                             className={cn(
-                              "flex justify-between items-center py-2.5 px-4 rounded-lg border transition-all hover:scale-[1.02]",
+                              "flex justify-between items-center py-2.5 px-4 rounded-lg border transition-transform duration-200 hover:scale-[1.02]",
                               periodColor
                             )}
                           >
@@ -215,7 +215,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.05 }}
-                          className="flex justify-between items-center py-2.5 px-4 bg-muted rounded-lg hover:scale-[1.02] transition-all"
+                          className="flex justify-between items-center py-2.5 px-4 bg-muted rounded-lg hover:scale-[1.02] transition-transform duration-200"
                         >
                           <span className="text-sm text-card-foreground">第 {tier.tier} 段</span>
                           <span className="font-mono text-sm font-bold text-card-foreground">
@@ -234,7 +234,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
             size="sm"
             variant="light"
             className={cn(
-              "w-full font-medium transition-all",
+              "w-full font-medium transition-colors duration-200",
               rank === 1 && "text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20"
             )}
             endContent={
@@ -261,7 +261,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
               className={cn(
                 "mt-4 py-4 px-4 rounded-xl text-center border",
                 isPositive
-                  ? "bg-gradient-to-r from-success/10 to-emerald-50 border-success/30 dark:from-success/5 dark:to-emerald-950/30 dark:border-success/20"
+                  ? "bg-gradient-to-r from-orange-10 to-orange-50 border-orange-30 dark:from-orange-5 dark:to-orange-950/30 dark:border-orange-20"
                   : "bg-gradient-to-r from-destructive/10 to-red-50 border-destructive/30 dark:from-destructive/5 dark:to-red-950/30 dark:border-destructive/20"
               )}>
               {isPositive ? (
@@ -270,13 +270,13 @@ export const PlanCard: React.FC<PlanCardProps> = ({ result, rank }) => {
                     animate={{ rotate: [0, -10, 10, -10, 0] }}
                     transition={{ duration: 0.5, delay: 0.4 }}
                   >
-                    <Zap size={20} className="text-success" />
+                    <Zap size={20} className="text-orange-600" />
                   </motion.div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-success text-lg">省 ${Math.abs(result.comparison.difference).toFixed(0)}</span>
+                    <span className="font-bold text-orange-600 text-lg">省 ${Math.abs(result.comparison.difference).toFixed(0)}</span>
                     <Chip
                       size="sm"
-                      className="bg-success-100 text-success border border-success-300 dark:bg-success-900/30 dark:border-success-700 font-semibold"
+                      className="bg-orange-100 text-orange-600 border border-orange-300 dark:bg-orange-900/30 dark:border-orange-700 font-semibold"
                     >
                       {Math.abs(result.comparison.savingPercentage).toFixed(1)}%
                     </Chip>

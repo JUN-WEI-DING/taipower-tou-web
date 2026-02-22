@@ -56,12 +56,12 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
       case 'total_only':
         return {
           color: 'danger' as ChipColor,
-          bgGradient: 'from-red-50 via-rose-50 to-pink-50 dark:from-red-950/30 dark:via-rose-950/20 dark:to-pink-950/30',
-          borderColor: 'border-red-300 dark:border-red-700',
-          iconBg: 'bg-gradient-to-br from-red-500 to-rose-600 shadow-lg shadow-red-500/30',
+          bgGradient: 'from-orange-50 via-orange-100 to-amber-50 dark:from-orange-950/30 dark:via-orange-900/20 dark:to-amber-950/30',
+          borderColor: 'border-orange-300 dark:border-orange-700',
+          iconBg: 'bg-gradient-to-br from-orange-500 to-amber-600 shadow-lg shadow-orange-500/30',
           icon: <Info size={22} className="text-white" />,
-          accentColor: 'text-red-700 dark:text-red-300',
-          progressBar: 'bg-gradient-to-r from-red-500 to-rose-500',
+          accentColor: 'text-orange-700 dark:text-orange-300',
+          progressBar: 'bg-gradient-to-r from-orange-500 to-amber-500',
         };
       default:
         return {
@@ -96,7 +96,7 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
           "absolute -inset-1 bg-gradient-to-r rounded-xl blur opacity-20 pointer-events-none",
           report.level === 'three_tier' && 'from-orange-400 to-amber-400',
           report.level === 'two_tier' && 'from-amber-400 to-orange-300',
-          report.level === 'total_only' && 'from-orange-300 to-red-400',
+          report.level === 'total_only' && 'from-orange-300 to-amber-400',
         )} />
 
         <CardBody className="p-6 relative">
@@ -190,7 +190,7 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
                       exit={{ opacity: 0, x: 20 }}
                       transition={{ delay: 0.6 }}
                       className={cn(
-                        "flex items-start gap-3 p-4 rounded-xl border-2 transition-all hover:scale-[1.02]",
+                        "flex items-start gap-3 p-4 rounded-xl border-2 transition-transform duration-200 hover:scale-[1.02]",
                         "bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/40 dark:to-amber-950/30",
                         "border-orange-200 dark:border-orange-800"
                       )}
@@ -217,7 +217,7 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
                       exit={{ opacity: 0, x: 20 }}
                       transition={{ delay: 0.7 }}
                       className={cn(
-                        "flex items-start gap-3 p-4 rounded-xl border-2 transition-all hover:scale-[1.02]",
+                        "flex items-start gap-3 p-4 rounded-xl border-2 transition-transform duration-200 hover:scale-[1.02]",
                         "bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/30",
                         "border-amber-200 dark:border-amber-800"
                       )}
@@ -244,8 +244,8 @@ export const DataCompletenessBanner: React.FC<DataCompletenessBannerProps> = ({
                       exit={{ opacity: 0, x: 20 }}
                       transition={{ delay: 0.8 }}
                       className={cn(
-                        "flex items-start gap-3 p-4 rounded-xl border-2 transition-all hover:scale-[1.02]",
-                        "bg-gradient-to-r from-orange-100 to-red-50 dark:from-orange-950/40 dark:to-red-950/30",
+                        "flex items-start gap-3 p-4 rounded-xl border-2 transition-transform duration-200 hover:scale-[1.02]",
+                        "bg-gradient-to-r from-orange-100 to-amber-50 dark:from-orange-950/40 dark:to-amber-950/30",
                         "border-orange-300 dark:border-orange-700"
                       )}
                     >
