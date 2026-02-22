@@ -24,7 +24,7 @@ export const HeroSection: React.FC<{
           >
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             <span className="text-sm font-medium text-muted-foreground">
-              智慧電費分析工具 2025
+              智慧電費分析工具
             </span>
           </motion.div>
 
