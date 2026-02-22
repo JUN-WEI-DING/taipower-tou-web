@@ -204,7 +204,7 @@ function App() {
                   />
                 ) : billType === 'auto_detect' ? (
                   <div className="max-w-2xl mx-auto space-y-8">
-                    <div className="text-center">
+                    <div className="text-center bg-gradient-to-b from-orange-50/50 to-transparent dark:from-orange-950/20 dark:to-transparent -mx-8 px-8 py-8 rounded-2xl">
                       <Button
                         onClick={() => setBillType(null)}
                         variant="light"
@@ -232,9 +232,10 @@ function App() {
                     )}
                     <OCRProgress />
                   </div>
+                </div>
                 ) : (
                   <div className="max-w-2xl mx-auto space-y-8">
-                    <div className="text-center">
+                    <div className="text-center bg-gradient-to-b from-orange-50/50 to-transparent dark:from-orange-950/20 dark:to-transparent -mx-8 px-8 py-8 rounded-2xl">
                       <Button
                         onClick={() => setBillType(null)}
                         variant="light"
@@ -253,7 +254,7 @@ function App() {
 
             {stage === 'confirm' && billData && (
             <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
-              <div className="text-center space-y-3">
+              <div className="text-center space-y-3 bg-gradient-to-b from-orange-50/50 to-transparent dark:from-orange-950/20 dark:to-transparent -mx-8 px-8 py-8 rounded-2xl">
                 <h2 className="text-3xl md:text-4xl font-bold text-card-foreground">
                   確認電費單資訊
                 </h2>
@@ -323,7 +324,7 @@ function App() {
 
           {stage === 'result' && results.length > 0 && (
             <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-b from-orange-50/30 to-transparent dark:from-orange-950/10 dark:to-transparent -mx-4 px-6 py-6 rounded-2xl md:mx-0 md:px-8">
                 <div>
                   <h2 className="text-3xl md:text-4xl font-bold text-card-foreground">
                     方案比較結果
@@ -345,11 +346,11 @@ function App() {
 
               <ResultsSummary results={results} />
 
-              <div className="bg-card border border-border rounded-lg p-6">
+              <div className="bg-gradient-to-br from-card to-orange-50/30 dark:to-orange-950/20 border border-border/50 rounded-xl p-6 shadow-lg shadow-orange-500/10 hover:shadow-xl hover:shadow-orange-500/15 transition-shadow">
                 <ResultChart results={results} />
               </div>
 
-              <Divider className="my-6" />
+              <Divider className="my-8 border-orange-200/50 dark:border-orange-700/50" />
 
               <PlanList results={results} />
 
