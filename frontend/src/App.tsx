@@ -201,10 +201,10 @@ function App() {
       </a>
 
       {/* Header */}
-      <Navbar maxWidth="xl" className="bg-background/70 backdrop-blur-md border-b border-divider">
+      <Navbar maxWidth="xl" className="bg-background/70 backdrop-blur-md border-b border-divider" isBordered>
         <NavbarBrand>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center" aria-hidden="true">
               <Zap className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -220,9 +220,9 @@ function App() {
       </Navbar>
 
       {/* Main Content */}
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" role="main">
         {stage === 'upload' && (
-          <div className="space-y-6">
+          <section aria-labelledby="upload-heading" className="space-y-6">
             {!billType ? (
               <HeroSection
                 onOCRClick={() => setBillType('auto_detect')}
@@ -241,7 +241,7 @@ function App() {
                   >
                     ← 返回選擇其他方式
                   </Button>
-                  <h2 className="text-2xl font-bold text-foreground">
+                  <h2 id="upload-heading" className="text-2xl font-bold text-foreground">
                     上傳電費單照片
                   </h2>
                   <p className="text-default-500 mt-1">
@@ -276,7 +276,7 @@ function App() {
                 <BillTypeInputForm billType={billType} />
               </>
             )}
-          </div>
+          </section>
         )}
 
         {stage === 'confirm' && billData && (
@@ -347,9 +347,9 @@ function App() {
         )}
 
         {stage === 'result' && results.length > 0 && (
-          <div className="space-y-6">
+          <section aria-labelledby="results-heading" className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-foreground">
+              <h2 id="results-heading" className="text-2xl font-bold text-foreground">
                 方案比較結果
               </h2>
               {/* 季節指示器 */}
@@ -358,7 +358,7 @@ function App() {
                   determineSeason(billData.billingPeriod) === 'summer'
                     ? 'bg-danger-100 text-danger border border-danger-200'
                     : 'bg-primary-100 text-primary border border-primary-200'
-                }`}>
+                }`} role="status" aria-live="polite">
                   {determineSeason(billData.billingPeriod) === 'summer' ? '🌞 夏季費率 (6-9月)' : '❄️ 非夏季費率 (10-5月)'}
                 </div>
               )}
@@ -368,7 +368,7 @@ function App() {
             <ResultsSummary results={results} />
 
             {/* 圖表 */}
-            <div className="bg-content1 rounded-xl shadow-sm p-6 border border-divider">
+            <div className="bg-content1 rounded-xl shadow-sm p-6 border border-divider" role="region" aria-label="方案比較圖表">
               <ResultChart results={results} />
             </div>
 
@@ -387,7 +387,7 @@ function App() {
                 🔄 比較其他電費單
               </Button>
             </div>
-          </div>
+          </section>
         )}
       </main>
 
